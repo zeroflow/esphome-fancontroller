@@ -1,0 +1,47 @@
+{
+  "name": "Template Project",
+  "version": "",
+  "home_assistant_domain": "esphome",
+  "new_install_skip_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "ota": {
+        "path": "project-template-esp32/project-template-esp32.ota.bin",
+        "md5": "cfb6aac1e4d768baff9c5273d3bec1ac"
+      },
+      "parts": [
+        {
+          "path": "project-template-esp32/project-template-esp32.factory.bin",
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "chipFamily": "ESP32-C3",
+      "ota": {
+        "path": "project-template-esp32c3/project-template-esp32c3.ota.bin",
+        "md5": "b68a27a7fb7b27e9023ef7ba1c701530"
+      },
+      "parts": [
+        {
+          "path": "project-template-esp32c3/project-template-esp32c3.factory.bin",
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+        "path": "project-template-esp32s3/project-template-esp32s3.ota.bin",
+        "md5": "b9ce825c0c69aabd53ad3a7fcd10f302"
+      },
+      "parts": [
+        {
+          "path": "project-template-esp32s3/project-template-esp32s3.factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
