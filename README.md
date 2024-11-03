@@ -25,7 +25,38 @@ TBD
 
 Buy boards & cases at https://www.tindie.com/products/zeroflow/esp32-fancontroller/
 
-## Pin Configuration
+## ESP32-S2 (Rev 2.0)
+
+### Pin Configuration
+
+Pin    | Usage
+------ | ------
+GPIO0  | Boot Button, Push to enter flashing mode
+GPIO1  | Builtin LED, Low=On
+GPIO12 | Fan 1 PWM
+GPIO13 | Fan 1 Sense
+GPIO14 | Fan 2 PWM
+GPIO15 | Fan 2 Speed Sense
+GPIO16 | Fan 3 PWM
+GPIO17 | Fan 3 Speed Sense
+GPIO18 | Fan 4 PWM
+GPIO21 | Fan 4 Speed Sense
+
+### I2C extension port
+
+The board offers an I2C extension port above Fan 4.
+
+Nr. | Pin -| Description
+----|------|------------
+1   | GND  | 
+2   | INT  | GPIO 35
+3   | SCL  | GPIO 34, 4.7k PU
+4   | SDA  | GPIO 33, 4.7k PU
+5   | +3V3 |
+
+## ESP32 (Rev 1.0)
+
+### Pin Configuration
 
 Pin    | Usage
 ------ | ------
@@ -39,7 +70,7 @@ GPIO12 | Unused (strapping pin)
 GPIO13 | Fan 3 Speed Sense
 GPIO14 | Unused (outputs PWM at boot)
 GPIO15 | Unused (outputs PWM at boot, strapping pin)
-GPIO16 | Fan 4 Sense
+GPIO16 | Fan 4 Speed Sense
 GPIO17 | I2C SDA (HDC1080 + expansion header)
 GPIO18 | I2C SCL (HDC1080 + expansion header)
 GPIO19 | I2C INT (expansion header)

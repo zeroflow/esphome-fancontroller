@@ -1,12 +1,12 @@
 esphome:
-  name: fancontroller
-  friendly_name: Fancontroller
+  name: fancontroller-s2
+  friendly_name: fancontroller-s2
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
   name_add_mac_suffix: true
 
 esp32:
-  board: esp32dev
+  board: lolin_s2_mini
   framework:
     type: esp-idf
 
@@ -33,33 +33,33 @@ web_server:
 
 
 i2c:
-  sda: GPIO17
-  scl: GPIO18
+  sda: GPIO33
+  scl: GPIO34
   scan: true
   id: bus_a
 
 # Example configuration entry
 status_led:
   pin: 
-    number: GPIO02
+    number: GPIO01
     inverted: true
 
 # PWM Outputs
 output:
   - platform: ledc
-    pin: GPIO32
+    pin: GPIO12
     id: pwm_fan1
     frequency: "25000 Hz"
   - platform: ledc
-    pin: GPIO25
+    pin: GPIO14
     id: pwm_fan2
     frequency: "25000 Hz"
   - platform: ledc
-    pin: GPIO27
+    pin: GPIO16
     id: pwm_fan3
     frequency: "25000 Hz"
   - platform: ledc
-    pin: GPIO04
+    pin: GPIO18
     id: pwm_fan4
     frequency: "25000 Hz"
 
@@ -94,7 +94,7 @@ sensor:
     update_interval: 60s
   - platform: pulse_counter
     pin: 
-      number: GPIO33  # Connect to any input PIN on the ESP
+      number: GPIO13  # Connect to any input PIN on the ESP
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan1_speed
@@ -104,7 +104,7 @@ sensor:
       - multiply: 0.5  
   - platform: pulse_counter
     pin: 
-      number: GPIO26  # Connect to any input PIN on the ESP
+      number: GPIO15  # Connect to any input PIN on the ESP
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan2_speed
@@ -114,7 +114,7 @@ sensor:
       - multiply: 0.5 
   - platform: pulse_counter
     pin: 
-      number: GPIO13  # Connect to any input PIN on the ESP
+      number: GPIO17  # Connect to any input PIN on the ESP
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan3_speed
@@ -124,7 +124,7 @@ sensor:
       - multiply: 0.5 
   - platform: pulse_counter
     pin: 
-      number: GPIO16  # Connect to any input PIN on the ESP
+      number: GPIO21  # Connect to any input PIN on the ESP
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan4_speed
@@ -136,31 +136,19 @@ sensor:
 binary_sensor:
   - platform: gpio
     pin: 
-      number: GPIO23
+      number: GPIO45
       inverted: True
     name: "USR1"
     id: btn_usr1
   - platform: gpio
     pin: 
-      number: GPIO22
+      number: GPIO42
       inverted: True
     name: "USR2"
     id: btn_usr2
   - platform: gpio
     pin: 
-      number: GPIO21
+      number: GPIO41
       inverted: True
     name: "USR3"
     id: btn_usr3
-  - platform: gpio
-    pin: 
-      number: GPIO34
-      inverted: True
-    name: "IN1"
-    id: btn_in1
-  - platform: gpio
-    pin: 
-      number: GPIO35
-      inverted: True
-    name: "IN2"
-    id: btn_in2
