@@ -6,9 +6,9 @@ esphome:
   name_add_mac_suffix: true
 
 esp32:
-  board: lolin_s2_mini
+  board: esp32-s2-saola-1
   framework:
-    type: esp-idf
+    type: arduino
 
 # To be able to get logs from the device via serial and api.
 logger:
