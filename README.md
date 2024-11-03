@@ -4,7 +4,8 @@ ESP32-based PWM Fancontroller with integrated Temperature & Humdity Sensor.
 
 ## Installation
 
-https://zeroflow.github.io/esphome-fancontroller/
+Rev 1.0 (ESP32): https://zeroflow.github.io/esphome-fancontroller/
+Rev 2.0 (ESP32-S2): Follow Guide below
 
 ## Specs
 
@@ -13,9 +14,8 @@ https://zeroflow.github.io/esphome-fancontroller/
 * Integrated HDC1080 Temperature & Humidity Sensor
 * I2C Expansion Port
 * 3 User Buttons
-* 2 External Digital Inputs (Pull-Up included)
 
-![view of the board](static/board.jpg)
+![view of the board](static/board_rev2.0.jpg)
 
 ## 3D printed case
 
@@ -26,6 +26,18 @@ TBD
 Buy boards & cases at https://www.tindie.com/products/zeroflow/esp32-fancontroller/
 
 ## ESP32-S2 (Rev 2.0)
+
+### USB Flashing
+
+Currently, there are [known issues](https://github.com/espressif/esptool-js/issues/38) with flashing the ESP32-S2 with esptool.js. Thus, flashing with the normal python [esptool](https://github.com/espressif/esptool) is necessary.
+
+To do this:
+
+1. Add new board config to your esphome instance
+2. Click "Install"
+3. Select "Manual Download"
+4. Download "Factory Format"
+5. Upload binary to esp32s2 (e.g. ```python -m esptool --chip esp32s2 --port COMn write_flash 0x0 wifi-fancontroller-s2.factory.bin```)
 
 ### Pin Configuration
 
