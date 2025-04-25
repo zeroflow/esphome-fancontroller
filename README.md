@@ -12,10 +12,13 @@ Rev 2.0 (ESP32-S2): Follow Guide below
 * 12V DC Barrel Input (5.5x2.1mm)
 * 4x PWM Fan Output
 * Integrated HDC1080 Temperature & Humidity Sensor
-* I2C Expansion Port
+* [Qwiic](https://www.sparkfun.com/qwiic) Expansion Port
+* I2C Expansion Port (2.54mm Header)
+* Neopixel Port
 * 3 User Buttons
+* GPIO Expansion Pads (2.54mm SMD Header)
 
-![view of the board](static/board_rev2.0.jpg)
+![view of the board](static/board_rev3.0.jpg)
 
 ## 3D printed case
 
@@ -25,19 +28,41 @@ TBD
 
 Buy boards & cases at https://www.tindie.com/products/zeroflow/esp32-fancontroller/
 
+## ESP32-S2 (Rev 3.0)
+
+### Pin Configuration
+
+Pin    | Usage
+------ | ------
+GPIO0  | Boot Button, Push to enter flashing mode
+GPIO1  | Builtin LED, Low=On
+GPIO2  | Expansion Header (Bottom)
+GPIO3  | Expansion Header (Bottom)
+GPIO4  | Expansion Header (Bottom)
+GPIO5  | Expansion Header (Bottom)
+GPIO6  | Expansion Header (Bottom)
+GPIO7  | Expansion Header (Bottom)
+GPIO8  | Expansion Header (Bottom)
+GPIO9  | Expansion Header (Bottom)
+GPIO10  | Expansion Header (Bottom)
+GPIO11  | Expansion Header (Bottom)
+GPIO12 | Fan 1 PWM
+GPIO13 | Fan 2 PWM
+GPIO14 | Fan 3 PWM
+GPIO15 | Fan 4 PWM
+GPIO16 | Fan 1 Speed Sense
+GPIO17 | Fan 2 Speed Sense
+GPIO18 | Fan 3 Speed Sense
+GPIO21 | Fan 4 Speed Sense
+GPIO33 | I2C SDA
+GPIO34 | I2C SCL
+GPIO35 | I2C INT
+GPIO36 | USR3
+GPIO37 | USR2
+GPIO38 | USR2
+GPIO42 | Neopixel
+
 ## ESP32-S2 (Rev 2.0)
-
-### USB Flashing
-
-Currently, there are [known issues](https://github.com/espressif/esptool-js/issues/38) with flashing the ESP32-S2 with esptool.js. Thus, flashing with the normal python [esptool](https://github.com/espressif/esptool) is necessary.
-
-To do this:
-
-1. Add new board config to your esphome instance
-2. Click "Install"
-3. Select "Manual Download"
-4. Download "Factory Format"
-5. Upload binary to esp32s2 (e.g. ```python -m esptool --chip esp32s2 --port COMn write_flash 0x0 wifi-fancontroller-s2.factory.bin```)
 
 ### Pin Configuration
 

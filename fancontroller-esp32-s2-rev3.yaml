@@ -1,0 +1,186 @@
+esphome:
+  name: fancontroller-s2
+  friendly_name: fancontroller-s2
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+  platformio_options:
+      board_build.f_flash: 40000000L
+
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# To be able to get logs from the device via serial and api.
+logger:
+
+# OTA is required for Over-the-Air updating
+ota:
+  - platform: esphome
+
+wifi:
+  # Set up a wifi access point using the device name above
+  ap:
+
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device.
+captive_portal:
+
+web_server:
+  port: 80
+
+
+i2c:
+  sda: GPIO33
+  scl: GPIO34
+  scan: true
+  id: bus_a
+
+# Example configuration entry
+status_led:
+  pin: 
+    number: GPIO01
+    inverted: true
+
+# PWM Outputs (internal only)
+output:
+  - platform: ledc
+    pin: GPIO12
+    id: pwm_fan1
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO13
+    id: pwm_fan2
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO14
+    id: pwm_fan3
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO15
+    id: pwm_fan4
+    frequency: "25000 Hz"
+
+fan:
+  # Fan 1
+  - platform: speed
+    output: pwm_fan1
+    name: "Fan 1"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan1
+  # Fan 2
+  - platform: speed
+    output: pwm_fan2
+    name: "Fan 2"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan2
+  # Fan 3
+  - platform: speed
+    output: pwm_fan3
+    name: "Fan 3"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan3
+  # Fan 4
+  - platform: speed
+    output: pwm_fan4
+    name: "Fan 4"
+    id: fan4
+    restore_mode: "RESTORE_DEFAULT_ON"
+
+sensor:
+  # Temperature & Humidity Sensor
+  - platform: hdc1080
+    temperature:
+      name: "Temperature"
+    humidity:
+      name: "Humidity"
+    update_interval: 60s
+
+  # Fan 1 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO16  # Connect to any input PIN on the ESP
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan1_speed
+    name: Fan 1 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5  
+  # Fan 2 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO17  # Connect to any input PIN on the ESP
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan2_speed
+    name: Fan 2 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5 
+  # Fan 3 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO18  # Connect to any input PIN on the ESP
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan3_speed
+    name: Fan 3 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5 
+  # Fan 4 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO21  # Connect to any input PIN on the ESP
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan4_speed
+    name: Fan 4 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5 
+
+binary_sensor:
+  # USR1 Button
+  - platform: gpio
+    pin: 
+      number: GPIO38
+      inverted: True
+    name: "USR1"
+    id: btn_usr1
+  # USR2 Button
+  - platform: gpio
+    pin: 
+      number: GPIO37
+      inverted: True
+    name: "USR2"
+    id: btn_usr2
+  # USR3 Button
+  - platform: gpio
+    pin: 
+      number: GPIO36
+      inverted: True
+    name: "USR3"
+    id: btn_usr3
+
+light:
+  - platform: neopixelbus
+    variant: WS2812
+    pin: GPIO42
+    num_leds: 5
+    name: "NeoPixel Light"
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:
