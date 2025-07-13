@@ -2,146 +2,79 @@
 
 ESP32-based PWM Fancontroller with integrated Temperature & Humdity Sensor.
 
-## Installation
+## Specification
 
-Rev 1.0 (ESP32): https://zeroflow.github.io/esphome-fancontroller/
-Rev 2.0 (ESP32-S2): Follow Guide below
-
-## Specs
-
-* 12V DC Barrel Input (5.5x2.1mm)
-* 4x PWM Fan Output
-* Integrated HDC1080 Temperature & Humidity Sensor
-* [Qwiic](https://www.sparkfun.com/qwiic) Expansion Port
-* I2C Expansion Port (2.54mm Header)
-* Neopixel Port
-* 3 User Buttons
-* GPIO Expansion Pads (2.54mm SMD Header)
+* Basics
+  * 12V DC Barrel Input (5.5x2.1mm)
+  * 4x PWM Fan Output
+* Sensors & IO
+  * Integrated HDC1080 Temperature & Humidity Sensor
+  * [Qwiic](https://www.sparkfun.com/qwiic) Expansion Port
+  * I2C Expansion Port (2.54mm Header)
+  * Neopixel Port
+  * 3 User Buttons
+  * GPIO Expansion Pads (2.54mm SMD Header)
 
 ![view of the board](static/board_rev3.0.jpg)
 
 ## 3D printed case
 
-TBD
+[Wifi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) on Printables.com
 
 ## Tindie
 
 Buy boards & cases at https://www.tindie.com/products/zeroflow/esp32-fancontroller/
 
-## ESP32-S2 (Rev 3.0)
+## Installation
 
-### Pin Configuration
+> **Warning**
+> This section is a work in progress. If you need assistance, please contact me on Github or on Tindie.
 
-Pin    | Usage
------- | ------
-GPIO0  | Boot Button, Push to enter flashing mode
-GPIO1  | Builtin LED, Low=On
-GPIO2  | Expansion Header (Bottom)
-GPIO3  | Expansion Header (Bottom)
-GPIO4  | Expansion Header (Bottom)
-GPIO5  | Expansion Header (Bottom)
-GPIO6  | Expansion Header (Bottom)
-GPIO7  | Expansion Header (Bottom)
-GPIO8  | Expansion Header (Bottom)
-GPIO9  | Expansion Header (Bottom)
-GPIO10  | Expansion Header (Bottom)
-GPIO11  | Expansion Header (Bottom)
-GPIO12 | Fan 1 PWM
-GPIO13 | Fan 2 PWM
-GPIO14 | Fan 3 PWM
-GPIO15 | Fan 4 PWM
-GPIO16 | Fan 1 Speed Sense
-GPIO17 | Fan 2 Speed Sense
-GPIO18 | Fan 3 Speed Sense
-GPIO21 | Fan 4 Speed Sense
-GPIO33 | I2C SDA
-GPIO34 | I2C SCL
-GPIO35 | I2C INT
-GPIO36 | USR3
-GPIO37 | USR2
-GPIO38 | USR2
-GPIO42 | Neopixel
+The boards come pre-flashed with an ESPHome factory image.
+There are many ways to install your own firmware, but the most common will be USB, OTA (upload) or OTA (Adoption).
 
-## ESP32-S2 (Rev 2.0)
+Always pick the correct configuration for your board revision.
+To distinguish the boards inside the case, the following scheme can be used:
 
-### Pin Configuration
+Revision | Left       | Right   | Details
+---- | -------------- | ------- | ----
+1.0  | DC 12V         | nothing | [Link](/static/fancontroller-rev1.0.md)
+2.0  | DC 12V         | USB-C   | [Link](/static/fancontroller-rev2.0.md)
+3.0  | DC 12V & QWIIC | USB-C   | [Link](/static/fancontroller-rev3.0.md)
 
-Pin    | Usage
------- | ------
-GPIO0  | Boot Button, Push to enter flashing mode
-GPIO1  | Builtin LED, Low=On
-GPIO12 | Fan 1 PWM
-GPIO13 | Fan 1 Sense
-GPIO14 | Fan 2 PWM
-GPIO15 | Fan 2 Speed Sense
-GPIO16 | Fan 3 PWM
-GPIO17 | Fan 3 Speed Sense
-GPIO18 | Fan 4 PWM
-GPIO21 | Fan 4 Speed Sense
+### Preparation of Config
 
-### I2C extension port
+* Create a new device in your ESPHome installation
+* Merge content of template (e.g. [fancontroller-rev3.0-esp32s2.yaml](/fancontroller-rev3.0-esp32s2.yaml)) into your generated config, preserving the generated header
+  * Keep your generated key inside ```api:``` and ```ota:```
 
-The board offers an I2C extension port above Fan 4.
+### USB Installation
 
-Nr. | Pin -| Description
-----|------|------------
-1   | GND  | 
-2   | INT  | GPIO 35
-3   | SCL  | GPIO 34, 4.7k PU
-4   | SDA  | GPIO 33, 4.7k PU
-5   | +3V3 |
+* Create the config as noted above
+* Connect your board to the computer
+* Hold down Boot and press Reset to go into Download Mode
+* Click Install -> Plug into this computer 
+* Select your ESP32S2's COM port
+* Click "Connect"
 
-## ESP32 (Rev 1.0)
+### OTA - Upload Installation
 
-### Pin Configuration
+* Create the config as noted above
+* Click Install -> Manual Download
+* The firmware will now be built
+* Download "OTA format"
+* Connect the board to power (USB-C or DC 12V)
+* A new WiFi network will be visible (e.g. ```fancontroller-r3-abcdef```)
+* Connect to this WiFi network
+* Upload the file you just downloaded at the bottom of the page under "OTA"
+* The board will now reboot and be visible in ESPHome
 
-Pin    | Usage
------- | ------
-GPIO0  | Boot Button, Push to enter flashing mode
-GPIO1  | Serial TX
-GPIO2  | Builtin LED, Low=On
-GPIO3  | Serial RX
-GPIO4  | Fan 4 PWM
-GPIO5  | Unused (strapping pin)
-GPIO12 | Unused (strapping pin)
-GPIO13 | Fan 3 Speed Sense
-GPIO14 | Unused (outputs PWM at boot)
-GPIO15 | Unused (outputs PWM at boot, strapping pin)
-GPIO16 | Fan 4 Speed Sense
-GPIO17 | I2C SDA (HDC1080 + expansion header)
-GPIO18 | I2C SCL (HDC1080 + expansion header)
-GPIO19 | I2C INT (expansion header)
-GPIO21 | User Button 3
-GPIO22 | User Button 2
-GPIO23 | User Button 1
-GPIO25 | Fan 2 PWM
-GPIO26 | Fan 2 Speed Sense
-GPIO27 | Fan 3 PWM
-GPIO32 | Fan 1 PWM
-GPIO33 | Fan 1 Sense
-GPIO34 | External Input 1
-GPIO35 | External Input 2
-GPIO36 | Unused
-GPIO39 | Unused
+### OTA - Adoption Installation
 
-### I2C extension port
-
-The board offers an I2C extension port above Fan 4.
-
-Nr. | Pin -| Description
-----|------|------------
-1   | GND  | 
-2   | INT  | GPIO 19
-3   | SCL  | GPIO 18, 4.7k PU
-4   | SDA  | GPIO 17, 4.7k PU
-5   | +3V3 |
-
-### External Input
-
-The board offers two external inputs, e.g. for a door intrusion alarm or a 100% power switch.
-
-Nr. | Pin -| Description
-----|------|------------
-1   | GND  | 
-2   | IN2  | 10k PU
-3   | IN1  | 10k PU
+* Connect the board to power (USB-C or DC 12V)
+* A new WiFi network will be visible (e.g. ```fancontroller-r3-abcdef```)
+* Connect to this WiFi network
+* Select your WiFi and input credentials
+* Your board will now show up in ESPHome
+* Update the blank configuration with the steps of "Preparation of Config" above
+* Upload via Install -> Wirelessly

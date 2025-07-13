@@ -25,10 +25,13 @@ logger:
 
 # API is a requirement of the dashboard import.
 api:
+#  encryption:
+#    key: "..."  # <----------- Merge your generated config here
 
 # OTA is required for Over-the-Air updating
 ota:
   - platform: esphome
+#     password: "..."  # <----------- Merge your generated config here
 
 wifi:
   ssid: !secret wifi_ssid
