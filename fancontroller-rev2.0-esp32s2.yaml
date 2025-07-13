@@ -15,17 +15,19 @@ logger:
 
 # API is a requirement of the dashboard import.
 api:
-#  encryption:
-#    key: "..."  # <----------- Merge your generated config here
+# encryption:
+#   key: "..."  # <----------- Merge your generated config here
 
 # OTA is required for Over-the-Air updating
-ota:
-  - platform: esphome
-#     password: "..."  # <----------- Merge your generated config here
+#ota: <----------- Enable this
+# - platform: esphome # <----------- Merge your generated config here
+#   password: "..."   # <----------- Merge your generated config here
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+# ssid: !secret wifi_ssid # <----------- Enable this
+# password: !secret wifi_password # <----------- Enable this
+
+ap: # <----------- Remove this if not needed
 
 # In combination with the `ap` this allows the user
 # to provision wifi credentials to the device.
