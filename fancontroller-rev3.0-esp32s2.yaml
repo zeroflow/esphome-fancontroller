@@ -37,7 +37,7 @@ wifi:
 # ssid: !secret wifi_ssid # <----------- Enable this
 # password: !secret wifi_password # <----------- Enable this
 
-ap: # <----------- Remove this if not needed
+  ap: # <----------- Remove this if not needed
 
   # Status LED: Wifi connected -> turn on, then off after 60s
   on_connect:
