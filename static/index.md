@@ -11,7 +11,7 @@ Specs
 * 3 User Buttons
 * 2 External Digital Inputs (Pull-Up included)
 
-![view of the board](board.jpg)
+![view of the board](board_rev3.0.jpg)
 
 # Installation
 
