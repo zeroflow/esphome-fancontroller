@@ -23,6 +23,9 @@ esp32:
 # To be able to get logs from the device via serial and api.
 logger:
 
+# API is a requirement of the dashboard import.
+api:
+
 # OTA is required for Over-the-Air updating
 ota:
   - platform: esphome
