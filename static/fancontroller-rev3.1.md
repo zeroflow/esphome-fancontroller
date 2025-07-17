@@ -31,7 +31,7 @@
 Pin    | Usage
 ------ | ------
 GPIO0  | Boot Button, Push to enter flashing mode
-GPIO1  | Builtin LED, Low=On
+GPIO1  | Builtin LEDs, SK6805
 GPIO2  | Expansion Header (Bottom)
 GPIO3  | Expansion Header (Bottom)
 GPIO4  | Expansion Header (Bottom)
