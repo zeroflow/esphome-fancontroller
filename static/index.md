@@ -8,7 +8,7 @@ General specifications for all revisions
 * 4x PWM Fan Output
 * Integrated HDC1080 Temperature & Humidity Sensor
 
-![view of the board](board_rev3.0.jpg)
+![view of the board](board_rev3.1.jpg)
 
 ## Revision history
 
