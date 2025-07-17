@@ -16,6 +16,7 @@ jobs:
         fancontroller-rev1.0-esp32.factory.yaml
         fancontroller-rev2.0-esp32s2.factory.yaml
         fancontroller-rev3.0-esp32s2.factory.yaml
+        fancontroller-rev3.1-esp32s2.factory.yaml
       esphome-version: 2025.4.0
       combined-name: fancontroller-esp32
 
