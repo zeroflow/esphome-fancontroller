@@ -58,7 +58,7 @@ GPIO39 | unused
 GPIO40 | unused
 GPIO41 | unused
 GPIO42 | unused
-GPIO45 | unused (strappping)
+GPIO45 | unused (strapping)
 GPIO46 | unused (strapping)
 
 ### I2C extension port
