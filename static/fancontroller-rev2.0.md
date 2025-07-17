@@ -17,7 +17,7 @@
 
 ## Example Config File
 
-[Base Config - 4 fans](/fancontroller-rev2.0-esp32.yaml)
+[Base Config - 4 fans](https://github.com/zeroflow/esphome-fancontroller/blob/main/fancontroller-rev2.0-esp32s2.yaml)
 
 ## Board
 
