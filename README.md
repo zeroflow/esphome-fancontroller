@@ -39,10 +39,10 @@ To distinguish the boards inside the case, the following scheme can be used:
 
 Revision | Left                      | Fan Ports             | Right   | Details
 ---- | ----------------------------- | --------------------- | ------- | ----
-1.0  | DC 12V                        | Fans                  | nothing | [Link](/static/fancontroller-rev1.0.md)
-2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](/static/fancontroller-rev2.0.md)
-3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](/static/fancontroller-rev3.0.md)
-3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](/static/fancontroller-rev3.1.md)
+1.0  | DC 12V                        | Fans                  | nothing | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev1.0.html)
+2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev2.0.html)
+3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.0.html)
+3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.1.html)
 
 ### Preparation of Config
 
