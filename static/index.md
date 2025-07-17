@@ -24,11 +24,17 @@ Change of main controller from ESP32 to ESP32S2 to allow flashing via USB-C with
 
 [Details](fancontroller-rev2.0.md)
 
-### 3.0 - ESP32S2 & Resiliency
+### 3.0 - Resiliency
 
 Changes for signal & resiliency (fan ports), QWIIC I2C port, 5V Neopixel port, and SMD expansion header for unused pins.
 
 [Details](fancontroller-rev3.0.md)
+
+### 3.1 - RGB & Resiliency
+
+Changes for signal & resiliency (USB), RGB LEDs (SK6805) for the board and for each fan port
+
+[Details](fancontroller-rev3.1.md)
 
 # Installation
 

@@ -1,0 +1,373 @@
+esphome:
+  name: fancontroller-r3-1
+  friendly_name: fancontroller-r3-1
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+
+  on_boot:
+    then:
+      # Boot: Status LED blue blinking
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 0.0, 1.0); // blue
+          call.set_brightness(0.5);
+          call.set_effect("pulse");
+          call.perform();
+      # Initialize fans to 50% on first boot
+      - if:
+          condition:
+            lambda: 'return !id(init_done);'
+          then:
+            - delay: 
+                5s
+            - fan.turn_on:
+                id: fan1
+                speed: 50
+            - fan.turn_on:
+                id: fan2
+                speed: 50
+            - fan.turn_on:
+                id: fan3
+                speed: 50
+            - fan.turn_on:
+                id: fan4
+                speed: 50
+            - lambda: 'id(init_done) = true;'
+
+globals:
+  # Init on first boot
+  - id: init_done
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+# encryption:
+#   key: "..."  # <----------- Merge your generated config here
+
+# OTA is required for Over-the-Air updating
+#ota: <----------- Enable this
+# - platform: esphome # <----------- Merge your generated config here
+#   password: "..."   # <----------- Merge your generated config here
+
+wifi:
+# ssid: !secret wifi_ssid # <----------- Enable this
+# password: !secret wifi_password # <----------- Enable this
+
+  ap: # <----------- Remove this if not needed
+
+  on_connect: 
+    then:
+      # Status LED -> Green
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 1.0, 0.0); // green
+          call.set_brightness(0.5);
+          call.set_effect("none");
+          call.perform();
+      # Status LED -> Lower green after 1 minute
+      - delay: 60s
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 1.0, 0.0); // green
+          call.set_brightness(0.1);
+          call.set_effect("none");
+          call.perform();
+
+  on_disconnect: 
+    then:
+      # Red blinking led indicating an error with wifi
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(1.0, 0.0, 0.0); // red
+          call.set_brightness(0.25);
+          call.set_effect("pulse");
+          call.perform();
+
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device.
+captive_portal:
+
+web_server:
+  port: 80
+
+# I2C for HDC1080 onboard & QWIIC connector
+i2c:
+  sda: GPIO33
+  scl: GPIO34
+  scan: true
+  id: bus_a
+
+# PWM Outputs (internal only)
+output:
+  - platform: ledc
+    pin: GPIO12
+    id: pwm_fan1
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO13
+    id: pwm_fan2
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO14
+    id: pwm_fan3
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO15
+    id: pwm_fan4
+    frequency: "25000 Hz"
+
+fan:
+  # Fan 1
+  - platform: speed
+    output: pwm_fan1
+    name: "Fan 1"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan1
+
+  # Fan 2
+  - platform: speed
+    output: pwm_fan2
+    name: "Fan 2"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan2
+
+  # Fan 3
+  - platform: speed
+    output: pwm_fan3
+    name: "Fan 3"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan3
+    
+  # Fan 4
+  - platform: speed
+    output: pwm_fan4
+    name: "Fan 4"
+    id: fan4
+    restore_mode: "RESTORE_DEFAULT_ON"
+
+sensor:
+  # Temperature & Humidity Sensor
+  - platform: hdc1080
+    temperature:
+      name: "Temperature"
+    humidity:
+      name: "Humidity"
+    update_interval: 60s
+
+  # Fan 1 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO16
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan1_speed
+    name: Fan 1 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5 # Fans output 2 pulses per revolution
+    update_interval: 10s
+    on_value: 
+      then:
+        # Individual Status LED based on RPM
+        - lambda: |-
+            float t = x / 3500.0 ; // map 0..2500 to 0..1
+            auto call = id(fan1_led).turn_on();
+            call.set_rgb(1.0 - t, t, 0.0);
+            call.set_brightness(0.5);
+            call.perform(); 
+
+  # Fan 2 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO17
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan2_speed
+    name: Fan 2 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5 # Fans output 2 pulses per revolution
+    update_interval: 10s
+    on_value: 
+      then:
+        # Individual Status LED based on RPM
+        - lambda: |-
+            float t = x / 3500.0 ; // map 0..2500 to 0..1
+            auto call = id(fan2_led).turn_on();
+            call.set_rgb(1.0 - t, t, 0.0);
+            call.set_brightness(0.5);
+            call.perform(); 
+
+  # Fan 3 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO18
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan3_speed
+    name: Fan 3 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5 # Fans output 2 pulses per revolution
+    update_interval: 10s
+    on_value: 
+      then:
+        # Individual Status LED based on RPM
+        - lambda: |-
+            float t = x / 3500.0 ; // map 0..2500 to 0..1
+            auto call = id(fan3_led).turn_on();
+            call.set_rgb(1.0 - t, t, 0.0);
+            call.set_brightness(0.5);
+            call.perform(); 
+
+  # Fan 4 Sense
+  - platform: pulse_counter
+    pin: 
+      number: GPIO21
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan4_speed
+    name: Fan 4 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5 # Fans output 2 pulses per revolution
+    update_interval: 10s
+    on_value: 
+      then:
+        # Individual Status LED based on RPM
+        - lambda: |-
+            float t = x / 3500.0 ; // map 0..2500 to 0..1
+            auto call = id(fan4_led).turn_on();
+            call.set_rgb(1.0 - t, t, 0.0);
+            call.set_brightness(0.5);
+            call.perform(); 
+
+binary_sensor:
+  # USR1 Button
+  - platform: gpio
+    pin: 
+      number: GPIO38
+      inverted: True
+    name: "USR1"
+    id: btn_usr1
+  # USR2 Button
+  - platform: gpio
+    pin: 
+      number: GPIO37
+      inverted: True
+    name: "USR2"
+    id: btn_usr2
+  # USR3 Button
+  - platform: gpio
+    pin: 
+      number: GPIO36
+      inverted: True
+    name: "USR3"
+    id: btn_usr3
+
+light:
+  # Status LED (Bus)
+  # Not meant to be directly controlled, broken down to individual
+  # partitions for status and each LED.
+  - platform: neopixelbus
+    name: "Status LEDs"
+    variant: WS2812
+    pin: GPIO01
+    num_leds: 5
+    id: status_leds
+    method:
+      type: esp32_i2s
+      bus: 0
+    internal: True
+
+  # Board Status LED next to power input
+  - platform: partition
+    name: "Board Status"
+    id: status_led
+    internal: True
+    segments: 
+      - id: status_leds
+        from: 0
+        to: 0
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:
+
+  # Fan 1 LED
+  - platform: partition
+    name: "Fan 1 Status"
+    id: fan1_led
+    internal: True
+    segments: 
+      - id: status_leds
+        from: 1
+        to: 1
+  # Fan 2 LED
+  - platform: partition
+    name: "Fan 2 Status"
+    id: fan2_led
+    internal: True
+    segments: 
+      - id: status_leds
+        from: 2
+        to: 2
+  # Fan 3 LED
+  - platform: partition
+    name: "Fan 3 Status"
+    id: fan3_led
+    internal: True
+    segments: 
+      - id: status_leds
+        from: 3
+        to: 3
+  # Fan 4 LED
+  - platform: partition
+    name: "Fan 4 Status"
+    id: fan4_led
+    internal: True
+    segments: 
+      - id: status_leds
+        from: 4
+        to: 4
+
+  # Neopixel LED Header
+  - platform: neopixelbus
+    variant: WS2812
+    pin: GPIO42
+    num_leds: 5 # default, increase if needed
+    name: "NeoPixel Light"
+    method:
+      type: esp32_rmt
+      channel: 0
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:

@@ -61,6 +61,10 @@ wifi:
           call.set_effect("Fast Pulse");
           call.perform();
 
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device.
+captive_portal:
+
 web_server:
   port: 80
 
@@ -104,18 +108,21 @@ fan:
     name: "Fan 1"
     restore_mode: "RESTORE_DEFAULT_ON"
     id: fan1
+
   # Fan 2
   - platform: speed
     output: pwm_fan2
     name: "Fan 2"
     restore_mode: "RESTORE_DEFAULT_ON"
     id: fan2
+
   # Fan 3
   - platform: speed
     output: pwm_fan3
     name: "Fan 3"
     restore_mode: "RESTORE_DEFAULT_ON"
     id: fan3
+
   # Fan 4
   - platform: speed
     output: pwm_fan4
@@ -135,47 +142,47 @@ sensor:
   # Fan 1 Sense
   - platform: pulse_counter
     pin: 
-      number: GPIO16  # Connect to any input PIN on the ESP
+      number: GPIO16
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan1_speed
     name: Fan 1 Speed
     accuracy_decimals: 0
     filters:
-      - multiply: 0.5  
+      - multiply: 0.5 # Fans output 2 pulses per revolution
   # Fan 2 Sense
   - platform: pulse_counter
     pin: 
-      number: GPIO17  # Connect to any input PIN on the ESP
+      number: GPIO17
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan2_speed
     name: Fan 2 Speed
     accuracy_decimals: 0
     filters:
-      - multiply: 0.5 
+      - multiply: 0.5 # Fans output 2 pulses per revolution
   # Fan 3 Sense
   - platform: pulse_counter
     pin: 
-      number: GPIO18  # Connect to any input PIN on the ESP
+      number: GPIO18
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan3_speed
     name: Fan 3 Speed
     accuracy_decimals: 0
     filters:
-      - multiply: 0.5 
+      - multiply: 0.5 # Fans output 2 pulses per revolution
   # Fan 4 Sense
   - platform: pulse_counter
     pin: 
-      number: GPIO21  # Connect to any input PIN on the ESP
+      number: GPIO21
       mode: INPUT_PULLUP
     unit_of_measurement: 'RPM'
     id: fan4_speed
     name: Fan 4 Speed
     accuracy_decimals: 0
     filters:
-      - multiply: 0.5 
+      - multiply: 0.5 # Fans output 2 pulses per revolution
 
 binary_sensor:
   # USR1 Button

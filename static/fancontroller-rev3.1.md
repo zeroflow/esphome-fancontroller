@@ -1,4 +1,4 @@
-# Fancontroller Rev 3.0
+# Fancontroller Rev 3.1
 
 ## Description
 
@@ -9,7 +9,7 @@
   * USB-C port for flashing
   * 4x FAN PWM Header
     * Buffering for improved signal integrity and resilience 
-  * Status LED (red)
+  * Status LEDs (SK6805) for board & each fan connector
   * HDC1080 Temperature & Humidity sensor
 * IO
   * Reset / Boot Buttons
@@ -20,11 +20,11 @@
 
 ## Example Config File
 
-[Base Config - 4 fans](/fancontroller-rev3.0-esp32.yaml)
+[Base Config - 4 fans](/fancontroller-rev3.1-esp32.yaml)
 
 ## Board
 
-![view of the board](board_rev3.0.jpg)
+![view of the board](board_rev3.1.jpg)
 
 ## ESP32S2 Pin Assignment
 
