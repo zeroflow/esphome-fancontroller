@@ -177,15 +177,18 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    on_value: 
-      then:
-        # Individual Status LED based on RPM
-        - lambda: |-
-            float t = x / 3500.0 ; // map 0..2500 to 0..1
-            auto call = id(fan1_led).turn_on();
-            call.set_rgb(1.0 - t, t, 0.0);
-            call.set_brightness(0.5);
-            call.perform(); 
+    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
+    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
+    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
+    # on_value: 
+    #   then:
+    #     # Individual Status LED based on RPM
+    #     - lambda: |-
+    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
+    #         auto call = id(fan1_led).turn_on();
+    #         call.set_rgb(1.0 - t, t, 0.0);
+    #         call.set_brightness(0.5);
+    #         call.perform(); 
 
   # Fan 2 Sense
   - platform: pulse_counter
@@ -199,15 +202,18 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    on_value: 
-      then:
-        # Individual Status LED based on RPM
-        - lambda: |-
-            float t = x / 3500.0 ; // map 0..2500 to 0..1
-            auto call = id(fan2_led).turn_on();
-            call.set_rgb(1.0 - t, t, 0.0);
-            call.set_brightness(0.5);
-            call.perform(); 
+    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
+    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
+    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
+    # on_value: 
+    #   then:
+    #     # Individual Status LED based on RPM
+    #     - lambda: |-
+    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
+    #         auto call = id(fan2_led).turn_on();
+    #         call.set_rgb(1.0 - t, t, 0.0);
+    #         call.set_brightness(0.5);
+    #         call.perform(); 
 
   # Fan 3 Sense
   - platform: pulse_counter
@@ -221,15 +227,18 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    on_value: 
-      then:
-        # Individual Status LED based on RPM
-        - lambda: |-
-            float t = x / 3500.0 ; // map 0..2500 to 0..1
-            auto call = id(fan3_led).turn_on();
-            call.set_rgb(1.0 - t, t, 0.0);
-            call.set_brightness(0.5);
-            call.perform(); 
+    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
+    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
+    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
+    # on_value: 
+    #   then:
+    #     # Individual Status LED based on RPM
+    #     - lambda: |-
+    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
+    #         auto call = id(fan3_led).turn_on();
+    #         call.set_rgb(1.0 - t, t, 0.0);
+    #         call.set_brightness(0.5);
+    #         call.perform(); 
 
   # Fan 4 Sense
   - platform: pulse_counter
@@ -243,15 +252,18 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    on_value: 
-      then:
-        # Individual Status LED based on RPM
-        - lambda: |-
-            float t = x / 3500.0 ; // map 0..2500 to 0..1
-            auto call = id(fan4_led).turn_on();
-            call.set_rgb(1.0 - t, t, 0.0);
-            call.set_brightness(0.5);
-            call.perform(); 
+    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
+    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
+    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
+    # on_value: 
+    #   then:
+    #     # Individual Status LED based on RPM
+    #     - lambda: |-
+    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
+    #         auto call = id(fan4_led).turn_on();
+    #         call.set_rgb(1.0 - t, t, 0.0);
+    #         call.set_brightness(0.5);
+    #         call.perform(); 
 
 binary_sensor:
   # USR1 Button
@@ -350,24 +362,26 @@ light:
         from: 4
         to: 4
 
-  # Neopixel LED Header
-  - platform: neopixelbus
-    variant: WS2812
-    pin: GPIO42
-    num_leds: 5 # default, increase if needed
-    name: "NeoPixel Light"
-    method:
-      type: esp32_rmt
-      channel: 0
-    effects:
-      - pulse:
-      - random:
-      - strobe:
-      - flicker:
-      - addressable_rainbow:
-      - addressable_color_wipe:
-      - addressable_scan:
-      - addressable_twinkle:
-      - addressable_random_twinkle:
-      - addressable_fireworks:
-      - addressable_flicker:
+  # # zeroflow, 18.08.2025: Disable due to problem with RMT driver and the used version of esp-idf in the arduino core.
+  # # See Issue #1
+  # # Neopixel LED Header
+  # - platform: neopixelbus
+  #   variant: WS2812
+  #   pin: GPIO42
+  #   num_leds: 5 # default, increase if needed
+  #   name: "NeoPixel Light"
+  #   method:
+  #     type: esp32_rmt
+  #     channel: 0
+  #   effects:
+  #     - pulse:
+  #     - random:
+  #     - strobe:
+  #     - flicker:
+  #     - addressable_rainbow:
+  #     - addressable_color_wipe:
+  #     - addressable_scan:
+  #     - addressable_twinkle:
+  #     - addressable_random_twinkle:
+  #     - addressable_fireworks:
+  #     - addressable_flicker:
