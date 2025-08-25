@@ -30,7 +30,7 @@ Changes for signal & resiliency (fan ports), QWIIC I2C port, 5V Neopixel port, a
 
 [Details](fancontroller-rev3.0.md)
 
-### 3.1 - RGB & Resiliency
+### 3.1 (latest) - RGB & Resiliency
 
 Changes for signal & resiliency (USB), RGB LEDs (SK6805) for the board and for each fan port
 
@@ -38,7 +38,7 @@ Changes for signal & resiliency (USB), RGB LEDs (SK6805) for the board and for e
 
 # Installation
 
-You can use the button below to install the pre-built firmware directly to your device via USB from the browser.
+You can use the button below to install the pre-built firmware for boards with revision 3.1 directly to your device via USB from the browser.
 
 <esp-web-install-button manifest="firmware/fancontroller-esp32.manifest.json"></esp-web-install-button>
 
