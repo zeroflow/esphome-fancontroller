@@ -21,6 +21,9 @@ jobs:
       max-parallel: 3
       matrix:
         file:
+          - fancontroller-rev1.0-esp32
+          - fancontroller-rev2.0-esp32s2
+          - fancontroller-rev3.0-esp32s2
           - fancontroller-rev3.1-esp32s2
         esphome-version:
           - stable
