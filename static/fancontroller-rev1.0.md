@@ -16,6 +16,10 @@
   * 2x External Input (100mil)
   * I2C Expansion Port (100mil, SCL, SDA & Int)
 
+## Generic Firmware Instalation
+
+<esp-web-install-button manifest="firmware/fancontroller-r1-0.manifest.json"></esp-web-install-button>
+
 ## Example Config File
 
 [Base Config - 4 fans](https://github.com/zeroflow/esphome-fancontroller/blob/main/fancontroller-rev1.0-esp32.yaml)
@@ -76,3 +80,5 @@ Nr. | Pin -| Description
 1   | GND  | 
 2   | IN2  | 10k Pull-Up
 3   | IN1  | 10k Pull-Up
+
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>

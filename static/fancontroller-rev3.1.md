@@ -18,6 +18,10 @@
   * I2C Expansion Port (100mil, SCL, SDA & Int)
   * Neopixel Port (5V, max. 2A total)
 
+## Generic Firmware Instalation
+
+<esp-web-install-button manifest="firmware/fancontroller-r3-1.manifest.json"></esp-web-install-button>
+
 ## Example Config File
 
 [Base Config - 4 fans](https://github.com/zeroflow/esphome-fancontroller/blob/main/fancontroller-rev3.1-esp32s2.yaml)
@@ -93,3 +97,5 @@ Nr. | Pin -| Description
 12  | I/O  | GPIO11
 13  | GND  | 
 14  | GND  | 
+
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>

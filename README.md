@@ -44,6 +44,10 @@ Revision | Left                      | Fan Ports             | Right   | Details
 3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.0.html)
 3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.1.html)
 
+### Installation of prebuilt config via Web-UI
+
+Controllers can be flashed with a default firmware via the [Installer on GitHub Pages](https://zeroflow.github.io/esphome-fancontroller/)
+
 ### Preparation of Config
 
 * Create a new device in your ESPHome installation

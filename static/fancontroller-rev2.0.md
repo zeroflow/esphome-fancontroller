@@ -15,6 +15,10 @@
   * 3x User Buttons
   * I2C Expansion Port (100mil, SCL, SDA & Int)
 
+## Generic Firmware Instalation
+
+<esp-web-install-button manifest="firmware/fancontroller-r2-0.manifest.json"></esp-web-install-button>
+
 ## Example Config File
 
 [Base Config - 4 fans](https://github.com/zeroflow/esphome-fancontroller/blob/main/fancontroller-rev2.0-esp32s2.yaml)
@@ -72,3 +76,5 @@ Nr. | Pin -| Description
 3   | SCL  | GPIO 34, 4.7k Pull-Up
 4   | SDA  | GPIO 33, 4.7k Pull-Up
 5   | +3V3 |
+
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
