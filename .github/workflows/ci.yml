@@ -5,10 +5,6 @@ on:
     paths:
       - '*.yaml'
       - '.github/workflows/ci.yml'
-  push:
-    paths:
-      - '*.yaml'
-      - '.github/workflows/ci.yml'
   schedule:
     - cron: '0 0 * * *'
 
