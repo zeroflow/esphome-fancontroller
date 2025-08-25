@@ -38,7 +38,7 @@ Changes for signal & resiliency (USB), RGB LEDs (SK6805) for the board and for e
 
 # Installation
 
-You can use the button below to install the pre-built firmware for boards with revision 3.1 directly to your device via USB from the browser.
+You can use the button below to install the pre-built firmware directly to your device via USB from the browser.
 
 <!-- Picker + Install button -->
 <label for="build-select">Firmware build:</label>
