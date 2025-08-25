@@ -223,10 +223,11 @@ light:
           update_interval: 2s
 
   # Neopixel
-  - platform: neopixelbus
-    variant: WS2812
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    chipset: WS2812
     pin: GPIO42
-    num_leds: 5
+    num_leds: 5 # default, increase if needed
     name: "NeoPixel Light"
     effects:
       - pulse:

@@ -47,6 +47,106 @@ esp32:
   framework:
     type: arduino
 
+interval:
+  - interval: 1s
+    then:
+      # Fan 1
+      - lambda: |-
+          // Read RPM
+          float rpm = id(fan1_speed).state;
+          if (isnan(rpm)) rpm = 0;
+
+          // clamp 0..2500
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+
+          // map rpm to 0..1
+          float f = rpm / 2500.0;
+
+          // interpolate: red -> green
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          int b = 0;
+
+          // set LED
+          auto led = id(fan1_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, b/255.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 2
+      - lambda: |-
+          // Read RPM
+          float rpm = id(fan2_speed).state;
+          if (isnan(rpm)) rpm = 0;
+
+          // clamp 0..2500
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+
+          // map rpm to 0..1
+          float f = rpm / 2500.0;
+
+          // interpolate: red -> green
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          int b = 0;
+
+          // set LED
+          auto led = id(fan2_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, b/255.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 3
+      - lambda: |-
+          // Read RPM
+          float rpm = id(fan3_speed).state;
+          if (isnan(rpm)) rpm = 0;
+
+          // clamp 0..2500
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+
+          // map rpm to 0..1
+          float f = rpm / 2500.0;
+
+          // interpolate: red -> green
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          int b = 0;
+
+          // set LED
+          auto led = id(fan3_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, b/255.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 4
+      - lambda: |-
+          // Read RPM
+          float rpm = id(fan4_speed).state;
+          if (isnan(rpm)) rpm = 0;
+
+          // clamp 0..2500
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+
+          // map rpm to 0..1
+          float f = rpm / 2500.0;
+
+          // interpolate: red -> green
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          int b = 0;
+
+          // set LED
+          auto led = id(fan4_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, b/255.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+
 # Enable logging
 logger:
 
@@ -177,18 +277,6 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
-    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
-    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
-    # on_value: 
-    #   then:
-    #     # Individual Status LED based on RPM
-    #     - lambda: |-
-    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
-    #         auto call = id(fan1_led).turn_on();
-    #         call.set_rgb(1.0 - t, t, 0.0);
-    #         call.set_brightness(0.5);
-    #         call.perform(); 
 
   # Fan 2 Sense
   - platform: pulse_counter
@@ -202,18 +290,6 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
-    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
-    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
-    # on_value: 
-    #   then:
-    #     # Individual Status LED based on RPM
-    #     - lambda: |-
-    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
-    #         auto call = id(fan2_led).turn_on();
-    #         call.set_rgb(1.0 - t, t, 0.0);
-    #         call.set_brightness(0.5);
-    #         call.perform(); 
 
   # Fan 3 Sense
   - platform: pulse_counter
@@ -227,18 +303,6 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
-    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
-    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
-    # on_value: 
-    #   then:
-    #     # Individual Status LED based on RPM
-    #     - lambda: |-
-    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
-    #         auto call = id(fan3_led).turn_on();
-    #         call.set_rgb(1.0 - t, t, 0.0);
-    #         call.set_brightness(0.5);
-    #         call.perform(); 
 
   # Fan 4 Sense
   - platform: pulse_counter
@@ -252,18 +316,6 @@ sensor:
     filters:
       - multiply: 0.5 # Fans output 2 pulses per revolution
     update_interval: 10s
-    # # zeroflow, 18.08.2025: Disable temporarily, since ESPHome 2025.7 seems to have moved this into
-    # # the interrupt context. Neopixel functions are not safe to be called in the interrupt context,
-    # # so this leads to a reset. Migrate to loop. Tracked in Issue #2
-    # on_value: 
-    #   then:
-    #     # Individual Status LED based on RPM
-    #     - lambda: |-
-    #         float t = x / 3500.0 ; // map 0..2500 to 0..1
-    #         auto call = id(fan4_led).turn_on();
-    #         call.set_rgb(1.0 - t, t, 0.0);
-    #         call.set_brightness(0.5);
-    #         call.perform(); 
 
 binary_sensor:
   # USR1 Button
@@ -292,15 +344,13 @@ light:
   # Status LED (Bus)
   # Not meant to be directly controlled, broken down to individual
   # partitions for status and each LED.
-  - platform: neopixelbus
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
     name: "Status LEDs"
-    variant: WS2812
+    chipset: WS2812
     pin: GPIO01
     num_leds: 5
     id: status_leds
-    method:
-      type: esp32_i2s
-      bus: 0
     internal: True
 
   # Board Status LED next to power input
@@ -308,6 +358,7 @@ light:
     name: "Board Status"
     id: status_led
     internal: True
+    default_transition_length: 0s
     segments: 
       - id: status_leds
         from: 0
@@ -330,6 +381,7 @@ light:
     name: "Fan 1 Status"
     id: fan1_led
     internal: True
+    default_transition_length: 0s
     segments: 
       - id: status_leds
         from: 1
@@ -339,6 +391,7 @@ light:
     name: "Fan 2 Status"
     id: fan2_led
     internal: True
+    default_transition_length: 0s
     segments: 
       - id: status_leds
         from: 2
@@ -348,6 +401,7 @@ light:
     name: "Fan 3 Status"
     id: fan3_led
     internal: True
+    default_transition_length: 0s
     segments: 
       - id: status_leds
         from: 3
@@ -357,31 +411,30 @@ light:
     name: "Fan 4 Status"
     id: fan4_led
     internal: True
+    default_transition_length: 0s
     segments: 
       - id: status_leds
         from: 4
         to: 4
 
-  # # zeroflow, 18.08.2025: Disable due to problem with RMT driver and the used version of esp-idf in the arduino core.
-  # # See Issue #1
-  # # Neopixel LED Header
-  # - platform: neopixelbus
-  #   variant: WS2812
-  #   pin: GPIO42
-  #   num_leds: 5 # default, increase if needed
-  #   name: "NeoPixel Light"
-  #   method:
-  #     type: esp32_rmt
-  #     channel: 0
-  #   effects:
-  #     - pulse:
-  #     - random:
-  #     - strobe:
-  #     - flicker:
-  #     - addressable_rainbow:
-  #     - addressable_color_wipe:
-  #     - addressable_scan:
-  #     - addressable_twinkle:
-  #     - addressable_random_twinkle:
-  #     - addressable_fireworks:
-  #     - addressable_flicker:
+  # Neopixel LED Header
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    chipset: WS2812
+    pin: GPIO42
+    num_leds: 5 # default, increase if needed
+    name: "NeoPixel Light"
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:
+
+    
