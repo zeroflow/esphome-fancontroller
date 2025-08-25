@@ -1,6 +1,6 @@
 esphome:
-  name: fancontroller-r3
-  friendly_name: fancontroller-r3
+  name: fancontroller-r3-0
+  friendly_name: fancontroller
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
   name_add_mac_suffix: true
