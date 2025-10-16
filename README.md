@@ -37,12 +37,13 @@ There are many ways to install your own firmware, but the most common will be US
 Always pick the correct configuration for your board revision.
 To distinguish the boards inside the case, the following scheme can be used:
 
-Revision | Left                      | Fan Ports             | Right   | Details
----- | ----------------------------- | --------------------- | ------- | ----
-1.0  | DC 12V                        | Fans                  | nothing | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev1.0.html)
-2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev2.0.html)
-3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.0.html)
-3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.1.html)
+Revision | Left                      | Fan Ports             | Right   | Details | Notes
+---- | ----------------------------- | --------------------- | ------- | ------- | ------
+1.0  | DC 12V                        | Fans                  | nothing | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev1.0.html) |
+2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev2.0.html) | 
+3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.0.html) |
+3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.1.html) |
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | TBD | Electrically identical to Rev 3.1
 
 ### Installation of prebuilt config via Web-UI
 
