@@ -133,9 +133,15 @@ As a standalone device, these are the measured power figures in different operat
 
 Mode | Power Draw
 ---- | ----------
-Active Wifi Transfer (e.g. OTA Upload) | 0.56W
-Wifi connected, LEDs showing status (one-colored) | 0.25W
+Active Wifi Transfer (e.g. OTA Upload) | 0.6W
+Wifi connected, power save mode deactivated (not default) | 0.52W
+```Default``` Wifi connected, LEDs showing status (one-colored) | 0.25W
 Wifi connected, LEDs off | 0.2W
+Deep Sleep | 0.07W
+
+Disabling Wifi while not in deep sleep does not reduce power consumption, as the default light power save mode already does a good job.
+
+These values have been measured via a DPS3005 power supply, therefore, their accuracy cannot be guranteed.
 
 ## Further updates
 
