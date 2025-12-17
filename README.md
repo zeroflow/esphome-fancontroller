@@ -126,6 +126,17 @@ Controllers can be flashed with a default firmware via the [Installer on GitHub 
 * If successful, the LEDs behind the fan ports will change to green.
 * The board will now connect to your wifi. Use your method of discovery to find the IP address, access the web UI and flash a new config via OTA upload.
 
+## Power Draw
+
+The power usage of the device is dominated by the fans.
+As a standalone device, these are the measured power figures in different operation modes.
+
+Mode | Power Draw
+---- | ----------
+Active Wifi Transfer (e.g. OTA Upload) | 0.56W
+Wifi connected, LEDs showing status (one-colored) | 0.25W
+Wifi connected, LEDs off | 0.2W
+
 ## Further updates
 
 After the initial programming, the board should become available in the ESPHome Web UI. If this is not the case, check for general network or mDNS issues. If the device correctly connects to your Wifi, you may be able to work around mDNS issues by manually specifying [manual_ip:](https://esphome.io/components/wifi.html) inside the wifi settings to manually point ESPHome to the correct IP address.
