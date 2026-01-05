@@ -24,7 +24,7 @@ ESP32-based PWM Fancontroller with integrated Temperature & Humdity Sensor.
 
 ## Tindie
 
-Buy boards & cases at https://www.tindie.com/products/zeroflow/esp32-fancontroller/
+Buy boards & cases on [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html)
 
 ## Installation
 
