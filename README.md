@@ -22,7 +22,7 @@ ESP32-based PWM Fancontroller with integrated Temperature & Humdity Sensor.
 
 [Wifi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) on Printables.com
 
-## Tindie
+## Purchase a board
 
 Buy boards & cases on [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html)
 
