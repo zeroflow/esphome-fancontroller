@@ -1,41 +1,65 @@
-# ESP32 Fancontroller
+# WiFi Fan Controller
 
-ESP32-based PWM Fancontroller with integrated Temperature & Humidity Sensor.
+**Smart fan control for your Home Assistant setup**
 
-## Specification
+A CE-certified, ESP32-based PWM fan controller designed for home server racks, media cabinets, and smart home projects. Control up to 4 fans with temperature-based automation, remote monitoring, and seamless Home Assistant integration.
 
-* Basics
+![WiFi Fan Controller Board](static/board_rev3.3_front.jpg)
+
+## Why This Fan Controller?
+
+**Intelligent Climate Control**: Automatically adjust fan speeds based on temperature and humidity readings from the integrated HDC1080 sensor. Turn fans off when equipment is idle, ramp up when things heat up.
+
+**Home Assistant Native**: Built on ESPHome for seamless integration with Home Assistant. Monitor temperatures, adjust fan speeds, and create automations directly from your smart home dashboard.
+
+**Hackable & Expandable**: Fully customizable ESPHome configuration with Qwiic and I2C expansion ports, NeoPixel output, user buttons, and GPIO breakouts. Add sensors, displays, or integrate with your existing projects.
+
+**Professional Quality**: CE certified hardware with RGB status LEDs showing system status at a glance. Standard 12V barrel jack power input works with commonly available power supplies.
+
+## Specifications
+
+* **Power**
   * 12V DC Barrel Input (5.5x2.1mm)
-  * 4x PWM Fan Output
-* Sensors & IO
+  * Low power operation: 0.25W typical, 0.07W deep sleep
+* **Fan Control**
+  * 4× PWM Fan Outputs with RPM monitoring
+  * Supports standard 12V 4-pin PWM fans
+* **Sensors & I/O**
   * Integrated HDC1080 Temperature & Humidity Sensor
-  * RGB Status LEDs (Board + Fans)
-  * [Qwiic](https://www.sparkfun.com/qwiic) Expansion Port
+  * RGB Status LEDs for board and fan ports (Rev 3.x)
+  * [Qwiic](https://www.sparkfun.com/qwiic) Expansion Port for easy sensor additions
   * I2C Expansion Port (2.54mm Header)
-  * Neopixel Port
-  * 3 User Buttons
+  * 5V NeoPixel Output Port
+  * 3 User Buttons for custom functions
   * GPIO Expansion Pads (2.54mm SMD Header)
+* **Connectivity**
+  * WiFi (ESP32/ESP32-S2)
+  * USB-C for programming and power (Rev 2.0+)
 
-![view of the board](static/board_rev3.3_front.jpg)
+## Get Your Board
 
-## 3D printed case
+**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35.
 
-[Wifi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) on Printables.com
+**DIY Case**: Print your own case using the [WiFi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) design on Printables.com.
 
-## Purchase a board
+## Quick Start
 
-Buy boards & cases on [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html)
+All boards come pre-flashed with an ESPHome factory image that's ready to use. You can either:
 
-## Installation
+1. **Use the pre-built firmware** - Connect to WiFi and start controlling fans immediately
+2. **Flash your own custom configuration** - Full ESPHome customization for advanced users
+3. **Use our hardware packages** - Import pre-configured hardware definitions into your ESPHome setup
 
-> **Warning**
-> This section is a work in progress. If you need assistance, please contact me on Github or on Tindie.
+### Installation Methods
 
-The boards come pre-flashed with an ESPHome factory image.
-There are many ways to install your own firmware, but the most common will be USB, OTA (upload) or OTA (Adoption).
+Choose the installation method that works best for you:
+- **Web Installer** (easiest) - Flash directly from your browser at [zeroflow.github.io/esphome-fancontroller](https://zeroflow.github.io/esphome-fancontroller/)
+- **USB Installation** - Program via USB-C with ESPHome (Rev 2.0+)
+- **OTA Updates** - Wireless updates after initial setup
 
-Always pick the correct configuration for your board revision.
-To distinguish the boards inside the case, the following scheme can be used:
+### Identifying Your Board Revision
+
+To choose the correct firmware, identify your board revision using the connectors:
 
 Revision | Left                      | Fan Ports             | Right   | Details | Notes
 ---- | ----------------------------- | --------------------- | ------- | ------- | ------
@@ -46,13 +70,19 @@ Revision | Left                      | Fan Ports             | Right   | Details
 3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.2.html) |
 3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.3.html) |
 
-### Installation of prebuilt config via Web-UI
+---
 
-Controllers can be flashed with a default firmware via the [Installer on GitHub Pages](https://zeroflow.github.io/esphome-fancontroller/)
+## Installation Guide
 
-### Using the ESPHome Package Configuration
+### Option 1: Web Installer (Recommended for Most Users)
 
-The easiest way to configure your fan controller is to use the pre-built hardware packages. This automatically includes all hardware-specific configuration for your board revision.
+The fastest way to get started. Flash pre-built firmware directly from your browser - no software installation required.
+
+**Visit the [Web Installer](https://zeroflow.github.io/esphome-fancontroller/)** and follow the on-screen instructions.
+
+### Option 2: ESPHome Hardware Packages
+
+For users who want to customize their configuration while keeping hardware setup simple. The hardware packages automatically configure all board-specific features for your revision.
 
 This works by adding the following lines to your esphome config:
 
@@ -62,7 +92,9 @@ packages:
   fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.3.yaml@main
 ```
 
-#### Create a new ESPHome configuration:
+#### Example Configuration
+
+Here's a complete example showing how to create a custom configuration using the hardware package:
 
 ```yaml
 # Import the hardware package for your board revision
@@ -106,22 +138,28 @@ captive_portal:
 - **Rev 3.0:** `hardware-rev-3.0.yaml` (ESP32-S2, esp32-s2-saola-1 board)
 - **Rev 3.1, 3.2, 3.3:** `hardware-rev-3.3.yaml` (ESP32-S2, esp32-s2-saola-1 board)
 
-#### What's included in the package:
+#### What's Included in Hardware Packages
 
-The hardware package automatically configures:
-- All 4 PWM fan outputs with speed control
-- Fan RPM monitoring for all 4 fans
+The hardware package automatically configures all board features:
+- 4× PWM fan outputs with speed control and RPM monitoring
 - HDC1080 temperature & humidity sensor
-- User buttons (USR1, USR2, USR3)
-- Status LEDs (Rev 3.x includes RGB LEDs)
-- NeoPixel output (Rev 3.x)
+- User buttons (USR1, USR2, USR3) for custom functions
+- Status LEDs (RGB on Rev 3.x)
+- NeoPixel output port (Rev 3.x)
 - WiFi signal strength sensor
+- All expansion ports and GPIO
 
-No manual merging required!
+No manual pin configuration needed - just import the package and customize your automations!
 
-### ESPHome Web Installation
+---
 
-* Create your own config as noted above
+## Advanced Installation Methods
+
+### Option 3: ESPHome Web Installation (Manual Build)
+
+For advanced users who want to build their own custom firmware.
+
+* Create your own configuration as described above
 * Click Install -> Manual Download
 * The firmware will now be built, this may take some time
 * Download "Factory format"
@@ -137,11 +175,11 @@ No manual merging required!
 * Wait for installation to finish
 * Press the reset button to boot into your software
 
-> If you want to see progress, press F12 for the developer menu and select the "Console" tab. ESPhome will output log messages there.
+> **Tip**: Press F12 to open the developer console and view detailed installation progress.
 
-### USB Installation
+### Option 4: USB Installation via ESPHome CLI
 
-> For USB Installation, you need to have esphome installed with a valid ssh certificate, as this is needed for WebSerial installation.
+Requires ESPHome CLI installed locally with valid SSL certificate for WebSerial communication.
 
 * Create your own config as noted above
 * Connect your board to the computer via USB-C
@@ -154,9 +192,9 @@ No manual merging required!
 * Wait for installation to finish
 * Press the reset button to boot into your software
 
-> If you want to see progress, press F12 for the developer menu and select the "Console" tab. ESPhome will output log messages there.
+> **Tip**: Press F12 to open the developer console and view detailed installation progress.
 
-### OTA - Upload Installation
+### Option 5: OTA Upload (Wireless Update)
 
 * Create your own config as noted above
 * Click Install -> Manual Download
@@ -172,9 +210,9 @@ No manual merging required!
 * Click "Update"
 * The board will now reboot and be visible in ESPHome
 
-### OTA - Adoption Installation
+### Option 6: OTA Adoption (Initial WiFi Setup)
 
-> This method is the most complicated one.
+Use this method to connect a factory-fresh board to your WiFi network before customizing.
 
 * Connect the board to power (USB-C or DC 12V)
 * The board will light up in default mode: Green Status LED, running LEDs at fan port
@@ -205,6 +243,27 @@ Disabling Wifi while not in deep sleep does not reduce power consumption, as the
 
 These values have been measured via a DPS3005 power supply, therefore, their accuracy cannot be guaranteed.
 
-## Further updates
+---
 
-After the initial programming, the board should become available in the ESPHome Web UI. If this is not the case, check for general network or mDNS issues. If the device correctly connects to your Wifi, you may be able to work around mDNS issues by manually specifying [manual_ip:](https://esphome.io/components/wifi.html) inside the wifi settings to manually point ESPHome to the correct IP address.
+## Ongoing Updates & Troubleshooting
+
+**Over-the-Air Updates**: After initial setup, your board will appear in the ESPHome dashboard for wireless updates. No need to connect USB again.
+
+**Troubleshooting Discovery Issues**: If your board doesn't appear in ESPHome after connecting to WiFi, check for mDNS issues on your network. You can work around this by manually specifying the board's IP address using the [manual_ip](https://esphome.io/components/wifi.html) configuration in your WiFi settings.
+
+**Need Help?** Open an issue on [GitHub](https://github.com/zeroflow/esphome-fancontroller/issues) or consult the ESPHome documentation.
+
+---
+
+## Resources
+
+- **Web Installer**: [zeroflow.github.io/esphome-fancontroller](https://zeroflow.github.io/esphome-fancontroller/)
+- **Purchase**: [Elecrow Store](https://www.elecrow.com/wifi-fancontroller1.html) - $35
+- **3D Printable Case**: [Printables.com](https://www.printables.com/model/987263-wifi-fancontroller-case)
+- **Hardware Packages**: Available in this repository under `hardware-rev-*.yaml`
+- **ESPHome Documentation**: [esphome.io](https://esphome.io/)
+- **Home Assistant**: [home-assistant.io](https://home-assistant.io/)
+
+## Contributing
+
+Found a bug or have a feature request? Open an issue or submit a pull request on [GitHub](https://github.com/zeroflow/esphome-fancontroller).
