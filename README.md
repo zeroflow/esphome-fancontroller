@@ -105,7 +105,6 @@ captive_portal:
 - **Rev 2.0:** `hardware-rev-2.0.yaml` (ESP32-S2, esp32-s2-saola-1 board)
 - **Rev 3.0:** `hardware-rev-3.0.yaml` (ESP32-S2, esp32-s2-saola-1 board)
 - **Rev 3.1, 3.2, 3.3:** `hardware-rev-3.3.yaml` (ESP32-S2, esp32-s2-saola-1 board)
-- **Latest:** `hardware.yaml` (always points to the latest stable revision)
 
 #### What's included in the package:
 
