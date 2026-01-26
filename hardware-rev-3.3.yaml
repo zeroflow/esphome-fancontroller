@@ -1,0 +1,19 @@
+# ESPHome Fan Controller Hardware Package - Revision 3.3
+# Hardware: ESP32-S2, esp32-s2-saola-1 board
+# This package contains all hardware-specific configuration
+#
+# Revision 3.3 is electrically compatible to Revision 3.1
+#
+# Usage (local):
+#   packages:
+#     fancontroller: !include hardware-rev-3.0.yaml
+#
+# Usage (GitHub):
+#   packages:
+#     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
+#
+# Required substitutions in your main config:
+#   - friendly_name: Device friendly name used in sensor names
+
+packages:
+  rev_3_1: !include hardware-rev-3.1.yaml

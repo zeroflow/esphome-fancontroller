@@ -1,0 +1,172 @@
+# ESPHome Fan Controller Hardware Package - Revision 1.0
+# Hardware: ESP32 (standard), esp32dev board
+# This package contains all hardware-specific configuration
+#
+# Usage (local):
+#   packages:
+#     fancontroller: !include hardware-rev-1.0.yaml
+#
+# Usage (GitHub):
+#   packages:
+#     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-1.0.yaml@main
+#
+# Required substitutions in your main config:
+#   - friendly_name: Device friendly name used in sensor names
+
+# I2C Bus
+i2c:
+  sda: GPIO17
+  scl: GPIO18
+  scan: true
+  id: bus_a
+
+# Status LED
+status_led:
+  pin:
+    number: GPIO02
+    inverted: true
+
+# PWM Outputs for fans
+output:
+  - platform: ledc
+    pin: GPIO32
+    id: pwm_fan1
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO25
+    id: pwm_fan2
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO27
+    id: pwm_fan3
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO04
+    id: pwm_fan4
+    frequency: "25000 Hz"
+
+# Fan entities
+fan:
+  - platform: speed
+    output: pwm_fan1
+    name: "Fan 1"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan1
+  - platform: speed
+    output: pwm_fan2
+    name: "Fan 2"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan2
+  - platform: speed
+    output: pwm_fan3
+    name: "Fan 3"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan3
+  - platform: speed
+    output: pwm_fan4
+    name: "Fan 4"
+    id: fan4
+    restore_mode: "RESTORE_DEFAULT_ON"
+
+# Sensors
+sensor:
+  # WiFi signal strength
+  - platform: wifi_signal
+    name: ${friendly_name} WiFi Strength
+    update_interval: 60s
+
+  # Temperature & Humidity Sensor
+  - platform: hdc1080
+    temperature:
+      name: "Temperature"
+      id: fancontroller_temperature
+    humidity:
+      name: "Humidity"
+      id: fancontroller_humidity
+    update_interval: 60s
+
+  # Fan 1 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO33
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan1_speed
+    name: Fan 1 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+
+  # Fan 2 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO26
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan2_speed
+    name: Fan 2 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+
+  # Fan 3 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO13
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan3_speed
+    name: Fan 3 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+
+  # Fan 4 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO16
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan4_speed
+    name: Fan 4 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+
+# Binary sensors (buttons and inputs)
+binary_sensor:
+  # USR1 Button
+  - platform: gpio
+    pin:
+      number: GPIO23
+      inverted: True
+    name: "Button USR1"
+    id: btn_usr1
+  # USR2 Button
+  - platform: gpio
+    pin:
+      number: GPIO22
+      inverted: True
+    name: "Button USR2"
+    id: btn_usr2
+  # USR3 Button
+  - platform: gpio
+    pin:
+      number: GPIO21
+      inverted: True
+    name: "Button USR3"
+    id: btn_usr3
+  # IN1
+  - platform: gpio
+    pin:
+      number: GPIO34
+      inverted: True
+    name: "IN1"
+    id: btn_in1
+  # IN2
+  - platform: gpio
+    pin:
+      number: GPIO35
+      inverted: True
+    name: "IN2"
+    id: btn_in2

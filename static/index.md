@@ -1,6 +1,6 @@
 # About
 
-A ESP32-based Fan Controller
+An ESP32-based Fan Controller
 
 General specifications for all revisions
 
@@ -41,12 +41,12 @@ Changes for signal & resiliency (fan ports), QWIIC I2C port, 5V Neopixel port, a
 
 [Board Details](fancontroller-rev3.0.md)
 
-### 3.1 (latest) - RGB & Resiliency
+### 3.1, 3.2, 3.3 - Latest Generation
 
-Changes for signal & resiliency (USB), RGB LEDs (SK6805) for the board and for each fan port
+RGB LEDs (SK6805) for board and fan port status, improved signal and USB resilience. Hardware revisions 3.2 and 3.3 include minor component upgrades.
 
 <esp-web-install-button manifest="firmware/fancontroller-r3-1.manifest.json"></esp-web-install-button>
 
-[Board Details](fancontroller-rev3.1.md)
+[Board Details Rev 3.1](fancontroller-rev3.1.md) | [Rev 3.2](fancontroller-rev3.2.md) | [Rev 3.3](fancontroller-rev3.3.md)
 
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>

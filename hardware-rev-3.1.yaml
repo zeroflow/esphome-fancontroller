@@ -1,0 +1,384 @@
+# ESPHome Fan Controller Hardware Package - Revision 3.1
+# Hardware: ESP32-S2, esp32-s2-saola-1 board
+# This package contains all hardware-specific configuration
+#
+# Usage (local):
+#   packages:
+#     fancontroller: !include hardware-rev-3.0.yaml
+#
+# Usage (GitHub):
+#   packages:
+#     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
+#
+# Required substitutions in your main config:
+#   - friendly_name: Device friendly name used in sensor names
+
+# Globals
+globals:
+  - id: init_done
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+
+# Boot sequence: Status LED blue blinking
+esphome:
+  on_boot:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 0.0, 1.0); // blue
+          call.set_brightness(0.5);
+          call.set_effect("pulse");
+          call.perform();
+      - if:
+          condition:
+            lambda: 'return !id(init_done);'
+          then:
+            - lambda: 'id(init_done) = true;'
+
+# WiFi status callbacks
+wifi:
+  on_connect:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 1.0, 0.0); // green
+          call.set_brightness(0.5);
+          call.set_effect("none");
+          call.perform();
+      - delay: 60s
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 1.0, 0.0); // green
+          call.set_brightness(0.1);
+          call.set_effect("none");
+          call.perform();
+
+  on_disconnect:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(1.0, 0.0, 0.0); // red
+          call.set_brightness(0.25);
+          call.set_effect("pulse");
+          call.perform();
+
+# I2C Bus
+i2c:
+  sda: GPIO33
+  scl: GPIO34
+  scan: true
+  id: bus_a
+
+# PWM Outputs for fans (internal only)
+output:
+  - platform: ledc
+    pin: GPIO12
+    id: pwm_fan1
+    frequency: "25000 Hz"
+    min_power: 5%
+    max_power: 100%
+  - platform: ledc
+    pin: GPIO13
+    id: pwm_fan2
+    frequency: "25000 Hz"
+    min_power: 5%
+    max_power: 100%
+  - platform: ledc
+    pin: GPIO14
+    id: pwm_fan3
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO15
+    id: pwm_fan4
+    frequency: "25000 Hz"
+
+# Fan entities
+fan:
+  # Fan 1
+  - platform: speed
+    output: pwm_fan1
+    name: "Fan 1"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan1
+    speed_count: 100
+  # Fan 2
+  - platform: speed
+    output: pwm_fan2
+    name: "Fan 2"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan2
+    speed_count: 100
+  # Fan 3
+  - platform: speed
+    output: pwm_fan3
+    name: "Fan 3"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan3
+    speed_count: 100
+  # Fan 4
+  - platform: speed
+    output: pwm_fan4
+    name: "Fan 4"
+    id: fan4
+    speed_count: 100
+    restore_mode: "RESTORE_DEFAULT_ON"
+
+# Sensors
+sensor:
+  # WiFi signal strength
+  - platform: wifi_signal
+    name: ${friendly_name} WiFi Strength
+    update_interval: 60s
+
+  # Temperature & Humidity Sensor
+  - platform: hdc1080
+    temperature:
+      name: "Temperature"
+      id: fancontroller_temperature
+    humidity:
+      name: "Humidity"
+      id: fancontroller_humidity
+
+  # Fan 1 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO16
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan1_speed
+    name: Fan 1 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+      - sliding_window_moving_average:
+          window_size: 12
+          send_every: 6
+    update_interval: 10s
+
+  # Fan 2 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO17
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan2_speed
+    name: Fan 2 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+      - sliding_window_moving_average:
+          window_size: 12
+          send_every: 6
+    update_interval: 10s
+
+  # Fan 3 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO18
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan3_speed
+    name: Fan 3 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+      - sliding_window_moving_average:
+          window_size: 12
+          send_every: 6
+    update_interval: 10s
+
+  # Fan 4 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO21
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan4_speed
+    name: Fan 4 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+      - sliding_window_moving_average:
+          window_size: 12
+          send_every: 6
+    update_interval: 10s
+
+# Binary sensors (buttons)
+binary_sensor:
+  # USR1 Button
+  - platform: gpio
+    pin:
+      number: GPIO38
+      inverted: True
+    name: "Button USR1"
+    id: btn_usr1
+  # USR2 Button
+  - platform: gpio
+    pin:
+      number: GPIO37
+      inverted: True
+    name: "Button USR2"
+    id: btn_usr2
+  # USR3 Button
+  - platform: gpio
+    pin:
+      number: GPIO36
+      inverted: True
+    name: "Button USR3"
+    id: btn_usr3
+
+# LED strips and status lights
+light:
+  # Status LED Bus (internal, not directly controlled)
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    name: "Status LEDs"
+    chipset: WS2812
+    pin: GPIO01
+    num_leds: 5
+    id: status_leds
+    internal: True
+
+  # Board Status LED
+  - platform: partition
+    name: "Board Status"
+    id: status_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 0
+        to: 0
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:
+
+  # Fan 1 Status LED
+  - platform: partition
+    name: "Fan 1 Status"
+    id: fan1_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 1
+        to: 1
+
+  # Fan 2 Status LED
+  - platform: partition
+    name: "Fan 2 Status"
+    id: fan2_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 2
+        to: 2
+
+  # Fan 3 Status LED
+  - platform: partition
+    name: "Fan 3 Status"
+    id: fan3_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 3
+        to: 3
+
+  # Fan 4 Status LED
+  - platform: partition
+    name: "Fan 4 Status"
+    id: fan4_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 4
+        to: 4
+
+  # External NeoPixel strip
+  - platform: fastled_clockless
+    chipset: WS2812
+    pin: GPIO42
+    num_leds: 5
+    rgb_order: GRB
+    name: "NeoPixel Light"
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:
+
+# Update fan status LEDs based on RPM
+interval:
+  - interval: 10s
+    then:
+      # Fan 1 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan1_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+          float f = rpm / 2500.0;
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan1_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 2 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan2_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+          float f = rpm / 2500.0;
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan2_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 3 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan3_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+          float f = rpm / 2500.0;
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan3_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 4 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan4_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > 2500) rpm = 2500;
+          float f = rpm / 2500.0;
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan4_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();

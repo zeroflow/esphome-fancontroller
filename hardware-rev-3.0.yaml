@@ -1,0 +1,234 @@
+# ESPHome Fan Controller Hardware Package - Revision 3.0
+# Hardware: ESP32-S2, esp32-s2-saola-1 board
+# This package contains all hardware-specific configuration
+#
+# Usage (local):
+#   packages:
+#     fancontroller: !include hardware-rev-3.0.yaml
+#
+# Usage (GitHub):
+#   packages:
+#     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
+#
+# Required substitutions in your main config:
+#   - friendly_name: Device friendly name used in sensor names
+
+# Boot sequence: Status LED slow pulse
+esphome:
+  on_boot:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_effect("Slow Pulse");
+          call.perform();
+
+# WiFi status callbacks
+wifi:
+  on_connect:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_brightness(1);
+          call.set_effect("none");
+          call.perform();
+      - delay: 60s
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.perform();
+
+  on_disconnect:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_brightness(1);
+          call.set_effect("Fast Pulse");
+          call.perform();
+
+# I2C Bus
+i2c:
+  sda: GPIO33
+  scl: GPIO34
+  scan: true
+  id: bus_a
+
+# PWM Outputs
+output:
+  # Status LED output
+  - id: status_led_out
+    platform: ledc
+    pin: GPIO01
+    frequency: 1000Hz
+    inverted: True
+
+  # Fan PWM outputs (internal only)
+  - platform: ledc
+    pin: GPIO12
+    id: pwm_fan1
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO13
+    id: pwm_fan2
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO14
+    id: pwm_fan3
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO15
+    id: pwm_fan4
+    frequency: "25000 Hz"
+
+# Fan entities
+fan:
+  # Fan 1
+  - platform: speed
+    output: pwm_fan1
+    name: "Fan 1"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan1
+
+  # Fan 2
+  - platform: speed
+    output: pwm_fan2
+    name: "Fan 2"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan2
+
+  # Fan 3
+  - platform: speed
+    output: pwm_fan3
+    name: "Fan 3"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan3
+
+  # Fan 4
+  - platform: speed
+    output: pwm_fan4
+    name: "Fan 4"
+    id: fan4
+    restore_mode: "RESTORE_DEFAULT_ON"
+
+# Sensors
+sensor:
+  # WiFi signal strength
+  - platform: wifi_signal
+    name: ${friendly_name} WiFi Strength
+    update_interval: 60s
+
+  # Temperature & Humidity Sensor
+  - platform: hdc1080
+    temperature:
+      name: "Temperature"
+      id: fancontroller_temperature
+    humidity:
+      name: "Humidity"
+      id: fancontroller_humidity
+    update_interval: 60s
+
+  # Fan 1 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO16
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan1_speed
+    name: Fan 1 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5  # Fans output 2 pulses per revolution
+
+  # Fan 2 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO17
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan2_speed
+    name: Fan 2 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5  # Fans output 2 pulses per revolution
+
+  # Fan 3 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO18
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan3_speed
+    name: Fan 3 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5  # Fans output 2 pulses per revolution
+
+  # Fan 4 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO21
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan4_speed
+    name: Fan 4 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5  # Fans output 2 pulses per revolution
+
+# Binary sensors (buttons)
+binary_sensor:
+  # USR1 Button
+  - platform: gpio
+    pin:
+      number: GPIO38
+      inverted: True
+    name: "Button USR1"
+    id: btn_usr1
+  # USR2 Button
+  - platform: gpio
+    pin:
+      number: GPIO37
+      inverted: True
+    name: "Button USR2"
+    id: btn_usr2
+  # USR3 Button
+  - platform: gpio
+    pin:
+      number: GPIO36
+      inverted: True
+    name: "Button USR3"
+    id: btn_usr3
+
+# LED strips and status lights
+light:
+  # Status LED
+  - platform: monochromatic
+    id: status_led
+    output: status_led_out
+    effects:
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 100ms
+          update_interval: 250ms
+      - pulse:
+          name: "Slow Pulse"
+          transition_length: 1s
+          update_interval: 2s
+
+  # External NeoPixel strip
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    chipset: WS2812
+    pin: GPIO42
+    num_leds: 5  # default, increase if needed
+    name: "NeoPixel Light"
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:

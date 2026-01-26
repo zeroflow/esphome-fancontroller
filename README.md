@@ -16,7 +16,7 @@ ESP32-based PWM Fancontroller with integrated Temperature & Humdity Sensor.
   * 3 User Buttons
   * GPIO Expansion Pads (2.54mm SMD Header)
 
-![view of the board](static/board_rev3.1.jpg)
+![view of the board](static/board_rev3.3_front.jpg)
 
 ## 3D printed case
 
@@ -43,19 +43,77 @@ Revision | Left                      | Fan Ports             | Right   | Details
 2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev2.0.html) | 
 3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.0.html) |
 3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.1.html) |
-3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | TBD | ESPHome config identically to Rev 3.1, internal changes
-3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | TBD | ESPHome config identically to Rev 3.1, internal changes
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.2html) |
+3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.3.html) |
 
 ### Installation of prebuilt config via Web-UI
 
 Controllers can be flashed with a default firmware via the [Installer on GitHub Pages](https://zeroflow.github.io/esphome-fancontroller/)
 
-### Preparation of Config
+### Using the ESPHome Package Configuration
 
-* Create a new device in your ESPHome installation
-* Merge content of template (e.g. [fancontroller-rev3.1-esp32s2.yaml](/fancontroller-rev3.1-esp32s2.yaml)) into your generated config, preserving the generated header
-  * Keep your generated key inside ```api:``` and ```ota:```
-  * Important sections for changes are denoted with ```<----------- Merge your generated config here```, ```<----------- Enable this``` or  ```<----------- Remove this if not needed```
+The easiest way to configure your fan controller is to use the pre-built hardware packages. This automatically includes all hardware-specific configuration for your board revision.
+
+#### Create a new ESPHome configuration:
+
+```yaml
+substitutions:
+  friendly_name: My Fan Controller
+
+# Import the hardware package for your board revision
+packages:
+  fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.3.yaml@main
+
+esphome:
+  name: my-fancontroller
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: esp32-s2-saola-1  # Use esp32dev for Rev 1.0
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+
+# Configure your WiFi
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot
+  ap: {}
+
+captive_portal:
+```
+
+#### Available hardware packages:
+
+- **Rev 1.0:** `hardware-rev-1.0.yaml` (ESP32, esp32dev board)
+- **Rev 2.0:** `hardware-rev-2.0.yaml` (ESP32-S2, esp32-s2-saola-1 board)
+- **Rev 3.0:** `hardware-rev-3.0.yaml` (ESP32-S2, esp32-s2-saola-1 board)
+- **Rev 3.1, 3.2, 3.3:** `hardware-rev-3.3.yaml` (ESP32-S2, esp32-s2-saola-1 board)
+- **Latest:** `hardware.yaml` (always points to the latest stable revision)
+
+#### What's included in the package:
+
+The hardware package automatically configures:
+- All 4 PWM fan outputs with speed control
+- Fan RPM monitoring for all 4 fans
+- HDC1080 temperature & humidity sensor
+- User buttons (USR1, USR2, USR3)
+- Status LEDs (Rev 3.x includes RGB LEDs)
+- NeoPixel output (Rev 3.x)
+- WiFi signal strength sensor
+
+No manual merging required!
 
 ### ESPHome Web Installation
 
