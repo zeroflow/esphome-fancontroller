@@ -9,9 +9,6 @@
 # Usage (GitHub):
 #   packages:
 #     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
-#
-# Required substitutions in your main config:
-#   - friendly_name: Device friendly name used in sensor names
 
 # Globals
 globals:
@@ -126,11 +123,6 @@ fan:
 
 # Sensors
 sensor:
-  # WiFi signal strength
-  - platform: wifi_signal
-    name: ${friendly_name} WiFi Strength
-    update_interval: 60s
-
   # Temperature & Humidity Sensor
   - platform: hdc1080
     temperature:

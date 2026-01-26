@@ -1,6 +1,6 @@
 # ESP32 Fancontroller
 
-ESP32-based PWM Fancontroller with integrated Temperature & Humdity Sensor.
+ESP32-based PWM Fancontroller with integrated Temperature & Humidity Sensor.
 
 ## Specification
 
@@ -43,7 +43,7 @@ Revision | Left                      | Fan Ports             | Right   | Details
 2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev2.0.html) | 
 3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.0.html) |
 3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.1.html) |
-3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.2html) |
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.2.html) |
 3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.3.html) |
 
 ### Installation of prebuilt config via Web-UI
@@ -54,19 +54,24 @@ Controllers can be flashed with a default firmware via the [Installer on GitHub 
 
 The easiest way to configure your fan controller is to use the pre-built hardware packages. This automatically includes all hardware-specific configuration for your board revision.
 
+This works by adding the following lines to your esphome config:
+
+```yaml
+# Import the hardware package for your board revision
+packages:
+  fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.3.yaml@main
+```
+
 #### Create a new ESPHome configuration:
 
 ```yaml
-substitutions:
-  friendly_name: My Fan Controller
-
 # Import the hardware package for your board revision
 packages:
   fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.3.yaml@main
 
 esphome:
   name: my-fancontroller
-  friendly_name: ${friendly_name}
+  friendly_name: My Fan Controller
 
 esp32:
   board: esp32-s2-saola-1  # Use esp32dev for Rev 1.0
@@ -199,7 +204,7 @@ Deep Sleep | 0.07W
 
 Disabling Wifi while not in deep sleep does not reduce power consumption, as the default light power save mode already does a good job.
 
-These values have been measured via a DPS3005 power supply, therefore, their accuracy cannot be guranteed.
+These values have been measured via a DPS3005 power supply, therefore, their accuracy cannot be guaranteed.
 
 ## Further updates
 
