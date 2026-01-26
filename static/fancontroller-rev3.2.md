@@ -28,7 +28,7 @@
 
 ## Board
 
-![view of the board](board_rev3.2_front.jpg)
+![view of the board](board_rev3.2_front.png)
 
 ## ESP32S2 Pin Assignment
 
