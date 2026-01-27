@@ -38,7 +38,7 @@ A CE-certified, ESP32-based PWM fan controller designed for home server racks, m
 
 ## Get Your Board
 
-**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35.
+**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35,99.
 
 **DIY Case**: Print your own case using the [WiFi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) design on Printables.com.
 
@@ -258,7 +258,7 @@ These values have been measured via a DPS3005 power supply, therefore, their acc
 ## Resources
 
 - **Web Installer**: [zeroflow.github.io/esphome-fancontroller](https://zeroflow.github.io/esphome-fancontroller/)
-- **Purchase**: [Elecrow Store](https://www.elecrow.com/wifi-fancontroller1.html) - $35
+- **Purchase**: [Elecrow Store](https://www.elecrow.com/wifi-fancontroller1.html) - $35,99
 - **3D Printable Case**: [Printables.com](https://www.printables.com/model/987263-wifi-fancontroller-case)
 - **Hardware Packages**: Available in this repository under `hardware-rev-*.yaml`
 - **ESPHome Documentation**: [esphome.io](https://esphome.io/)
