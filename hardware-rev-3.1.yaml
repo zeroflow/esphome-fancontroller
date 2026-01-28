@@ -294,26 +294,6 @@ light:
         from: 4
         to: 4
 
-  # External NeoPixel strip
-  - platform: fastled_clockless
-    chipset: WS2812
-    pin: GPIO42
-    num_leds: 5
-    rgb_order: GRB
-    name: "NeoPixel Light"
-    effects:
-      - pulse:
-      - random:
-      - strobe:
-      - flicker:
-      - addressable_rainbow:
-      - addressable_color_wipe:
-      - addressable_scan:
-      - addressable_twinkle:
-      - addressable_random_twinkle:
-      - addressable_fireworks:
-      - addressable_flicker:
-
 # Update fan status LEDs based on RPM
 interval:
   - interval: 10s

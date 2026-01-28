@@ -204,23 +204,3 @@ light:
           name: "Slow Pulse"
           transition_length: 1s
           update_interval: 2s
-
-  # External NeoPixel strip
-  - platform: esp32_rmt_led_strip
-    rgb_order: GRB
-    chipset: WS2812
-    pin: GPIO42
-    num_leds: 5  # default, increase if needed
-    name: "NeoPixel Light"
-    effects:
-      - pulse:
-      - random:
-      - strobe:
-      - flicker:
-      - addressable_rainbow:
-      - addressable_color_wipe:
-      - addressable_scan:
-      - addressable_twinkle:
-      - addressable_random_twinkle:
-      - addressable_fireworks:
-      - addressable_flicker:

@@ -18,6 +18,8 @@
   * I2C Expansion Port (100mil, SCL, SDA & Int)
   * Neopixel Port (5V, max. 2A total)
 
+> **_NOTE:_**  The neopixel port requires usage of the ```arduino``` framework, since GPIO42 requires use of the ```fastled_clockless``` platform, which is not supported on ```esp-idf```.
+
 ## Generic Firmware Instalation
 
 <esp-web-install-button manifest="firmware/fancontroller-r3-1.manifest.json"></esp-web-install-button>
