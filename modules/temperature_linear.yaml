@@ -1,0 +1,214 @@
+# Temperature Linear Control Module
+#
+# Linear fan control based on temperature readings.
+# Creates a simple temperature curve with three zones:
+#   - Below t_off: Fans off (0%)
+#   - Between t_off and t1: Constant speed at fanpercent1
+#   - Between t1 and t2: Linear ramp from fanpercent1 to fanpercent2
+#   - Above t2: Constant speed at fanpercent2
+#
+# Usage:
+#   packages:
+#     temperature_linear:
+#       url: https://github.com/zeroflow/esphome-fancontroller
+#       files: [modules/temperature_linear.yaml]
+#       ref: main
+#       vars:
+#         friendly_name: "My Fan Controller"
+#         t_off: "25.0"        # Temperature below which fans turn off
+#         t1: "30.0"           # Lower temperature setpoint
+#         t2: "50.0"           # Upper temperature setpoint
+#         fanpercent1: "30.0"  # Fan speed at t1
+#         fanpercent2: "100.0" # Fan speed at t2 and above
+#
+# Configuration Variables:
+#   - friendly_name: Device name prefix (default: "fancontroller")
+#   - t_off: Off temperature in °C (default: 25.0)
+#   - t1: Lower setpoint temperature in °C (default: 30.0)
+#   - t2: Upper setpoint temperature in °C (default: 50.0)
+#   - fanpercent1: Fan speed % at t1 (default: 30.0)
+#   - fanpercent2: Fan speed % at t2+ (default: 100.0)
+#
+# Features:
+#   - Configurable temperature thresholds and fan speeds via Home Assistant UI
+#   - Individual auto-control switches for each of 4 fans
+#   - Output value sensor showing current calculated fan speed
+#
+substitutions:
+  friendly_name: "Fancontroller" # default
+  t_off: "25.0"
+  t1: "30.0"
+  t2: "50.0"
+  fanpercent1: "30.0"
+  fanpercent2: "100.0"
+
+number:
+  - platform: template
+    name: Linear Off Temperature
+    icon: mdi:thermometer-off
+    entity_category: config
+    restore_value: true
+    initial_value: ${t_off}
+    min_value: 20
+    max_value: 50
+    step: 0.5
+    unit_of_measurement: "°C"
+    optimistic: true
+    id: linear_t_off
+
+  - platform: template
+    name: Linear T1
+    icon: mdi:thermometer-low
+    entity_category: config
+    restore_value: true
+    initial_value: ${t1}
+    min_value: 20
+    max_value: 50
+    step: 0.5
+    unit_of_measurement: "°C"
+    optimistic: true
+    id: linear_t1
+
+  - platform: template
+    name: Linear T2
+    icon: mdi:thermometer-high
+    entity_category: config
+    restore_value: true
+    initial_value: ${t2}
+    min_value: 20
+    max_value: 50
+    step: 0.5
+    unit_of_measurement: "°C"
+    optimistic: true
+    id: linear_t2
+
+  - platform: template
+    name: Linear Fan Percent 1
+    icon: mdi:fan-speed-1
+    entity_category: config
+    restore_value: true
+    initial_value: ${fanpercent1}
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    optimistic: true
+    id: linear_fanpercent1
+
+  - platform: template
+    name: Linear Fan Percent 2
+    icon: mdi:fan-speed-3
+    entity_category: config
+    restore_value: true
+    initial_value: ${fanpercent2}
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    optimistic: true
+    id: linear_fanpercent2
+
+sensor:
+  - platform: template
+    name: $friendly_name Linear Output
+    id: linear_output_value
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    update_interval: 10s
+    lambda: |-
+      float temp = id(fancontroller_temperature).state;
+      float t_off = id(linear_t_off).state;
+      float t1 = id(linear_t1).state;
+      float t2 = id(linear_t2).state;
+      float fan1 = id(linear_fanpercent1).state;
+      float fan2 = id(linear_fanpercent2).state;
+      
+      if (temp < t_off) {
+        return 0.0;
+      } else if (temp >= t_off && temp < t1) {
+        return fan1;
+      } else if (temp >= t1 && temp < t2) {
+        float ratio = (temp - t1) / (t2 - t1);
+        return fan1 + ratio * (fan2 - fan1);
+      } else {
+        return fan2;
+      }
+    on_value:
+      then:
+        - output.set_level:
+            id: proxy_output
+            level: !lambda 'return x / 100.0;'
+
+output:
+  - platform: template
+    id: proxy_output
+    type: float
+    write_action:
+      lambda: |-
+        float write_val = state*100.0;
+
+        if (id(auto_control_fan1).state) {
+          if (write_val == 0.0) {
+            id(fan1).turn_off().perform();
+          } else {
+            auto call = id(fan1).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+        if (id(auto_control_fan2).state) {
+          if (write_val == 0.0) {
+            id(fan2).turn_off().perform();
+          } else {
+            auto call = id(fan2).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+        if (id(auto_control_fan3).state) {
+          if (write_val == 0.0) {
+            id(fan3).turn_off().perform();
+          } else {
+            auto call = id(fan3).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+        if (id(auto_control_fan4).state) {
+          if (write_val == 0.0) {
+            id(fan4).turn_off().perform();
+          } else {
+            auto call = id(fan4).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+
+switch:
+  - platform: template
+    name: "Auto Control Fan 1"
+    id: auto_control_fan1
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    
+  - platform: template
+    name: "Auto Control Fan 2"
+    id: auto_control_fan2
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    
+  - platform: template
+    name: "Auto Control Fan 3"
+    id: auto_control_fan3
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    
+  - platform: template
+    name: "Auto Control Fan 4"
+    id: auto_control_fan4
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON

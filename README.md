@@ -153,6 +153,119 @@ No manual pin configuration needed - just import the package and customize your 
 
 ---
 
+## Fan Control Modules
+
+Beyond the basic hardware configuration, this project includes optional control modules that implement different fan control strategies. These modules can be imported into your configuration to add temperature-based fan control or status displays.
+
+### Available Modules
+
+#### 1. RPM Status LEDs (`modules/rpm_status_leds.yaml`)
+
+Visual feedback module that updates each fan's RGB LED based on its RPM reading. LEDs transition from red (stopped) through orange to green (full speed).
+
+**Configuration Variables:**
+- `full_rpm`: Maximum RPM for color scaling (default: 2500). At 0 RPM = red, at full_rpm = green
+
+**Example:**
+```yaml
+packages:
+  rpm_status_leds:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [modules/rpm_status_leds.yaml]
+    ref: main
+    vars:
+      full_rpm: "2500"  # RPM value considered as 100% speed
+```
+
+#### 2. Linear Temperature Control (`modules/temperature_linear.yaml`)
+
+Simple linear fan control based on temperature. Creates a temperature curve with three zones:
+- Below t_off: Fans off (0%)
+- Between t_off and t1: Constant speed at fanpercent1
+- Between t1 and t2: Linear ramp from fanpercent1 to fanpercent2
+- Above t2: Constant speed at fanpercent2
+
+**Configuration Variables:**
+- `friendly_name`: Device name prefix (default: "fancontroller")
+- `t_off`: Temperature below which fans turn off (default: 25.0°C)
+- `t1`: Lower temperature setpoint (default: 30.0°C)
+- `t2`: Upper temperature setpoint (default: 50.0°C)
+- `fanpercent1`: Fan speed % at t1 (default: 30.0%)
+- `fanpercent2`: Fan speed % at t2 and above (default: 100.0%)
+
+**Features:**
+- Individual auto-control switches for each of 4 fans
+- Output value sensor showing current calculated fan speed
+
+**Example:**
+```yaml
+packages:
+  temperature_linear:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [modules/temperature_linear.yaml]
+    ref: main
+    vars:
+      friendly_name: "Server Rack"
+      t_off: "25.0"        # Fans off below 25°C
+      t1: "30.0"           # Start ramping at 30°C
+      t2: "50.0"           # Full speed at 50°C
+      fanpercent1: "30.0"  # Minimum speed: 30%
+      fanpercent2: "100.0" # Maximum speed: 100%
+```
+
+#### 3. PID Temperature Control (`modules/temperature_pid.yaml`)
+
+Advanced PID (Proportional-Integral-Derivative) control for precise temperature regulation. Automatically adjusts fan speeds to maintain a target temperature with minimal overshoot.
+
+Shoutout to [patrickcollins12/esphome-fan-controller](https://github.com/patrickcollins12/esphome-fan-controller) for the example code.
+
+**Configuration Variables:**
+- `friendly_name`: Device name prefix (default: "fancontroller")
+- `kp`: Proportional gain coefficient (default: 0.39509)
+- `ki`: Integral gain coefficient (default: 0.00470)
+- `kd`: Derivative gain coefficient (default: 20.74267)
+- `max_integral`: Maximum integral term value (default: 0.0)
+- `output_averaging_samples`: Output averaging samples (default: 1)
+- `derivative_averaging_samples`: Derivative averaging samples (default: 5)
+
+**Features:**
+- Climate entity (thermostat) for Home Assistant integration
+- Live PID tuning via Home Assistant number entities
+- Auto-tune button for automatic PID parameter calculation
+- Deadband control to reduce oscillation near target
+- Manual override fan control
+- Individual PID control switches for each of 4 fans
+- Real-time monitoring of P, I, D terms and error values
+
+**Example:**
+```yaml
+packages:
+  temperature_pid:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [modules/temperature_pid.yaml]
+    ref: main
+    vars:
+      friendly_name: "Server Rack"
+      kp: "0.39509"
+      ki: "0.00470"
+      kd: "20.74267"
+```
+
+**Tuning Tips:**
+- Use the "PID Climate Autotune" button for automatic tuning
+- Start with low kp/ki/kd values and increase gradually
+- Monitor the P/I/D term sensors to understand controller behavior
+
+### Choosing a Control Module
+
+- **Linear Control**: Best for simple setups where you want predictable fan behavior based on temperature zones. Easy to understand and configure.
+- **PID Control**: Best for precise temperature control and systems where you want to maintain a specific target temperature with minimal fluctuation.
+- **RPM Status LEDs**: Can be combined with either control module to add visual feedback.
+
+You can combine multiple modules in your configuration. For example, use PID control with RPM status LEDs for both precise control and visual feedback.
+
+---
+
 ## Advanced Installation Methods
 
 ### Option 3: ESPHome Web Installation (Manual Build)

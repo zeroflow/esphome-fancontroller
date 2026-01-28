@@ -1,0 +1,335 @@
+# Temperature PID Control Module
+#
+# Advanced PID (Proportional-Integral-Derivative) temperature control for precise fan speed regulation.
+# Automatically adjusts fan speeds to maintain a target temperature with minimal overshoot.
+#
+# Credit to https://github.com/patrickcollins12/esphome-fan-controller
+#
+# Usage:
+#   packages:
+#     temperature_pid:
+#       url: https://github.com/zeroflow/esphome-fancontroller
+#       files: [modules/temperature_pid.yaml]
+#       ref: main
+#       vars:
+#         friendly_name: "My Fan Controller"
+#         kp: "0.39509"                      # Proportional gain
+#         ki: "0.00470"                      # Integral gain
+#         kd: "20.74267"                     # Derivative gain
+#         max_integral: "0.0"                # Maximum integral term
+#         output_averaging_samples: "1"      # Output smoothing samples
+#         derivative_averaging_samples: "5"  # Derivative smoothing samples
+#
+# Configuration Variables:
+#   - friendly_name: Device name prefix (default: "Fancontroller")
+#   - kp: Proportional gain coefficient (default: 0.39509)
+#   - ki: Integral gain coefficient (default: 0.00470)
+#   - kd: Derivative gain coefficient (default: 20.74267)
+#   - max_integral: Max integral term value (default: 0.0)
+#   - output_averaging_samples: Output averaging samples (default: 1)
+#   - derivative_averaging_samples: Derivative averaging samples (default: 5)
+#
+# Features:
+#   - Climate entity (thermostat) for Home Assistant integration
+#   - Live PID tuning via Home Assistant number entities
+#   - Auto-tune button for automatic PID parameter calculation
+#   - Deadband control to reduce oscillation near target temperature
+#   - Manual override fan control
+#   - Individual PID control switches for each of 4 fans
+#   - Real-time monitoring of P, I, D terms and error values
+#
+# Tuning Tips:
+#   - Use the "PID Climate Autotune" button for automatic tuning
+#   - Start with low kp/ki/kd values and increase gradually
+#   - Monitor the P/I/D term sensors to understand controller behavior
+#
+substitutions:
+  friendly_name: "Fancontroller" # default
+  kp: 0.39509 # kp: 0.3
+  ki: 0.00470 # ki: 0.0015
+  kd: 20.74267 # kd: 0
+  max_integral: 0.0
+  output_averaging_samples: 1
+  derivative_averaging_samples: 5
+
+number:
+  ## OPTIONAL:
+  # RECEIVE KP, KI and KD parameters from input_text.kx helpers in 
+  # Home Assistant. See the PID controller below
+  # These helper values will get saved to flash thus permanently over-riding 
+  # the initial values set in the PID below.
+
+  # KP
+  - platform: template
+    name: PID kp
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.3
+    min_value: 0
+    max_value: 5
+    step: 0.001
+    optimistic: true
+    set_action: 
+      lambda: |- 
+        id(console_thermostat).set_kp( x );
+
+  # KI
+  - platform: template
+    name: PID ki
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.0015
+    min_value: 0
+    max_value: 1
+    step: 0.0001
+    optimistic: true
+    set_action: 
+      lambda: id(console_thermostat).set_ki( x );
+
+  # KD
+  - platform: template
+    name: PID kd
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.0
+    min_value: -50
+    max_value: 50
+    step: 0.001
+    optimistic: true
+    set_action: 
+      lambda: id(console_thermostat).set_kd( x );
+
+  # Set threshold low
+  - platform: template
+    name: PID Deadband Threshold Low
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.25
+    min_value: 0
+    max_value: 5
+    step: 0.05
+    optimistic: true
+    set_action: 
+      lambda: id(console_thermostat).set_threshold_low( x * -1.0 );
+
+  # Set threshold high
+  - platform: template
+    name: PID Deadband Threshold High
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.25
+    min_value: 0
+    max_value: 5
+    step: 0.05
+    optimistic: true
+    set_action: 
+      lambda: id(console_thermostat).set_threshold_high( x );
+
+  # Set ki multiplier
+  - platform: template
+    name: PID Deadband ki Multiplier
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.04
+    min_value: 0
+    max_value: .2
+    step: 0.01
+    optimistic: true
+    set_action: 
+      lambda: id(console_thermostat).set_ki_multiplier( x );
+
+  - platform: template
+    entity_category: config
+    name: PWM Minimum
+    min_value: 0
+    max_value: 30
+    step: 1
+    initial_value: 20
+    optimistic: True
+
+output:
+  - platform: template
+    id: proxy_output
+    type: float
+    write_action:
+      lambda: |-
+        float write_val = 
+          (id(manual_fan_control).state) ?
+            id(manual_fan_control).speed : state*100.0;
+        if (id(pid_control_fan1).state) {
+          if (write_val == 0.0) {
+            id(fan1).turn_off().perform();
+          } else {
+            auto call = id(fan1).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+        if (id(pid_control_fan2).state) {
+          if (write_val == 0.0) {
+            id(fan2).turn_off().perform();
+          } else {
+            auto call = id(fan2).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+        if (id(pid_control_fan3).state) {
+          if (write_val == 0.0) {
+            id(fan3).turn_off().perform();
+          } else {
+            auto call = id(fan3).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+        if (id(pid_control_fan4).state) {
+          if (write_val == 0.0) {
+            id(fan4).turn_off().perform();
+          } else {
+            auto call = id(fan4).turn_on();
+            call.set_speed(write_val);
+            call.perform();
+          }
+        }
+
+fan:
+  # Manual Override switch
+  - platform: speed
+    id: manual_fan_control
+    output: proxy_output
+    name: "Fan Manual Override"
+
+# Switches to select which fan is controlled by PID
+switch:
+  - platform: template
+    name: "PID Control Fan 1"
+    id: pid_control_fan1
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    
+  - platform: template
+    name: "PID Control Fan 2"
+    id: pid_control_fan2
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    
+  - platform: template
+    name: "PID Control Fan 3"
+    id: pid_control_fan3
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    
+  - platform: template
+    name: "PID Control Fan 4"
+    id: pid_control_fan4
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+
+sensor:
+########################################################
+# START THE FAN CONTROLLER SETUP
+
+  - platform: template
+    name: $friendly_name p term
+    id: p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name i term
+    id: i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name d term
+    id: d_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name output value
+    unit_of_measurement: "%"
+    id: o_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name error value
+    id: e_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name is in deadband
+    id: in_deadband_term
+    accuracy_decimals: 0
+
+# Expose a PID-controlled Thermostat
+# Manual: https://esphome.io/components/climate/pid.html
+climate:
+  - platform: pid
+    name: $friendly_name Thermostat
+    id: console_thermostat
+    sensor: fancontroller_temperature
+
+    # It is summer right now, so 30c is a decent target.
+    default_target_temperature: 30°C
+    cool_output: proxy_output
+    # cool_output: console_fan_speed
+
+    # ON state change, publish the values to the x_term numbers defined 
+    # above, so that they can be viewed in HA
+    on_state:
+      - sensor.template.publish:
+          id: p_term
+          state: !lambda 'return -id(console_thermostat).get_proportional_term() * 100.0;'
+      - sensor.template.publish:
+          id: i_term
+          state: !lambda 'return -id(console_thermostat).get_integral_term()* 100.0;'
+      - sensor.template.publish:
+          id: d_term
+          state: !lambda 'return -id(console_thermostat).get_derivative_term()* 100.0;'
+      - sensor.template.publish:
+          id: o_term
+          state: !lambda 'return -id(console_thermostat).get_output_value()* 100.0;'
+      - sensor.template.publish:
+          id: in_deadband_term
+          state: !lambda 'return id(console_thermostat).in_deadband();'
+      - sensor.template.publish:
+          id: e_term
+          state: !lambda 'return -id(console_thermostat).get_error_value();'
+        
+    # The extents of the HA Thermostat
+    visual:
+      min_temperature: 20 °C
+      max_temperature: 50 °C
+  
+    # See the README for setting up these parameters.
+    # These are over ridden by the number templates above.
+    control_parameters:
+      kp: ${kp} # kp: 0.3
+      ki: ${ki} # ki: 0.0015
+      kd: ${kd} # kd: 0
+      max_integral: 0.0
+      output_averaging_samples: 1
+      derivative_averaging_samples: 5
+
+    # How to behave when close to the target temperature?
+    deadband_parameters:
+      threshold_high: 0.25°C
+      threshold_low: -0.25°C
+      kp_multiplier: 0.0
+      ki_multiplier: 0.3
+      kd_multiplier: 0.0
+      deadband_output_averaging_samples: 15
+
+button:
+- platform: template
+  name: "PID Climate Autotune"
+  on_press: 
+    - climate.pid.autotune: console_thermostat

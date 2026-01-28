@@ -1,0 +1,80 @@
+# RPM Status LEDs Module
+#
+# Visual feedback for fan operation - updates each fan's RGB LED based on its RPM reading.
+# LEDs transition from red (stopped/low RPM) through orange to green (full speed).
+#
+# Usage:
+#   packages:
+#     rpm_status_leds:
+#       url: https://github.com/zeroflow/esphome-fancontroller
+#       files: [modules/rpm_status_leds.yaml]
+#       ref: main
+#       vars:
+#         full_rpm: "2500"  # RPM value considered as 100% speed (green LED)
+#
+# Configuration Variables:
+#   - full_rpm: Maximum RPM for color scaling (default: 2500)
+#                At 0 RPM = red, at full_rpm = green
+#
+substitutions:
+  full_rpm: 2500 # default
+
+interval:
+  - interval: 10s
+    then:
+      # Fan 1 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan1_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > ${full_rpm}) rpm = ${full_rpm};
+          float f = rpm / float(${full_rpm});
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan1_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 2 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan2_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > ${full_rpm}) rpm = ${full_rpm};
+          float f = rpm / float(${full_rpm});
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan2_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 3 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan3_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > ${full_rpm}) rpm = ${full_rpm};
+          float f = rpm / float(${full_rpm});
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan3_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
+      # Fan 4 LED color based on RPM
+      - lambda: |-
+          float rpm = id(fan4_speed).state;
+          if (isnan(rpm)) rpm = 0;
+          if (rpm < 0) rpm = 0;
+          if (rpm > ${full_rpm}) rpm = ${full_rpm};
+          float f = rpm / float(${full_rpm});
+          int r = (1.0 - f) * 255;
+          int g = f * 255;
+          auto led = id(fan4_led).turn_on();
+          led.set_rgb(r/255.0, g/255.0, 0.0);
+          led.set_brightness(0.5);
+          led.set_effect("none");
+          led.perform();
