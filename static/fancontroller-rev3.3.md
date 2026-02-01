@@ -19,20 +19,30 @@ toc_icon: "microchip"
 * Onboard
   * DC Input (12V, 5.5x2.1mm)
   * USB-C port for flashing
-  * 4x FAN PWM Header
-    * Buffering for improved signal integrity and resilience 
+  * 4× FAN PWM Header
+    * Buffering for improved signal integrity and resilience
   * Status LEDs (SK6805) for board & each fan connector
   * HDC1080 Temperature & Humidity sensor
 * IO
   * Reset / Boot Buttons
-  * 3x User Buttons
+  * 3× User Buttons
   * QWIIC Expansion port
   * I2C Expansion Port (100mil, SCL, SDA & Int)
   * Neopixel Port (5V, max. 2A total)
 
 > **_NOTE:_**  The neopixel port requires usage of the ```arduino``` framework, since GPIO42 requires use of the ```fastled_clockless``` platform, which is not supported on ```esp-idf```.
 
-## Generic Firmware Instalation
+## What's New in Rev 3.3
+
+Rev 3.3 includes hardware improvements over Rev 3.2:
+- Open-drain fan outputs instead of push-pull for better fan compatibility
+- Optimized component selection for better availability
+- Enhanced power supply stability
+- Same firmware and pin configuration as Rev 3.1 and 3.2
+
+All three revisions (3.1, 3.2, 3.3) share identical firmware and functionality.
+
+## Generic Firmware Installation
 
 <esp-web-install-button manifest="firmware/fancontroller-r3-1.manifest.json"></esp-web-install-button>
 
@@ -42,7 +52,13 @@ toc_icon: "microchip"
 
 ## Board
 
-![view of the board](board_rev3.3_front.jpg)
+### Front
+
+![Front view of the board](board_rev3.3_front.jpg)
+
+### Back
+
+![Back view of the board](board_rev3.3_back.jpg)
 
 ## ESP32S2 Pin Assignment
 
@@ -74,9 +90,9 @@ GPIO34 | I2C SCL
 GPIO35 | I2C INT
 GPIO36 | USR3
 GPIO37 | USR2
-GPIO38 | USR2
+GPIO38 | USR1
 GPIO42 | Neopixel Expansion Port
-GPIO45 | unused (strappping)
+GPIO45 | unused (strapping)
 GPIO46 | unused (strapping)
 
 ## I2C extension port
@@ -91,9 +107,9 @@ Nr. | Pin -| Description
 4   | SDA  | GPIO 33, 4.7k Pull-Up
 5   | +3V3 |
 
-## SMD expansion port
+## SMD Expansion Port
 
-The board offers and SMD expansion port on the back.
+The board offers an SMD expansion port on the back.
 
 Nr. | Pin -| Description
 ----|------|------------

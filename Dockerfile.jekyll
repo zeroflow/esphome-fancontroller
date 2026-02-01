@@ -1,0 +1,23 @@
+FROM ruby:3.3-alpine
+
+# Install build dependencies for native gems
+RUN apk add --no-cache \
+    build-base \
+    gcc \
+    g++ \
+    make \
+    libc-dev \
+    openssl-dev \
+    libffi-dev \
+    zlib-dev
+
+# Install bundler
+RUN gem install bundler
+
+WORKDIR /srv/jekyll
+
+# Expose Jekyll server port
+EXPOSE 4000
+
+# Default command will be provided by docker-compose
+CMD ["bundle", "exec", "jekyll", "serve", "--host", "0.0.0.0", "--watch", "--force_polling"]

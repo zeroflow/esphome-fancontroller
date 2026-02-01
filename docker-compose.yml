@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  jekyll:
+    build:
+      context: .
+      dockerfile: Dockerfile.jekyll
+    command: sh -c "bundle install && bundle exec jekyll serve --host 0.0.0.0 --watch --force_polling"
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./static:/srv/jekyll
+      - jekyll_bundle:/usr/local/bundle
+    environment:
+      - JEKYLL_ENV=development
+
+volumes:
+  jekyll_bundle:

@@ -19,15 +19,15 @@ toc_icon: "microchip"
 * Onboard
   * DC Input (12V, 5.5x2.1mm)
   * USB-C port for flashing
-  * 4x FAN PWM Header
+  * 4× FAN PWM Header
   * Status LED (red)
   * HDC1080 Temperature & Humidity sensor
 * IO
   * Reset / Boot Buttons
-  * 3x User Buttons
+  * 3× User Buttons
   * I2C Expansion Port (100mil, SCL, SDA & Int)
 
-## Generic Firmware Instalation
+## Generic Firmware Installation
 
 <esp-web-install-button manifest="firmware/fancontroller-r2-0.manifest.json"></esp-web-install-button>
 

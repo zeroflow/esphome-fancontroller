@@ -4,3 +4,15 @@
 /.esphome/
 /secrets.yaml
 *_dev.yaml
+
+# Jekyll local development
+static/_site/
+static/.jekyll-cache/
+static/.jekyll-metadata
+static/Gemfile.lock
+static/.sass-cache/
+static/.bundle/
+static/vendor/
+
+# Ruby gems
+gems/
