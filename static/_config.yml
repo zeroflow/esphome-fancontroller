@@ -1,4 +1,37 @@
-# CHANGEME: Set these variable to your liking
 title: ESPHome Fancontroller
 description: 4xPWM Fan Controller Powered by ESPHome and ESP Web Tools
-theme: jekyll-theme-slate
+remote_theme: mmistakes/minimal-mistakes@4.24.0
+
+# Site Settings
+minimal_mistakes_skin: "dark"
+locale: "en-US"
+url: "https://fancontroller.arthofer.dev"
+baseurl: ""
+
+# Site Author
+author:
+  name: "Thomas Arthofer"
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/zeroflow/esphome-fancontroller"
+    - label: "Buy on Elecrow"
+      icon: "fas fa-fw fa-shopping-cart"
+      url: "https://www.elecrow.com/wifi-fancontroller1.html"
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-remote-theme
+  - jekyll-feed
+  - jekyll-include-cache
+  - jekyll-seo-tag
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: single
+      author_profile: false
+      share: false

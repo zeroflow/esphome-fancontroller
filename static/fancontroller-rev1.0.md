@@ -1,4 +1,14 @@
-# Fancontroller Rev 1.0
+---
+layout: single
+title: "Fancontroller Rev 1.0"
+excerpt: "Original ESP32 design"
+header:
+  image: /board_rev1.0.jpg
+  teaser: /board_rev1.0.jpg
+toc: true
+toc_label: "Rev 1.0 Contents"
+toc_icon: "microchip"
+---
 
 ## Description
 

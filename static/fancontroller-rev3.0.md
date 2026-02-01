@@ -1,4 +1,14 @@
-# Fancontroller Rev 3.0
+---
+layout: single
+title: "Fancontroller Rev 3.0"
+excerpt: "Expansion focus with Qwiic I2C port and NeoPixel output"
+header:
+  image: /board_rev3.0.jpg
+  teaser: /board_rev3.0.jpg
+toc: true
+toc_label: "Rev 3.0 Contents"
+toc_icon: "microchip"
+---
 
 ## Description
 

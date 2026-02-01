@@ -1,4 +1,14 @@
-# Fancontroller Rev 3.1
+---
+layout: single
+title: "Fancontroller Rev 3.1"
+excerpt: "Latest generation with RGB status LEDs and enhanced signal integrity"
+header:
+  image: /board_rev3.1.jpg
+  teaser: /board_rev3.1.jpg
+toc: true
+toc_label: "Rev 3.1 Contents"
+toc_icon: "microchip"
+---
 
 ## Description
 

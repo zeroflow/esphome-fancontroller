@@ -1,4 +1,14 @@
-# Fancontroller Rev 2.0
+---
+layout: single
+title: "Fancontroller Rev 2.0"
+excerpt: "USB-C flashing support with ESP32-S2"
+header:
+  image: /board_rev2.0.jpg
+  teaser: /board_rev2.0.jpg
+toc: true
+toc_label: "Rev 2.0 Contents"
+toc_icon: "microchip"
+---
 
 ## Description
 
