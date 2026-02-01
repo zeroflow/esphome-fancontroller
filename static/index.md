@@ -16,11 +16,14 @@ intro:
   - excerpt: "A CE-certified, ESP32-based PWM fan controller designed for home server racks, media cabinets, and smart home projects. Flash pre-built firmware directly from your browser - get started in minutes."
 
 feature_row_why:
-  - title: "🌡️ Intelligent Climate Control"
+  - icon: "fa-solid fa-temperature-half"
+    title: "Intelligent Climate Control"
     excerpt: "Automatically adjust fan speeds based on temperature and humidity readings from the integrated HDC1080 sensor. Turn fans off when equipment is idle, ramp up when things heat up."
-  - title: "🏠 Home Assistant Native"
+  - icon: "fa-solid fa-house"
+    title: "Home Assistant Native"
     excerpt: "Built on ESPHome for seamless integration with Home Assistant. Monitor temperatures, adjust fan speeds, and create automations directly from your smart home dashboard."
-  - title: "🔧 Hackable & Expandable"
+  - icon: "fa-solid fa-screwdriver-wrench"
+    title: "Hackable & Expandable"
     excerpt: "Fully customizable ESPHome configuration with Qwiic and I2C expansion ports, NeoPixel output, user buttons, and GPIO breakouts. Add sensors, displays, or integrate with your existing projects."
 
 feature_row_specs:
@@ -29,17 +32,19 @@ feature_row_specs:
   - title: "Built-in HDC1080"
     excerpt: "temperature & humidity sensor"
   - title: "RGB Status LEDs"
-    excerpt: "for board and fan port status (Rev 3.x)"
+    excerpt: "board and fan port indicators (Rev 3.x)"
   - title: "Qwiic & I2C Expansion"
-    excerpt: "for additional sensors"
+    excerpt: "add sensors and displays"
   - title: "USB-C Flashing"
-    excerpt: "no programming adapter needed (Rev 2.0+)"
+    excerpt: "no programmer needed (Rev 2.0+)"
   - title: "WiFi OTA Updates"
-    excerpt: "via ESPHome"
+    excerpt: "update firmware wirelessly"
   - title: "3 User Buttons"
-    excerpt: "for custom functions"
+    excerpt: "custom automations"
   - title: "Low Power"
-    excerpt: "only 0.25W typical operation"
+    excerpt: "0.25W idle consumption"
+  - title: "Open Source"
+    excerpt: "fully documented on GitHub"
 
 feature_row_rev3:
   - image_path: board_rev3.3_front.jpg
