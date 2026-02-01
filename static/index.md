@@ -23,7 +23,7 @@ feature_row_why:
   - title: "🔧 Hackable & Expandable"
     excerpt: "Fully customizable ESPHome configuration with Qwiic and I2C expansion ports, NeoPixel output, user buttons, and GPIO breakouts. Add sensors, displays, or integrate with your existing projects."
 
-feature_row_specs1:
+feature_row_specs:
   - title: "4× PWM Fan Outputs"
     excerpt: "with RPM monitoring"
   - title: "Built-in HDC1080"
@@ -32,8 +32,6 @@ feature_row_specs1:
     excerpt: "for board and fan port status (Rev 3.x)"
   - title: "Qwiic & I2C Expansion"
     excerpt: "for additional sensors"
-
-feature_row_specs2:
   - title: "USB-C Flashing"
     excerpt: "no programming adapter needed (Rev 2.0+)"
   - title: "WiFi OTA Updates"
@@ -84,8 +82,7 @@ feature_row_rev1:
 
 ## Key Features
 
-{% include feature_row id="feature_row_specs1" %}
-{% include feature_row id="feature_row_specs2" %}
+{% include feature_row id="feature_row_specs" %}
 
 ## Get Started in Minutes
 
