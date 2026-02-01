@@ -1,3 +1,13 @@
+# ESPHome Fan Controller - Revision 3.0 (ESP32-S2)
+# Base configuration file for production use
+#
+# This file contains the core ESPHome configuration and includes
+# the hardware-specific package for revision 3.0.
+
+packages:
+  # Include hardware-specific configuration
+  hardware: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
+
 esphome:
   name: fancontroller-r3-0
   friendly_name: fancontroller
@@ -5,227 +15,37 @@ esphome:
   # so you can use a single firmware for all devices
   name_add_mac_suffix: true
   platformio_options:
-      board_build.f_flash: 40000000L
-
-  # Status LED - Blink after boot
-  on_boot:
-    then:
-      - lambda: |-
-          auto call = id(status_led).turn_on();
-          call.set_effect("Slow Pulse");
-          call.perform();
+    board_build.f_flash: 40000000L
 
 esp32:
   board: esp32-s2-saola-1
   framework:
     type: arduino
 
-# To be able to get logs from the device via serial and api.
+# Enable logging
 logger:
 
-# API is a requirement of the dashboard import.
+# API is a requirement of the dashboard import
 api:
-# encryption:
-#   key: "..."  # <----------- Merge your generated config here
 
 # OTA is required for Over-the-Air updating
-#ota: <----------- Enable this
-# - platform: esphome # <----------- Merge your generated config here
-#   password: "..."   # <----------- Merge your generated config here
+ota:
+  - platform: esphome
 
 wifi:
-# ssid: !secret wifi_ssid # <----------- Enable this
-# password: !secret wifi_password # <----------- Enable this
-
-  ap: # <----------- Remove this if not needed
-
-  # Status LED: Wifi connected -> turn on, then off after 60s
-  on_connect:
-    then:
-      - lambda: |-
-          auto call = id(status_led).turn_on();
-          call.set_brightness(1);
-          call.set_effect("none");
-          call.perform();
-      - delay: 60s
-      - lambda: |-
-          auto call = id(status_led).turn_on();
-          call.perform();
-
-  # Status LED: Wifi disconnected -> blink fast
-  on_disconnect:
-    then:
-      - lambda: |-
-          auto call = id(status_led).turn_on();
-          call.set_brightness(1);
-          call.set_effect("Fast Pulse");
-          call.perform();
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
 
 # In combination with the `ap` this allows the user
-# to provision wifi credentials to the device.
+# to provision wifi credentials to the device
 captive_portal:
 
+# Enable web server
 web_server:
   port: 80
 
-# Allow setup via serial
-improv_serial:
-
-# I2C for HDC1080 onboard & QWIIC connector
-i2c:
-  sda: GPIO33
-  scl: GPIO34
-  scan: true
-  id: bus_a
-
-output:
-  # Status LED
-  - id: status_led_out
-    platform: ledc
-    pin: GPIO01
-    frequency: 1000Hz
-    inverted: True
-
-  # PWM Outputs (internal only)
-  - platform: ledc
-    pin: GPIO12
-    id: pwm_fan1
-    frequency: "25000 Hz"
-  - platform: ledc
-    pin: GPIO13
-    id: pwm_fan2
-    frequency: "25000 Hz"
-  - platform: ledc
-    pin: GPIO14
-    id: pwm_fan3
-    frequency: "25000 Hz"
-  - platform: ledc
-    pin: GPIO15
-    id: pwm_fan4
-    frequency: "25000 Hz"
-
-fan:
-  # Fan 1
-  - platform: speed
-    output: pwm_fan1
-    name: "Fan 1"
-    restore_mode: "RESTORE_DEFAULT_ON"
-    id: fan1
-
-  # Fan 2
-  - platform: speed
-    output: pwm_fan2
-    name: "Fan 2"
-    restore_mode: "RESTORE_DEFAULT_ON"
-    id: fan2
-
-  # Fan 3
-  - platform: speed
-    output: pwm_fan3
-    name: "Fan 3"
-    restore_mode: "RESTORE_DEFAULT_ON"
-    id: fan3
-
-  # Fan 4
-  - platform: speed
-    output: pwm_fan4
-    name: "Fan 4"
-    id: fan4
-    restore_mode: "RESTORE_DEFAULT_ON"
-
-sensor:
-  # Temperature & Humidity Sensor
-  - platform: hdc1080
-    temperature:
-      name: "Temperature"
-    humidity:
-      name: "Humidity"
-    update_interval: 60s
-
-  # Fan 1 Sense
-  - platform: pulse_counter
-    pin: 
-      number: GPIO16
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan1_speed
-    name: Fan 1 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5 # Fans output 2 pulses per revolution
-  # Fan 2 Sense
-  - platform: pulse_counter
-    pin: 
-      number: GPIO17
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan2_speed
-    name: Fan 2 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5 # Fans output 2 pulses per revolution
-  # Fan 3 Sense
-  - platform: pulse_counter
-    pin: 
-      number: GPIO18
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan3_speed
-    name: Fan 3 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5 # Fans output 2 pulses per revolution
-  # Fan 4 Sense
-  - platform: pulse_counter
-    pin: 
-      number: GPIO21
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan4_speed
-    name: Fan 4 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5 # Fans output 2 pulses per revolution
-
-binary_sensor:
-  # USR1 Button
-  - platform: gpio
-    pin: 
-      number: GPIO38
-      inverted: True
-    name: "USR1"
-    id: btn_usr1
-  # USR2 Button
-  - platform: gpio
-    pin: 
-      number: GPIO37
-      inverted: True
-    name: "USR2"
-    id: btn_usr2
-  # USR3 Button
-  - platform: gpio
-    pin: 
-      number: GPIO36
-      inverted: True
-    name: "USR3"
-    id: btn_usr3
-
+# Optional: NeoPixel LED strip support
 light:
-  # Status LED
-  - platform: monochromatic
-    id: status_led
-    output: status_led_out
-    effects:
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 100ms
-          update_interval: 250ms
-      - pulse:
-          name: "Slow Pulse"
-          transition_length: 1s
-          update_interval: 2s
-
-  # Neopixel
   - platform: esp32_rmt_led_strip
     rgb_order: GRB
     chipset: WS2812

@@ -1,3 +1,13 @@
+# ESPHome Fan Controller - Revision 1.0 (ESP32)
+# Base configuration file for production use
+#
+# This file contains the core ESPHome configuration and includes
+# the hardware-specific package for revision 1.0.
+
+packages:
+  # Include hardware-specific configuration
+  hardware: github://zeroflow/esphome-fancontroller/hardware-rev-1.0.yaml@main
+
 esphome:
   name: fancontroller-r1-0
   friendly_name: fancontroller
@@ -10,164 +20,24 @@ esp32:
   framework:
     type: esp-idf
 
-# To be able to get logs from the device via serial and api.
+# Enable logging
 logger:
 
-# API is a requirement of the dashboard import.
+# API is a requirement of the dashboard import
 api:
-# encryption:
-#   key: "..."  # <----------- Merge your generated config here
 
 # OTA is required for Over-the-Air updating
-#ota: <----------- Enable this
-# - platform: esphome # <----------- Merge your generated config here
-#   password: "..."   # <----------- Merge your generated config here
+ota:
+  - platform: esphome
 
 wifi:
-# ssid: !secret wifi_ssid # <----------- Enable this
-# password: !secret wifi_password # <----------- Enable this
-
-  ap: # <----------- Remove this if not needed
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
 
 # In combination with the `ap` this allows the user
-# to provision wifi credentials to the device.
+# to provision wifi credentials to the device
 captive_portal:
 
+# Enable web server
 web_server:
   port: 80
-
-# Allow setup via serial
-improv_serial:
-
-i2c:
-  sda: GPIO17
-  scl: GPIO18
-  scan: true
-  id: bus_a
-
-# Example configuration entry
-status_led:
-  pin: 
-    number: GPIO02
-    inverted: true
-
-# PWM Outputs
-output:
-  - platform: ledc
-    pin: GPIO32
-    id: pwm_fan1
-    frequency: "25000 Hz"
-  - platform: ledc
-    pin: GPIO25
-    id: pwm_fan2
-    frequency: "25000 Hz"
-  - platform: ledc
-    pin: GPIO27
-    id: pwm_fan3
-    frequency: "25000 Hz"
-  - platform: ledc
-    pin: GPIO04
-    id: pwm_fan4
-    frequency: "25000 Hz"
-
-fan:
-  - platform: speed
-    output: pwm_fan1
-    name: "Fan 1"
-    restore_mode: "RESTORE_DEFAULT_ON"
-    id: fan1
-  - platform: speed
-    output: pwm_fan2
-    name: "Fan 2"
-    restore_mode: "RESTORE_DEFAULT_ON"
-    id: fan2
-  - platform: speed
-    output: pwm_fan3
-    name: "Fan 3"
-    restore_mode: "RESTORE_DEFAULT_ON"
-    id: fan3
-  - platform: speed
-    output: pwm_fan4
-    name: "Fan 4"
-    id: fan4
-    restore_mode: "RESTORE_DEFAULT_ON"
-
-sensor:
-  - platform: hdc1080
-    temperature:
-      name: "Temperature"
-    humidity:
-      name: "Humidity"
-    update_interval: 60s
-  - platform: pulse_counter
-    pin: 
-      number: GPIO33  # Connect to any input PIN on the ESP
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan1_speed
-    name: Fan 1 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5  
-  - platform: pulse_counter
-    pin: 
-      number: GPIO26  # Connect to any input PIN on the ESP
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan2_speed
-    name: Fan 2 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5 
-  - platform: pulse_counter
-    pin: 
-      number: GPIO13  # Connect to any input PIN on the ESP
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan3_speed
-    name: Fan 3 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5 
-  - platform: pulse_counter
-    pin: 
-      number: GPIO16  # Connect to any input PIN on the ESP
-      mode: INPUT_PULLUP
-    unit_of_measurement: 'RPM'
-    id: fan4_speed
-    name: Fan 4 Speed
-    accuracy_decimals: 0
-    filters:
-      - multiply: 0.5 
-
-binary_sensor:
-  - platform: gpio
-    pin: 
-      number: GPIO23
-      inverted: True
-    name: "USR1"
-    id: btn_usr1
-  - platform: gpio
-    pin: 
-      number: GPIO22
-      inverted: True
-    name: "USR2"
-    id: btn_usr2
-  - platform: gpio
-    pin: 
-      number: GPIO21
-      inverted: True
-    name: "USR3"
-    id: btn_usr3
-  - platform: gpio
-    pin: 
-      number: GPIO34
-      inverted: True
-    name: "IN1"
-    id: btn_in1
-  - platform: gpio
-    pin: 
-      number: GPIO35
-      inverted: True
-    name: "IN2"
-    id: btn_in2

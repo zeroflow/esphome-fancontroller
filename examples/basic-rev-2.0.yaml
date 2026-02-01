@@ -1,0 +1,43 @@
+# Example: Basic Configuration for Hardware Revision 2.0
+#
+# This example shows the minimal configuration needed to use the hardware package.
+# Perfect for getting started quickly.
+
+packages:
+  # Include the hardware-specific configuration
+  hardware: github://zeroflow/esphome-fancontroller/hardware-rev-2.0.yaml@main
+
+esphome:
+  name: my-fancontroller
+  friendly_name: My Fan Controller
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+
+# WiFi configuration
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Fancontroller Fallback"
+
+# Enable web server
+web_server:
+  port: 80
+
+# Enable captive portal for WiFi setup
+captive_portal:

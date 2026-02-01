@@ -67,8 +67,8 @@ Revision | Left                      | Fan Ports             | Right   | Details
 2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev2.0) |
 3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.0) |
 3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.1) |
-3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) |
-3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) |
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) | Functionally identical to Rev 3.1
+3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) | Functionally identical to Rev 3.1
 
 ---
 

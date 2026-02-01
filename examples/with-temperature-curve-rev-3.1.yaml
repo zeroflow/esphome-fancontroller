@@ -1,0 +1,110 @@
+# Example: Hardware Rev 3.1 with Custom Temperature Curve
+#
+# This example shows how to use the temperature curve module for
+# flexible multi-point fan speed control based on temperature.
+
+packages:
+  # Include the hardware-specific configuration
+  hardware: !include ../hardware-rev-3.1.yaml
+
+  # Include the RPM status LEDs module
+  rpm_status_leds: !include ../modules/rpm_status_leds.yaml
+
+  # Include the temperature curve module
+  # This provides 5 configurable temperature/speed points with linear interpolation
+  temperature_curve: !include ../modules/temperature_curve.yaml
+
+esphome:
+  name: my-fancontroller
+  friendly_name: My Fan Controller
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+
+# WiFi configuration
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Fancontroller Fallback"
+
+# Enable web server
+web_server:
+  port: 80
+
+# Enable captive portal for WiFi setup
+captive_portal:
+
+# Customize your temperature curve here!
+# Define 5 points (temp in °C, speed in %) - they will be auto-sorted
+#
+# Example curves:
+#
+# Silent mode (for bedroom):
+substitutions:
+  curve_temp1: "20.0"
+  curve_speed1: "0.0"
+  curve_temp2: "25.0"
+  curve_speed2: "20.0"
+  curve_temp3: "35.0"
+  curve_speed3: "40.0"
+  curve_temp4: "45.0"
+  curve_speed4: "60.0"
+  curve_temp5: "55.0"
+  curve_speed5: "80.0"
+
+# Balanced mode (general use):
+# substitutions:
+#   curve_temp1: "20.0"
+#   curve_speed1: "0.0"
+#   curve_temp2: "25.0"
+#   curve_speed2: "25.0"
+#   curve_temp3: "30.0"
+#   curve_speed3: "50.0"
+#   curve_temp4: "40.0"
+#   curve_speed4: "75.0"
+#   curve_temp5: "50.0"
+#   curve_speed5: "100.0"
+
+# Aggressive mode (for servers):
+# substitutions:
+#   curve_temp1: "20.0"
+#   curve_speed1: "0.0"
+#   curve_temp2: "22.0"
+#   curve_speed2: "30.0"
+#   curve_temp3: "28.0"
+#   curve_speed3: "60.0"
+#   curve_temp4: "35.0"
+#   curve_speed4: "85.0"
+#   curve_temp5: "40.0"
+#   curve_speed5: "100.0"
+
+# Always-on mode (data center):
+# substitutions:
+#   curve_temp1: "15.0"
+#   curve_speed1: "20.0"
+#   curve_temp2: "20.0"
+#   curve_speed2: "30.0"
+#   curve_temp3: "25.0"
+#   curve_speed3: "50.0"
+#   curve_temp4: "30.0"
+#   curve_speed4: "75.0"
+#   curve_temp5: "35.0"
+#   curve_speed5: "100.0"
+
+# Note: You can also adjust all these values dynamically in Home Assistant!
+# The curve module exposes all 10 values (5 temps + 5 speeds) as number entities.

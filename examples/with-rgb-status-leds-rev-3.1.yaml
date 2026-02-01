@@ -1,0 +1,47 @@
+# Example: Hardware Rev 3.1 with RGB Status LEDs Module
+#
+# This example shows how to use the hardware package together with
+# the RGB status LEDs module for visual fan speed feedback.
+
+packages:
+  # Include the hardware-specific configuration
+  hardware: !include ../hardware-rev-3.1.yaml
+
+  # Include the RPM status LEDs module
+  # This displays fan speed as LED colors (red=slow, green=fast)
+  rpm_status_leds: !include ../modules/rpm_status_leds.yaml
+
+esphome:
+  name: my-fancontroller
+  friendly_name: My Fan Controller
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+
+# WiFi configuration
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Fancontroller Fallback"
+
+# Enable web server
+web_server:
+  port: 80
+
+# Enable captive portal for WiFi setup
+captive_portal:

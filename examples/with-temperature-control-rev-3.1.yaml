@@ -1,0 +1,67 @@
+# Example: Hardware Rev 3.1 with Temperature-based Fan Control
+#
+# This example shows how to use the hardware package together with
+# temperature control modules for automatic fan speed adjustment.
+
+packages:
+  # Include the hardware-specific configuration
+  hardware: !include ../hardware-rev-3.1.yaml
+
+  # Include the RPM status LEDs module
+  rpm_status_leds: !include ../modules/rpm_status_leds.yaml
+
+  # Include temperature control module (choose one):
+  # Linear control: Simple linear mapping from temperature to fan speed
+  # temperature_control: !include ../modules/temperature_linear.yaml
+
+  # PID control: Advanced control with PID algorithm for precise temperature regulation
+  # temperature_control: !include ../modules/temperature_pid.yaml
+
+esphome:
+  name: my-fancontroller
+  friendly_name: My Fan Controller
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+
+# WiFi configuration
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Fancontroller Fallback"
+
+# Enable web server
+web_server:
+  port: 80
+
+# Enable captive portal for WiFi setup
+captive_portal:
+
+# You can customize the temperature control behavior by overriding
+# substitutions from the temperature modules:
+#
+# substitutions:
+#   # For temperature_linear.yaml:
+#   target_temp: "25.0"      # Target temperature in °C
+#   temp_hysteresis: "2.0"   # Temperature hysteresis in °C
+#
+#   # For temperature_pid.yaml:
+#   target_temp: "25.0"      # Target temperature in °C
+#   kp: "1.0"                # Proportional gain
+#   ki: "0.1"                # Integral gain
+#   kd: "0.05"               # Derivative gain

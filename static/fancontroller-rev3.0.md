@@ -44,9 +44,13 @@ toc_icon: "microchip"
 >
 > [Download prebuilt binary](/firmware/fancontroller-r3-0-esp32s2.factory.bin)
 
-## Example Config File
+## Example Configurations
 
-[Base Config - 4 fans](https://github.com/zeroflow/esphome-fancontroller/blob/main/fancontroller-rev3.0-esp32s2.yaml)
+This board uses a modular package-based configuration system. Check out these examples to get started:
+
+- **[Basic Configuration](https://github.com/zeroflow/esphome-fancontroller/blob/main/examples/basic-rev-3.0.yaml)** - Minimal setup with 4 fans and essential features
+
+For more examples and advanced features, see the [examples directory](https://github.com/zeroflow/esphome-fancontroller/tree/main/examples).
 
 ## Board
 
