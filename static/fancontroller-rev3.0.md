@@ -3,7 +3,9 @@ layout: single
 title: "Fancontroller Rev 3.0"
 excerpt: "Expansion focus with Qwiic I2C port and NeoPixel output"
 header:
-  image: /board_rev3.0.jpg
+  overlay_image: /board_rev3.0.jpg
+  overlay_filter: 0.5
+  caption: "ESP32-S2 | 4× PWM Fans | USB-C | Qwiic I2C | NeoPixel Output"
   teaser: /board_rev3.0.jpg
 toc: true
 toc_label: "Rev 3.0 Contents"

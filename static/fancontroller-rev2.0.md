@@ -3,7 +3,9 @@ layout: single
 title: "Fancontroller Rev 2.0"
 excerpt: "USB-C flashing support with ESP32-S2"
 header:
-  image: /board_rev2.0.jpg
+  overlay_image: /board_rev2.0.jpg
+  overlay_filter: 0.5
+  caption: "ESP32-S2 | 4× PWM Fans | USB-C | HDC1080 Sensor | I2C Expansion"
   teaser: /board_rev2.0.jpg
 toc: true
 toc_label: "Rev 2.0 Contents"

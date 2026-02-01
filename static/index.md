@@ -5,7 +5,7 @@ header:
   overlay_filter: "0.5"
   overlay_image: /board_rev3.3_front.jpg
   actions:
-    - label: "Buy Now - $35"
+    - label: "Buy Now - $35,99"
       url: "https://www.elecrow.com/wifi-fancontroller1.html"
     - label: "View on GitHub"
       url: "https://github.com/zeroflow/esphome-fancontroller"
@@ -16,17 +16,14 @@ intro:
   - excerpt: "A CE-certified, ESP32-based PWM fan controller designed for home server racks, media cabinets, and smart home projects. Flash pre-built firmware directly from your browser - get started in minutes."
 
 feature_row_why:
-  - image_path: board_rev3.3_front.jpg
-    title: "Intelligent Climate Control"
+  - title: "🌡️ Intelligent Climate Control"
     excerpt: "Automatically adjust fan speeds based on temperature and humidity readings from the integrated HDC1080 sensor. Turn fans off when equipment is idle, ramp up when things heat up."
-  - image_path: board_rev3.3_front.jpg
-    title: "Home Assistant Native"
+  - title: "🏠 Home Assistant Native"
     excerpt: "Built on ESPHome for seamless integration with Home Assistant. Monitor temperatures, adjust fan speeds, and create automations directly from your smart home dashboard."
-  - image_path: board_rev3.3_front.jpg
-    title: "Hackable & Expandable"
+  - title: "🔧 Hackable & Expandable"
     excerpt: "Fully customizable ESPHome configuration with Qwiic and I2C expansion ports, NeoPixel output, user buttons, and GPIO breakouts. Add sensors, displays, or integrate with your existing projects."
 
-feature_row_specs:
+feature_row_specs1:
   - title: "4× PWM Fan Outputs"
     excerpt: "with RPM monitoring"
   - title: "Built-in HDC1080"
@@ -35,6 +32,8 @@ feature_row_specs:
     excerpt: "for board and fan port status (Rev 3.x)"
   - title: "Qwiic & I2C Expansion"
     excerpt: "for additional sensors"
+
+feature_row_specs2:
   - title: "USB-C Flashing"
     excerpt: "no programming adapter needed (Rev 2.0+)"
   - title: "WiFi OTA Updates"
@@ -47,9 +46,9 @@ feature_row_specs:
 feature_row_rev3:
   - image_path: board_rev3.3_front.jpg
     title: "Rev 3.1, 3.2, 3.3 - Latest Generation"
-    excerpt: "RGB status LEDs, enhanced signal integrity, improved USB resilience, and full expansion capabilities. Revisions 3.2 and 3.3 include minor component upgrades.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-1.manifest.json\"></esp-web-install-button><br/><br/>[Rev 3.1 Specs](fancontroller-rev3.1) | [Rev 3.2 Specs](fancontroller-rev3.2) | [Rev 3.3 Specs](fancontroller-rev3.3)"
+    excerpt: "RGB status LEDs, enhanced signal integrity, improved USB resilience, and full expansion capabilities. Revisions 3.2 and 3.3 include minor component upgrades.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-1.manifest.json\"></esp-web-install-button><br/><br/>Also available: [Rev 3.1](fancontroller-rev3.1) • [Rev 3.2](fancontroller-rev3.2)"
     url: "fancontroller-rev3.3"
-    btn_label: "Learn More"
+    btn_label: "Learn More (Rev 3.3)"
     btn_class: "btn--primary"
 
 feature_row_rev30:
@@ -85,7 +84,8 @@ feature_row_rev1:
 
 ## Key Features
 
-{% include feature_row id="feature_row_specs" type="center" %}
+{% include feature_row id="feature_row_specs1" %}
+{% include feature_row id="feature_row_specs2" %}
 
 ## Get Started in Minutes
 
@@ -105,7 +105,7 @@ Flash pre-built firmware directly from your browser. Connect your board via USB-
 
 ## Get Your Board
 
-**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35.
+**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35,99.
 
 **Open Source**: Full documentation, hardware configurations, and ESPHome packages available on [GitHub](https://github.com/zeroflow/esphome-fancontroller). Create custom automations and share your configurations with the community.
 

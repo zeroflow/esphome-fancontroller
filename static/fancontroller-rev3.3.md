@@ -3,7 +3,9 @@ layout: single
 title: "Fancontroller Rev 3.3"
 excerpt: "Latest generation with RGB status LEDs and enhanced signal integrity"
 header:
-  image: /board_rev3.3_front.jpg
+  overlay_image: /board_rev3.3_front.jpg
+  overlay_filter: 0.5
+  caption: "ESP32-S2 | 4× PWM Fans | RGB LEDs | USB-C | HDC1080 Sensor"
   teaser: /board_rev3.3_front.jpg
 toc: true
 toc_label: "Rev 3.3 Contents"

@@ -3,7 +3,9 @@ layout: single
 title: "Fancontroller Rev 1.0"
 excerpt: "Original ESP32 design"
 header:
-  image: /board_rev1.0.jpg
+  overlay_image: /board_rev1.0.jpg
+  overlay_filter: 0.5
+  caption: "ESP32 | 4× PWM Fans | HDC1080 Sensor | I2C Expansion | Serial Flash"
   teaser: /board_rev1.0.jpg
 toc: true
 toc_label: "Rev 1.0 Contents"
