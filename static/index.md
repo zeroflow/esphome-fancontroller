@@ -105,4 +105,4 @@ Flash pre-built firmware directly from your browser. Connect your board via USB-
 
 **Need Help?** Check the [documentation](https://github.com/zeroflow/esphome-fancontroller#readme) or open an issue on GitHub.
 
-<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+<script type="module" src="https://unpkg.com/esp-web-tools@8.0.6/dist/web/install-button.js?module"></script>

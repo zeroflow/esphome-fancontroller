@@ -38,24 +38,24 @@ A CE-certified, ESP32-based PWM fan controller designed for home server racks, m
 
 ## Get Your Board
 
-**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35,99.
+**Ready to upgrade your setup?**
+
+**[Buy on Elecrow - $35,99](https://www.elecrow.com/wifi-fancontroller1.html)** - Boards and 3D-printed cases available
+
+**[Complete Documentation & Web Installer](https://fancontroller.arthofer.dev/)** - Flash firmware directly from your browser
 
 **DIY Case**: Print your own case using the [WiFi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) design on Printables.com.
 
 ## Quick Start
 
-All boards come pre-flashed with an ESPHome factory image that's ready to use. You can either:
+All boards come pre-flashed with an ESPHome factory image that's ready to use:
 
-1. **Use the pre-built firmware** - Connect to WiFi and start controlling fans immediately
-2. **Flash your own custom configuration** - Full ESPHome customization for advanced users
-3. **Use our hardware packages** - Import pre-configured hardware definitions into your ESPHome setup
+1. **Power up the board** via USB-C or 12V DC
+2. **Connect to the WiFi hotspot** (e.g. `fancontroller-r3-1-abcdef`)
+3. **Configure your WiFi** through the captive portal
+4. **Done!** Board appears in Home Assistant via ESPHome
 
-### Installation Methods
-
-Choose the installation method that works best for you:
-- **Web Installer** (easiest) - Flash directly from your browser at [zeroflow.github.io/esphome-fancontroller](https://zeroflow.github.io/esphome-fancontroller/)
-- **USB Installation** - Program via USB-C with ESPHome (Rev 2.0+)
-- **OTA Updates** - Wireless updates after initial setup
+For custom firmware or troubleshooting, see [Installation Methods](#installation-methods) below.
 
 ### Identifying Your Board Revision
 
@@ -63,24 +63,38 @@ To choose the correct firmware, identify your board revision using the connector
 
 Revision | Left                      | Fan Ports             | Right   | Details | Notes
 ---- | ----------------------------- | --------------------- | ------- | ------- | ------
-1.0  | DC 12V                        | Fans                  | nothing | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev1.0.html) |
-2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev2.0.html) | 
-3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.0.html) |
-3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.1.html) |
-3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.2.html) |
-3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://zeroflow.github.io/esphome-fancontroller/fancontroller-rev3.3.html) |
+1.0  | DC 12V                        | Fans                  | nothing | [Link](https://fancontroller.arthofer.dev/fancontroller-rev1.0) |
+2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev2.0) |
+3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.0) |
+3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.1) |
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) |
+3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) |
 
 ---
 
-## Installation Guide
+## Installation Methods
 
-### Option 1: Web Installer (Recommended for Most Users)
+### Method 1: Web Installer (Recommended)
 
-The fastest way to get started. Flash pre-built firmware directly from your browser - no software installation required.
+Flash pre-built firmware directly from your browser at **[fancontroller.arthofer.dev](https://fancontroller.arthofer.dev/)**
 
-**Visit the [Web Installer](https://zeroflow.github.io/esphome-fancontroller/)** and follow the on-screen instructions.
+**Note for ESP32-S2 boards (Rev 2.0, 3.x):** Web-based flashing may have connectivity issues. If the browser flash fails, use Method 2 (esptool) instead.
 
-### Option 2: ESPHome Hardware Packages
+### Method 2: esptool (Alternative for ESP32-S2)
+
+Reliable flashing method, especially for ESP32-S2 boards:
+
+1. Install [esptool](https://github.com/espressif/esptool): `pip install esptool`
+2. Download prebuilt binary from [fancontroller.arthofer.dev/firmware](https://fancontroller.arthofer.dev/firmware/)
+3. Connect board via USB-C, hold BOOT button, press RESET
+4. Flash: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
+5. Press RESET to boot
+
+### Method 3: OTA Updates (After Initial Setup)
+
+Once connected to WiFi, update wirelessly via ESPHome dashboard or web interface at `http://[board-ip]`
+
+### Method 4: ESPHome Hardware Packages (Custom Configurations)
 
 For users who want to customize their configuration while keeping hardware setup simple. The hardware packages automatically configure all board-specific features for your revision.
 
@@ -266,79 +280,6 @@ You can combine multiple modules in your configuration. For example, use PID con
 
 ---
 
-## Advanced Installation Methods
-
-### Option 3: ESPHome Web Installation (Manual Build)
-
-For advanced users who want to build their own custom firmware.
-
-* Create your own configuration as described above
-* Click Install -> Manual Download
-* The firmware will now be built, this may take some time
-* Download "Factory format"
-* Open [ESPHome Web](https://web.esphome.io/)
-* Connect your board to the computer via USB-C
-* The board will light up in default mode: Green Status LED, running LEDs at fan port
-* Hold down Boot and press Reset to go into Download Mode
-* Click "Connect"
-* Select ```ESP32-S2 COMx```
-* Click "Install"
-* Select the file you downloaded ```*.factory.bin```
-* Click "Install"
-* Wait for installation to finish
-* Press the reset button to boot into your software
-
-> **Tip**: Press F12 to open the developer console and view detailed installation progress.
-
-### Option 4: USB Installation via ESPHome CLI
-
-Requires ESPHome CLI installed locally with valid SSL certificate for WebSerial communication.
-
-* Create your own config as noted above
-* Connect your board to the computer via USB-C
-* The board will light up in default mode: Green Status LED, running LEDs at fan port
-* Hold down Boot and press Reset to go into Download Mode
-* Click Install -> Plug into this computer 
-* Select ```ESP32-S2 COMx```
-* Click "Connect"
-* The firmware will now be built, this may take some time
-* Wait for installation to finish
-* Press the reset button to boot into your software
-
-> **Tip**: Press F12 to open the developer console and view detailed installation progress.
-
-### Option 5: OTA Upload (Wireless Update)
-
-* Create your own config as noted above
-* Click Install -> Manual Download
-* The firmware will now be built, this may take some time
-* Download "OTA format"
-* Connect the board to power (USB-C or DC 12V)
-* The board will light up in default mode: Green Status LED, running LEDs at fan port
-* A new WiFi network will be visible (e.g. ```fancontroller-r3-1-abcdef```)
-* Connect to this WiFi network
-* Typically, the captive portal will be loaded automatically
-  * If not, navigate to [192.168.4.1](http://192.168.4.1)
-* Select the file you just downloaded at the bottom of the page under "OTA Update"
-* Click "Update"
-* The board will now reboot and be visible in ESPHome
-
-### Option 6: OTA Adoption (Initial WiFi Setup)
-
-Use this method to connect a factory-fresh board to your WiFi network before customizing.
-
-* Connect the board to power (USB-C or DC 12V)
-* The board will light up in default mode: Green Status LED, running LEDs at fan port
-* A new WiFi network will be visible (e.g. ```fancontroller-r3-1-abcdef```)
-* Connect to this WiFi network
-* Typically, the captive portal will be loaded automatically
-  * On Android, the system may ask you to stay connected to a WiFi without internet access
-  * If not, navigate to [192.168.4.1](http://192.168.4.1)
-* Select your WiFi and input the password
-* Click "Save"
-* If successful, the LEDs behind the fan ports will change to green.
-* The board will now connect to your wifi. Use your method of discovery to find the IP address, access the web UI and flash a new config via OTA upload.
-
 ## Power Draw
 
 The power usage of the device is dominated by the fans.
@@ -370,8 +311,8 @@ These values have been measured via a DPS3005 power supply, therefore, their acc
 
 ## Resources
 
-- **Web Installer**: [zeroflow.github.io/esphome-fancontroller](https://zeroflow.github.io/esphome-fancontroller/)
-- **Purchase**: [Elecrow Store](https://www.elecrow.com/wifi-fancontroller1.html) - $35,99
+- **Documentation & Web Installer**: [fancontroller.arthofer.dev](https://fancontroller.arthofer.dev/)
+- **Purchase Boards**: [Elecrow Store - $35,99](https://www.elecrow.com/wifi-fancontroller1.html)
 - **3D Printable Case**: [Printables.com](https://www.printables.com/model/987263-wifi-fancontroller-case)
 - **Hardware Packages**: Available in this repository under `hardware-rev-*.yaml`
 - **ESPHome Documentation**: [esphome.io](https://esphome.io/)

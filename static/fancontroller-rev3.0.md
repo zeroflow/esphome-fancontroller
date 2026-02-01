@@ -36,6 +36,14 @@ toc_icon: "microchip"
 
 <esp-web-install-button manifest="firmware/fancontroller-r3-0.manifest.json"></esp-web-install-button>
 
+> **Note:** ESP32-S2 boards may have connectivity issues with web-based flashing. If browser flash fails, use [esptool](https://github.com/espressif/esptool) for reliable flashing:
+>
+> ```bash
+> esptool.py --chip esp32s2 write_flash 0x0 firmware.bin
+> ```
+>
+> [Download prebuilt binary](/firmware/fancontroller-r3-0-esp32s2.factory.bin)
+
 ## Example Config File
 
 [Base Config - 4 fans](https://github.com/zeroflow/esphome-fancontroller/blob/main/fancontroller-rev3.0-esp32s2.yaml)
@@ -118,4 +126,4 @@ Nr. | Pin -| Description
 13  | GND  | 
 14  | GND  | 
 
-<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+<script type="module" src="https://unpkg.com/esp-web-tools@8.0.6/dist/web/install-button.js?module"></script>
