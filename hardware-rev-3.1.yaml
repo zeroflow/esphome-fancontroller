@@ -73,14 +73,10 @@ output:
     pin: GPIO12
     id: pwm_fan1
     frequency: "25000 Hz"
-    min_power: 5%
-    max_power: 100%
   - platform: ledc
     pin: GPIO13
     id: pwm_fan2
     frequency: "25000 Hz"
-    min_power: 5%
-    max_power: 100%
   - platform: ledc
     pin: GPIO14
     id: pwm_fan3
