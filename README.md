@@ -185,10 +185,10 @@ Visual feedback module that updates each fan's RGB LED based on its RPM reading.
 packages:
   rpm_status_leds:
     url: https://github.com/zeroflow/esphome-fancontroller
-    files: [modules/rpm_status_leds.yaml]
-    ref: main
-    vars:
-      full_rpm: "2500"  # RPM value considered as 100% speed
+    files: 
+      - path: modules/rpm_status_leds.yaml
+        vars:
+          full_rpm: 2500 # RPM value considered as 100% speed
 ```
 
 #### 2. Linear Temperature Control (`modules/temperature_linear.yaml`)
@@ -216,15 +216,15 @@ Simple linear fan control based on temperature. Creates a temperature curve with
 packages:
   temperature_linear:
     url: https://github.com/zeroflow/esphome-fancontroller
-    files: [modules/temperature_linear.yaml]
-    ref: main
-    vars:
-      friendly_name: "Server Rack"
-      t_off: "25.0"        # Fans off below 25°C
-      t1: "30.0"           # Start ramping at 30°C
-      t2: "50.0"           # Full speed at 50°C
-      fanpercent1: "30.0"  # Minimum speed: 30%
-      fanpercent2: "100.0" # Maximum speed: 100%
+    files: 
+      - path: modules/temperature_linear.yaml
+        vars:
+          friendly_name: "Server Rack"
+          t_off: "25.0"        # Fans off below 25°C
+          t1: "30.0"           # Start ramping at 30°C
+          t2: "50.0"           # Full speed at 50°C
+          fanpercent1: "30.0"  # Minimum speed: 30%
+          fanpercent2: "100.0" # Maximum speed: 100%
 ```
 
 #### 3. PID Temperature Control (`modules/temperature_pid.yaml`)
@@ -256,13 +256,14 @@ Shoutout to [patrickcollins12/esphome-fan-controller](https://github.com/patrick
 packages:
   temperature_pid:
     url: https://github.com/zeroflow/esphome-fancontroller
-    files: [modules/temperature_pid.yaml]
-    ref: main
-    vars:
-      friendly_name: "Server Rack"
-      kp: "0.39509"
-      ki: "0.00470"
-      kd: "20.74267"
+    files: 
+      - path: modules/temperature_pid.yaml
+        vars:
+          friendly_name: "Server Rack"
+          kp: "0.39509"
+          ki: "0.00470"
+          kd: "20.74267"
+
 ```
 
 **Tuning Tips:**
