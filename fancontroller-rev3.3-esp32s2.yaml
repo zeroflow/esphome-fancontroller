@@ -1,0 +1,64 @@
+# ESPHome Fan Controller - Revision 3.3 (ESP32-S2)
+# Base configuration file for production use
+#
+# This file contains the core ESPHome configuration and includes
+# the hardware-specific package for revision 3.3
+
+packages:
+  # Include hardware-specific configuration
+  hardware: github://zeroflow/esphome-fancontroller/hardware-rev-3.3.yaml@main
+
+esphome:
+  name: fancontroller-r3-3
+  friendly_name: fancontroller
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# API is a requirement of the dashboard import
+api:
+
+# OTA is required for Over-the-Air updating
+ota:
+  - platform: esphome
+
+wifi:
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device
+captive_portal:
+
+# Enable web server
+web_server:
+  port: 80
+
+# Optional: NeoPixel LED strip support
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    chipset: WS2812
+    pin: GPIO42
+    num_leds: 5 # default, increase if needed
+    name: "NeoPixel Light"
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:

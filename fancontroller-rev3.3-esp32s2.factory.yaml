@@ -1,0 +1,27 @@
+# ESPHome Fan Controller - Revision 3.3 (ESP32-S2) - Factory Configuration
+# This configuration is used for initial device provisioning and flashing.
+#
+# It includes additional features for first-time setup:
+# - Serial provisioning (ESP32-S2 does not support Bluetooth)
+# - Dashboard import capabilities
+#
+# After adoption, the device will use the base configuration without these extras.
+
+packages:
+  # Include all of the core configuration
+  core: !include fancontroller-rev3.3-esp32s2.yaml
+
+esphome:
+  # This will allow for project identification, configuration and updates
+  project:
+    name: zeroflow.fancontroller-rev3-3
+    version: "3.3"
+
+# This should point to the public location of the yaml file that will be adopted
+# After adoption, the device uses the core yaml without the factory-specific features
+dashboard_import:
+  package_import_url: github://zeroflow/esphome-fancontroller/fancontroller-rev3.3-esp32s2.yaml@main
+
+# Sets up the improv via serial client for Wi-Fi provisioning
+# Note: ESP32-S2 does not support Bluetooth LE provisioning (esp32_improv)
+improv_serial:
