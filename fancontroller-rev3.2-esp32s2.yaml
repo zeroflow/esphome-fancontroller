@@ -9,7 +9,7 @@ packages:
   hardware: github://zeroflow/esphome-fancontroller/hardware-rev-3.2.yaml@main
 
 esphome:
-  name: fancontroller-r3-3
+  name: fancontroller-r3-2
   friendly_name: fancontroller
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
