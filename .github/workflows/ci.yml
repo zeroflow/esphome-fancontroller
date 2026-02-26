@@ -25,6 +25,8 @@ jobs:
           - fancontroller-rev2.0-esp32s2
           - fancontroller-rev3.0-esp32s2
           - fancontroller-rev3.1-esp32s2
+          - fancontroller-rev3.2-esp32s2
+          - fancontroller-rev3.3-esp32s2
         esphome-version:
           - stable
           - beta
