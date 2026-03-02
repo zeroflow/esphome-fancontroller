@@ -256,7 +256,7 @@ Shoutout to [patrickcollins12/esphome-fan-controller](https://github.com/patrick
 packages:
   temperature_pid:
     url: https://github.com/zeroflow/esphome-fancontroller
-    files: 
+    files:
       - path: modules/temperature_pid.yaml
         vars:
           friendly_name: "Server Rack"
@@ -271,13 +271,82 @@ packages:
 - Start with low kp/ki/kd values and increase gradually
 - Monitor the P/I/D term sensors to understand controller behavior
 
+#### 4. RPM PI Control (`modules/rpm_pi_control.yaml`)
+
+PI (Proportional-Integral) controller that regulates PWM output to achieve and maintain precise target RPM for each fan. Unlike percentage-based control, this module uses closed-loop feedback to compensate for fan aging, voltage variations, and load changes.
+
+**Important:** This module uses the existing fan speed sensors from the hardware package. Since the default hardware sensors update every 10s with heavy filtering (too slow for stable PI control), you **must override** the sensor definitions in your config to use faster updates (2s recommended) and minimal filtering. See the example configuration below.
+
+**Configuration Variables:**
+- `friendly_name`: Device name prefix (default: "fancontroller")
+- `kp`: Proportional gain coefficient (default: 0.005)
+- `ki`: Integral gain coefficient (default: 0.001)
+- `update_interval`: Control loop update interval in seconds (default: 2, matches fast sensor update)
+
+**Features:**
+- Individual target RPM setpoints for each of 4 fans (0-4000 RPM range)
+- Enable/disable PI control per fan with switches
+- Live tuning of PI parameters via Home Assistant
+- Real-time monitoring of error, P-term, I-term, and PWM output
+- Anti-windup protection for integral term
+- Configurable minimum PWM to prevent stalling
+- Reset button for integral terms
+
+**Example:**
+```yaml
+packages:
+  hardware:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [hardware-rev-3.1.yaml]
+    ref: main
+  rpm_pi_control:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [modules/rpm_pi_control.yaml]
+    ref: main
+    vars:
+      friendly_name: "Server Rack"
+      kp: "0.005"           # Proportional gain
+      ki: "0.001"           # Integral gain
+      update_interval: "2"  # Update every 2 seconds (matches sensor update)
+
+# REQUIRED: Override hardware sensors for faster updates
+sensor:
+  - platform: pulse_counter
+    id: fan1_speed
+    pin: {number: GPIO16, mode: INPUT_PULLUP}
+    update_interval: 2s
+    filters:
+      - multiply: 0.5
+      - sliding_window_moving_average: {window_size: 3, send_every: 1}
+  # Repeat for fan2_speed, fan3_speed, fan4_speed (see full example)
+```
+
+**How to Use:**
+1. Enable "PI Control Fan X" switch in Home Assistant
+2. Set "Fan X Target RPM" to your desired speed (e.g., 1500 RPM)
+3. The controller automatically adjusts PWM to maintain that speed
+4. Monitor debug sensors (Error, P-Term, I-Term, PWM Output) to verify operation
+5. Fine-tune Kp and Ki parameters if needed
+
+**Tuning Tips:**
+- Start with small kp (0.003-0.01) and ki (0.0005-0.002) values
+- If fans respond too slowly: Increase Kp
+- If fans oscillate around target: Decrease Kp or Ki
+- If there's persistent error (actual RPM stays below/above target): Increase Ki
+- Use "Reset PI Integrators" button when changing parameters or after long idle periods
+- Monitor the debug sensors to understand controller behavior
+
 ### Choosing a Control Module
 
 - **Linear Control**: Best for simple setups where you want predictable fan behavior based on temperature zones. Easy to understand and configure.
-- **PID Control**: Best for precise temperature control and systems where you want to maintain a specific target temperature with minimal fluctuation.
-- **RPM Status LEDs**: Can be combined with either control module to add visual feedback.
+- **PID Temperature Control**: Best for precise temperature control and systems where you want to maintain a specific target temperature with minimal fluctuation.
+- **RPM PI Control**: Best when you need precise fan speed control in RPM, regardless of temperature. Ideal for applications requiring consistent airflow, compensating for fan aging, or when you want to set exact fan speeds.
+- **RPM Status LEDs**: Can be combined with any control module to add visual feedback.
 
-You can combine multiple modules in your configuration. For example, use PID control with RPM status LEDs for both precise control and visual feedback.
+You can combine multiple modules in your configuration. For example:
+- Use PID temperature control with RPM status LEDs for precise temperature regulation with visual feedback
+- Use RPM PI control with temperature sensors to create a custom automation that sets target RPM based on temperature thresholds
+- Combine linear temperature control with RPM status LEDs for simple automatic control with visual feedback
 
 ---
 

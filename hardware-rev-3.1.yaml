@@ -139,10 +139,7 @@ sensor:
     accuracy_decimals: 0
     filters:
       - multiply: 0.5
-      - sliding_window_moving_average:
-          window_size: 12
-          send_every: 6
-    update_interval: 10s
+    update_interval: 1s
 
   # Fan 2 Speed
   - platform: pulse_counter
@@ -155,10 +152,7 @@ sensor:
     accuracy_decimals: 0
     filters:
       - multiply: 0.5
-      - sliding_window_moving_average:
-          window_size: 12
-          send_every: 6
-    update_interval: 10s
+    update_interval: 1s
 
   # Fan 3 Speed
   - platform: pulse_counter
@@ -171,10 +165,7 @@ sensor:
     accuracy_decimals: 0
     filters:
       - multiply: 0.5
-      - sliding_window_moving_average:
-          window_size: 12
-          send_every: 6
-    update_interval: 10s
+    update_interval: 1s
 
   # Fan 4 Speed
   - platform: pulse_counter
@@ -187,10 +178,7 @@ sensor:
     accuracy_decimals: 0
     filters:
       - multiply: 0.5
-      - sliding_window_moving_average:
-          window_size: 12
-          send_every: 6
-    update_interval: 10s
+    update_interval: 1s
 
 # Binary sensors (buttons)
 binary_sensor:

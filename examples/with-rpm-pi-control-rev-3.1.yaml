@@ -1,0 +1,87 @@
+# Example: Hardware Rev 3.1 with RPM-based PI Control
+#
+# This example shows how to use the RPM PI control module to maintain
+# precise fan speeds. The PI controller automatically adjusts PWM output
+# to keep fans running at the target RPM, regardless of load changes,
+# fan aging, or voltage variations.
+#
+# IMPORTANT: Hardware Rev 3.1 sensors update every 1s, which is fast enough
+# for stable PI control. No additional sensor filtering is required.
+
+packages:
+  hardware:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [hardware-rev-3.1.yaml]
+    ref: main
+  rpm_pi_control:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [modules/rpm_pi_control.yaml]
+    ref: main
+    vars:
+      kp: "50"     # Scaled by 100000, actual: 0.0005
+      ki: "10"     # Scaled by 100000, actual: 0.0001
+  rpm_status_leds:
+    url: https://github.com/zeroflow/esphome-fancontroller
+    files: [modules/rpm_status_leds.yaml]
+    ref: main
+
+esphome:
+  name: my-fancontroller
+  friendly_name: My Fan Controller
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+
+# WiFi configuration
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Fancontroller Fallback"
+
+# Enable web server
+web_server:
+  port: 80
+
+# Enable captive portal for WiFi setup
+captive_portal:
+
+# NOTE: The hardware sensors from hardware-rev-3.1.yaml already update every 1s,
+# which is fast enough for stable PI control. No additional filtering needed.
+
+# Customize PI control parameters via substitutions:
+#
+# substitutions:
+#   friendly_name: "Server Rack"
+#   kp: "50"              # Proportional gain scaled by 100000 (increase for faster response)
+#   ki: "10"              # Integral gain scaled by 100000 (increase to eliminate steady-state error)
+#   update_interval: "1"  # Control loop update interval in seconds (matches sensor update)
+#
+# How to use:
+# 1. Enable "PI Control Fan X" switch in Home Assistant
+# 2. Set "Fan X Target RPM" to your desired speed
+# 3. The controller will automatically adjust PWM to maintain that RPM
+# 4. Monitor debug sensors (Error, P-Term, I-Term, PWM Output) to verify operation
+# 5. Fine-tune Kp and Ki parameters if needed
+#
+# Tuning Guide:
+# - Start with Kp=30-50 and Ki=5-10 (values are scaled by 100000 for easy slider control)
+# - If fans respond too slowly: Increase Kp
+# - If fans oscillate around target: Decrease Kp/Ki or increase Deadband
+# - If there's a persistent error (actual RPM always below/above target): Increase Ki
+# - Use Deadband (5-20 RPM) to prevent oscillation in steady state
+# - Use "Reset PI Integrators" button when changing parameters or after long idle periods

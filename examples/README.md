@@ -15,6 +15,7 @@ Simple configurations that get you started quickly:
 
 Examples showing additional features and modules:
 
+- **`with-rpm-pi-control-rev-3.1.yaml`** - Shows how to use the RPM PI control module for precise fan speed regulation with deadband and I-term reset
 - **`with-rgb-status-leds-rev-3.1.yaml`** - Shows how to use the RGB status LED module for visual fan speed feedback
 - **`with-temperature-curve-rev-3.1.yaml`** - Shows how to use the temperature curve module for flexible multi-point fan control (recommended!)
 - **`with-temperature-control-rev-3.1.yaml`** - Shows how to use temperature control modules (linear/PID) for automatic fan speed adjustment
@@ -44,6 +45,7 @@ All examples use hardware packages located in the root directory:
 
 Additional functionality can be added via modules in the `modules/` directory:
 
+- `modules/rpm_pi_control.yaml` - PI controller for precise RPM regulation with deadband and I-term reset features
 - `modules/rpm_status_leds.yaml` - Visual feedback for fan operation (RGB LEDs change color based on RPM)
 - `modules/temperature_curve.yaml` - Flexible 5-point temperature curve with linear interpolation (recommended!)
 - `modules/temperature_linear.yaml` - Simple linear temperature-based fan control

@@ -1,0 +1,645 @@
+# RPM PI Control Module
+#
+# PI (Proportional-Integral) controller that regulates PWM output to achieve target RPM.
+# Each fan can have an independent target RPM, and the PI controller automatically
+# adjusts the PWM duty cycle to maintain that speed.
+#
+# IMPORTANT: This module uses the existing fan speed sensors from the hardware package.
+# Hardware Rev 3.1+ sensors update every 1s (fast enough for PI control).
+# The default sensor configuration is sufficient for stable PI control.
+#
+# Usage:
+#   packages:
+#     hardware: !include hardware-rev-3.1.yaml
+#     rpm_pi_control:
+#       url: https://github.com/zeroflow/esphome-fancontroller
+#       files: [modules/rpm_pi_control.yaml]
+#       ref: main
+#       vars:
+#         friendly_name: "My Fan Controller"
+#         kp: "50"             # Proportional gain (scaled by 100000, actual: 0.0005)
+#         ki: "10"             # Integral gain (scaled by 100000, actual: 0.0001)
+#         update_interval: "1" # Control loop interval (matches 1s sensor update)
+#
+#   # OPTIONAL: Add filtering only if your fans have very noisy tachometer signals
+#   sensor:
+#     - id: !extend fan1_speed
+#       filters:
+#         - sliding_window_moving_average: {window_size: 3, send_every: 1}
+#     # Repeat for fan2_speed, fan3_speed, fan4_speed...
+#
+# Configuration Variables:
+#   - friendly_name: Device name prefix (default: "Fancontroller")
+#   - kp: Proportional gain coefficient scaled by 100000 (default: 50, actual: 0.0005)
+#   - ki: Integral gain coefficient scaled by 100000 (default: 10, actual: 0.0001)
+#   - update_interval: Control loop update interval in seconds (default: 1)
+#
+# Features:
+#   - Individual target RPM setpoints for each of 4 fans
+#   - Enable/disable PI control per fan with switches
+#   - Live tuning of PI parameters via Home Assistant (scaled by 100000 for easy slider control)
+#   - Real-time monitoring of error, P-term, I-term, and PWM output
+#   - Anti-windup protection for integral term
+#   - Deadband (dead zone) to prevent oscillation around setpoint
+#   - I-term reset on large setpoint changes to prevent overshoot
+#   - Smooth PWM output with clamping
+#   - Uses existing hardware sensors (1s update rate is sufficient)
+#
+# Tuning Tips:
+#   - Start with small kp (30-50) and ki (5-10) values (scaled by 100000)
+#   - Increase kp first until you get quick response with slight overshoot
+#   - Add ki to eliminate steady-state error
+#   - Use deadband (5-20 RPM) to prevent oscillation around setpoint
+#   - Set setpoint change threshold (200-500 RPM) to reset I-term on large changes
+#   - Monitor the debug sensors to understand controller behavior
+#   - If output oscillates, reduce kp/ki or increase deadband
+#   - If response is too slow, increase kp
+
+substitutions:
+  friendly_name: "Fancontroller" # default
+  kp: "50"      # Scaled by 100000, actual value: 0.0005
+  ki: "10"      # Scaled by 100000, actual value: 0.0001
+  update_interval: "1"
+
+# Globals for storing PI controller state
+globals:
+  # Integral terms for each fan (anti-windup protected)
+  - id: fan1_integral
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan2_integral
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan3_integral
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan4_integral
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+
+  # Current PWM output values (0.0 - 1.0)
+  - id: fan1_pwm_output
+    type: float
+    restore_value: yes
+    initial_value: '0.0'
+  - id: fan2_pwm_output
+    type: float
+    restore_value: yes
+    initial_value: '0.0'
+  - id: fan3_pwm_output
+    type: float
+    restore_value: yes
+    initial_value: '0.0'
+  - id: fan4_pwm_output
+    type: float
+    restore_value: yes
+    initial_value: '0.0'
+
+  # Previous target RPM values for detecting setpoint changes
+  - id: fan1_prev_target
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan2_prev_target
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan3_prev_target
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan4_prev_target
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+
+# Configuration numbers for PI parameters
+number:
+  # PI Controller Parameters (scaled by 100000 for better UI slider control)
+  - platform: template
+    name: "${friendly_name} PI Kp"
+    icon: mdi:tune
+    restore_value: true
+    initial_value: ${kp}
+    min_value: 0
+    max_value: 1000
+    step: 1
+    optimistic: true
+    entity_category: config
+    id: pi_kp
+
+  - platform: template
+    name: "${friendly_name} PI Ki"
+    icon: mdi:tune
+    restore_value: true
+    initial_value: ${ki}
+    min_value: 0
+    max_value: 100
+    step: 1
+    optimistic: true
+    entity_category: config
+    id: pi_ki
+
+  # Anti-windup limit for integral term
+  - platform: template
+    name: "${friendly_name} PI Integral Limit"
+    icon: mdi:lock
+    restore_value: true
+    initial_value: 0.5
+    min_value: 0.1
+    max_value: 1.0
+    step: 0.1
+    optimistic: true
+    entity_category: config
+    id: pi_integral_limit
+
+  # Minimum PWM output (to keep fans spinning)
+  - platform: template
+    name: "${friendly_name} PWM Minimum"
+    icon: mdi:percent
+    restore_value: true
+    initial_value: 20
+    min_value: 0
+    max_value: 50
+    step: 1
+    optimistic: true
+    entity_category: config
+    id: pwm_minimum
+    unit_of_measurement: "%"
+
+  # Deadband: error range where no control action is taken
+  - platform: template
+    name: "${friendly_name} PI Deadband"
+    icon: mdi:arrow-expand-horizontal
+    restore_value: true
+    initial_value: 5
+    min_value: 0
+    max_value: 100
+    step: 1
+    optimistic: true
+    entity_category: config
+    id: pi_deadband
+    unit_of_measurement: "RPM"
+
+  # Setpoint change threshold for I-term reset
+  - platform: template
+    name: "${friendly_name} PI Setpoint Change Threshold"
+    icon: mdi:delta
+    restore_value: true
+    initial_value: 200
+    min_value: 0
+    max_value: 1000
+    step: 50
+    optimistic: true
+    entity_category: config
+    id: pi_setpoint_threshold
+    unit_of_measurement: "RPM"
+
+  # Target RPM setpoints for each fan
+  - platform: template
+    name: "${friendly_name} Fan 1 Target RPM"
+    icon: mdi:fan
+    restore_value: true
+    initial_value: 1500
+    min_value: 0
+    max_value: 4000
+    step: 10
+    optimistic: true
+    id: fan1_target_rpm
+    unit_of_measurement: "RPM"
+
+  - platform: template
+    name: "${friendly_name} Fan 2 Target RPM"
+    icon: mdi:fan
+    restore_value: true
+    initial_value: 1500
+    min_value: 0
+    max_value: 4000
+    step: 10
+    optimistic: true
+    id: fan2_target_rpm
+    unit_of_measurement: "RPM"
+
+  - platform: template
+    name: "${friendly_name} Fan 3 Target RPM"
+    icon: mdi:fan
+    restore_value: true
+    initial_value: 1500
+    min_value: 0
+    max_value: 4000
+    step: 10
+    optimistic: true
+    id: fan3_target_rpm
+    unit_of_measurement: "RPM"
+
+  - platform: template
+    name: "${friendly_name} Fan 4 Target RPM"
+    icon: mdi:fan
+    restore_value: true
+    initial_value: 1500
+    min_value: 0
+    max_value: 4000
+    step: 10
+    optimistic: true
+    id: fan4_target_rpm
+    unit_of_measurement: "RPM"
+
+# Switches to enable/disable PI control per fan
+switch:
+  - platform: template
+    name: "${friendly_name} PI Control Fan 1"
+    id: pi_control_fan1
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: mdi:controller
+
+  - platform: template
+    name: "${friendly_name} PI Control Fan 2"
+    id: pi_control_fan2
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: mdi:controller
+
+  - platform: template
+    name: "${friendly_name} PI Control Fan 3"
+    id: pi_control_fan3
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: mdi:controller
+
+  - platform: template
+    name: "${friendly_name} PI Control Fan 4"
+    id: pi_control_fan4
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: mdi:controller
+
+# Debug sensors for monitoring PI controller state
+sensor:
+  # Fan 1 Debug Sensors
+  - platform: template
+    name: "${friendly_name} Fan 1 Error"
+    id: fan1_error
+    unit_of_measurement: "RPM"
+    accuracy_decimals: 0
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 1 P-Term"
+    id: fan1_p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 1 I-Term"
+    id: fan1_i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 1 PWM Output"
+    id: fan1_pwm_sensor
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    entity_category: diagnostic
+
+  # Fan 2 Debug Sensors
+  - platform: template
+    name: "${friendly_name} Fan 2 Error"
+    id: fan2_error
+    unit_of_measurement: "RPM"
+    accuracy_decimals: 0
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 2 P-Term"
+    id: fan2_p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 2 I-Term"
+    id: fan2_i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 2 PWM Output"
+    id: fan2_pwm_sensor
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    entity_category: diagnostic
+
+  # Fan 3 Debug Sensors
+  - platform: template
+    name: "${friendly_name} Fan 3 Error"
+    id: fan3_error
+    unit_of_measurement: "RPM"
+    accuracy_decimals: 0
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 3 P-Term"
+    id: fan3_p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 3 I-Term"
+    id: fan3_i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 3 PWM Output"
+    id: fan3_pwm_sensor
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    entity_category: diagnostic
+
+  # Fan 4 Debug Sensors
+  - platform: template
+    name: "${friendly_name} Fan 4 Error"
+    id: fan4_error
+    unit_of_measurement: "RPM"
+    accuracy_decimals: 0
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 4 P-Term"
+    id: fan4_p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 4 I-Term"
+    id: fan4_i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+
+  - platform: template
+    name: "${friendly_name} Fan 4 PWM Output"
+    id: fan4_pwm_sensor
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    entity_category: diagnostic
+
+# Button to reset all integral terms (useful when tuning)
+button:
+  - platform: template
+    name: "${friendly_name} Reset PI Integrators"
+    icon: mdi:restart
+    entity_category: config
+    on_press:
+      - lambda: |-
+          id(fan1_integral) = 0.0;
+          id(fan2_integral) = 0.0;
+          id(fan3_integral) = 0.0;
+          id(fan4_integral) = 0.0;
+          ESP_LOGI("PI_CONTROL", "All integral terms reset to 0");
+
+# Main PI control loop
+interval:
+  - interval: ${update_interval}s
+    then:
+      - lambda: |-
+          // Get PI parameters (scale down by 100000 for actual control values)
+          float kp = id(pi_kp).state / 100000.0;
+          float ki = id(pi_ki).state / 100000.0;
+          float dt = ${update_interval};
+          float integral_limit = id(pi_integral_limit).state;
+          float pwm_min = id(pwm_minimum).state / 100.0;
+          float deadband = id(pi_deadband).state;
+          float setpoint_threshold = id(pi_setpoint_threshold).state;
+
+          // ==================== FAN 1 ====================
+          if (id(pi_control_fan1).state) {
+            float target = id(fan1_target_rpm).state;
+            float actual = id(fan1_speed).state;
+            if (isnan(actual)) actual = 0;
+
+            // Check for large setpoint change and reset I-term if needed
+            float setpoint_change = abs(target - id(fan1_prev_target));
+            if (setpoint_change > setpoint_threshold) {
+              id(fan1_integral) = 0.0;
+              ESP_LOGD("PI_CONTROL", "Fan 1: Setpoint changed by %.0f RPM, I-term reset", setpoint_change);
+            }
+            id(fan1_prev_target) = target;
+
+            // Calculate error
+            float error = target - actual;
+
+            // Apply deadband
+            if (abs(error) < deadband) {
+              error = 0.0;
+            }
+
+            // Proportional term
+            float p_term = kp * error;
+
+            // Integral term with anti-windup
+            id(fan1_integral) += error * dt;
+            id(fan1_integral) = clamp(id(fan1_integral), -integral_limit / ki, integral_limit / ki);
+            float i_term = ki * id(fan1_integral);
+
+            // Calculate output
+            float output = p_term + i_term;
+            output = clamp(output, 0.0f, 1.0f);
+
+            // Apply minimum PWM if target > 0
+            if (target > 0 && output > 0 && output < pwm_min) {
+              output = pwm_min;
+            }
+
+            // Store and apply
+            id(fan1_pwm_output) = output;
+            id(pwm_fan1).set_level(output);
+
+            // Update debug sensors
+            id(fan1_error).publish_state(error);
+            id(fan1_p_term).publish_state(p_term * 100.0);
+            id(fan1_i_term).publish_state(i_term * 100.0);
+            id(fan1_pwm_sensor).publish_state(output * 100.0);
+          } else {
+            // PI control disabled, reset integral and store current target
+            id(fan1_integral) = 0.0;
+            id(fan1_prev_target) = id(fan1_target_rpm).state;
+          }
+
+          // ==================== FAN 2 ====================
+          if (id(pi_control_fan2).state) {
+            float target = id(fan2_target_rpm).state;
+            float actual = id(fan2_speed).state;
+            if (isnan(actual)) actual = 0;
+
+            // Check for large setpoint change and reset I-term if needed
+            float setpoint_change = abs(target - id(fan2_prev_target));
+            if (setpoint_change > setpoint_threshold) {
+              id(fan2_integral) = 0.0;
+              ESP_LOGD("PI_CONTROL", "Fan 2: Setpoint changed by %.0f RPM, I-term reset", setpoint_change);
+            }
+            id(fan2_prev_target) = target;
+
+            // Calculate error
+            float error = target - actual;
+
+            // Apply deadband
+            if (abs(error) < deadband) {
+              error = 0.0;
+            }
+
+            // Proportional term
+            float p_term = kp * error;
+
+            // Integral term with anti-windup
+            id(fan2_integral) += error * dt;
+            id(fan2_integral) = clamp(id(fan2_integral), -integral_limit / ki, integral_limit / ki);
+            float i_term = ki * id(fan2_integral);
+
+            // Calculate output
+            float output = p_term + i_term;
+            output = clamp(output, 0.0f, 1.0f);
+
+            // Apply minimum PWM if target > 0
+            if (target > 0 && output > 0 && output < pwm_min) {
+              output = pwm_min;
+            }
+
+            // Store and apply
+            id(fan2_pwm_output) = output;
+            id(pwm_fan2).set_level(output);
+
+            // Update debug sensors
+            id(fan2_error).publish_state(error);
+            id(fan2_p_term).publish_state(p_term * 100.0);
+            id(fan2_i_term).publish_state(i_term * 100.0);
+            id(fan2_pwm_sensor).publish_state(output * 100.0);
+          } else {
+            // PI control disabled, reset integral and store current target
+            id(fan2_integral) = 0.0;
+            id(fan2_prev_target) = id(fan2_target_rpm).state;
+          }
+
+          // ==================== FAN 3 ====================
+          if (id(pi_control_fan3).state) {
+            float target = id(fan3_target_rpm).state;
+            float actual = id(fan3_speed).state;
+            if (isnan(actual)) actual = 0;
+
+            // Check for large setpoint change and reset I-term if needed
+            float setpoint_change = abs(target - id(fan3_prev_target));
+            if (setpoint_change > setpoint_threshold) {
+              id(fan3_integral) = 0.0;
+              ESP_LOGD("PI_CONTROL", "Fan 3: Setpoint changed by %.0f RPM, I-term reset", setpoint_change);
+            }
+            id(fan3_prev_target) = target;
+
+            // Calculate error
+            float error = target - actual;
+
+            // Apply deadband
+            if (abs(error) < deadband) {
+              error = 0.0;
+            }
+
+            // Proportional term
+            float p_term = kp * error;
+
+            // Integral term with anti-windup
+            id(fan3_integral) += error * dt;
+            id(fan3_integral) = clamp(id(fan3_integral), -integral_limit / ki, integral_limit / ki);
+            float i_term = ki * id(fan3_integral);
+
+            // Calculate output
+            float output = p_term + i_term;
+            output = clamp(output, 0.0f, 1.0f);
+
+            // Apply minimum PWM if target > 0
+            if (target > 0 && output > 0 && output < pwm_min) {
+              output = pwm_min;
+            }
+
+            // Store and apply
+            id(fan3_pwm_output) = output;
+            id(pwm_fan3).set_level(output);
+
+            // Update debug sensors
+            id(fan3_error).publish_state(error);
+            id(fan3_p_term).publish_state(p_term * 100.0);
+            id(fan3_i_term).publish_state(i_term * 100.0);
+            id(fan3_pwm_sensor).publish_state(output * 100.0);
+          } else {
+            // PI control disabled, reset integral and store current target
+            id(fan3_integral) = 0.0;
+            id(fan3_prev_target) = id(fan3_target_rpm).state;
+          }
+
+          // ==================== FAN 4 ====================
+          if (id(pi_control_fan4).state) {
+            float target = id(fan4_target_rpm).state;
+            float actual = id(fan4_speed).state;
+            if (isnan(actual)) actual = 0;
+
+            // Check for large setpoint change and reset I-term if needed
+            float setpoint_change = abs(target - id(fan4_prev_target));
+            if (setpoint_change > setpoint_threshold) {
+              id(fan4_integral) = 0.0;
+              ESP_LOGD("PI_CONTROL", "Fan 4: Setpoint changed by %.0f RPM, I-term reset", setpoint_change);
+            }
+            id(fan4_prev_target) = target;
+
+            // Calculate error
+            float error = target - actual;
+
+            // Apply deadband
+            if (abs(error) < deadband) {
+              error = 0.0;
+            }
+
+            // Proportional term
+            float p_term = kp * error;
+
+            // Integral term with anti-windup
+            id(fan4_integral) += error * dt;
+            id(fan4_integral) = clamp(id(fan4_integral), -integral_limit / ki, integral_limit / ki);
+            float i_term = ki * id(fan4_integral);
+
+            // Calculate output
+            float output = p_term + i_term;
+            output = clamp(output, 0.0f, 1.0f);
+
+            // Apply minimum PWM if target > 0
+            if (target > 0 && output > 0 && output < pwm_min) {
+              output = pwm_min;
+            }
+
+            // Store and apply
+            id(fan4_pwm_output) = output;
+            id(pwm_fan4).set_level(output);
+
+            // Update debug sensors
+            id(fan4_error).publish_state(error);
+            id(fan4_p_term).publish_state(p_term * 100.0);
+            id(fan4_i_term).publish_state(i_term * 100.0);
+            id(fan4_pwm_sensor).publish_state(output * 100.0);
+          } else {
+            // PI control disabled, reset integral and store current target
+            id(fan4_integral) = 0.0;
+            id(fan4_prev_target) = id(fan4_target_rpm).state;
+          }
