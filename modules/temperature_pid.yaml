@@ -141,6 +141,7 @@ number:
   - platform: template
     entity_category: config
     name: PWM Minimum
+    id: pwm_minimum
     min_value: 0
     max_value: 30
     step: 1
@@ -156,6 +157,10 @@ output:
         float write_val = 
           (id(manual_fan_control).state) ?
             id(manual_fan_control).speed : state*100.0;
+        float pwm_min = id(pwm_minimum).state;
+        if (write_val > 0.0 && write_val < pwm_min) {
+          write_val = pwm_min;
+        }
         if (id(pid_control_fan1).state) {
           if (write_val == 0.0) {
             id(fan1).turn_off().perform();
