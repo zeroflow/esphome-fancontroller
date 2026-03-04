@@ -12,7 +12,7 @@
 #   packages:
 #     hardware: !include hardware-rev-3.1.yaml
 #     rpm_pi_control:
-#       url: https://github.com/zeroflow/esphome-fancontroller
+#       url: https://github.com/zeroflow/wifi-fancontroller
 #       files: [modules/rpm_pi_control.yaml]
 #       ref: main
 #       vars:

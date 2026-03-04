@@ -56,14 +56,14 @@ Rev 3.1 builds upon Rev 3.0 with visual feedback improvements:
 This board uses a modular package-based configuration system. Check out these examples to get started:
 
 ### Basic Setup
-- **[Basic Configuration](https://github.com/zeroflow/esphome-fancontroller/blob/main/examples/basic-rev-3.1.yaml)** - Minimal setup with 4 fans and essential features
+- **[Basic Configuration](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-3.1.yaml)** - Minimal setup with 4 fans and essential features
 
 ### Advanced Features
-- **[RGB Status LEDs](https://github.com/zeroflow/esphome-fancontroller/blob/main/examples/with-rgb-status-leds-rev-3.1.yaml)** - Visual fan speed feedback with color-coded LEDs (red=slow, green=fast)
-- **[Temperature Curve Control](https://github.com/zeroflow/esphome-fancontroller/blob/main/examples/with-temperature-curve-rev-3.1.yaml)** - Flexible 5-point temperature curve with linear interpolation
-- **[Temperature Control (Linear/PID)](https://github.com/zeroflow/esphome-fancontroller/blob/main/examples/with-temperature-control-rev-3.1.yaml)** - Automatic fan speed adjustment based on temperature
+- **[RGB Status LEDs](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-rgb-status-leds-rev-3.1.yaml)** - Visual fan speed feedback with color-coded LEDs (red=slow, green=fast)
+- **[Temperature Curve Control](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-temperature-curve-rev-3.1.yaml)** - Flexible 5-point temperature curve with linear interpolation
+- **[Temperature Control (Linear/PID)](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-temperature-control-rev-3.1.yaml)** - Automatic fan speed adjustment based on temperature
 
-For all available examples and module documentation, see the [examples directory](https://github.com/zeroflow/esphome-fancontroller/tree/main/examples).
+For all available examples and module documentation, see the [examples directory](https://github.com/zeroflow/wifi-fancontroller/tree/main/examples).
 
 ## Board
 

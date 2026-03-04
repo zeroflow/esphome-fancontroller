@@ -6,7 +6,7 @@
 # Usage:
 #   packages:
 #     temperature_curve:
-#       url: https://github.com/zeroflow/esphome-fancontroller
+#       url: https://github.com/zeroflow/wifi-fancontroller
 #       files: [modules/temperature_curve.yaml]
 #       ref: main
 #       vars:

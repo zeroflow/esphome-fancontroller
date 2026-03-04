@@ -5,7 +5,7 @@
 
 packages:
   # Include the hardware-specific configuration
-  hardware: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
+  hardware: github://zeroflow/wifi-fancontroller/hardware-rev-3.0.yaml@main
 
 esphome:
   name: my-fancontroller

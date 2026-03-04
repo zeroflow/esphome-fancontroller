@@ -10,7 +10,7 @@
 #
 # Usage (GitHub):
 #   packages:
-#     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
+#     fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-3.0.yaml@main
 
 packages:
   rev_3_1: !include hardware-rev-3.1.yaml

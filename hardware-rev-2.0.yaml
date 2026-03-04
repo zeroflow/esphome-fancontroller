@@ -8,7 +8,7 @@
 #
 # Usage (GitHub):
 #   packages:
-#     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-2.0.yaml@main
+#     fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-2.0.yaml@main
 
 # I2C Bus
 i2c:

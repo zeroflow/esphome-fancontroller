@@ -103,7 +103,7 @@ This works by adding the following lines to your esphome config:
 ```yaml
 # Import the hardware package for your board revision
 packages:
-  fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.3.yaml@main
+  fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-3.3.yaml@main
 ```
 
 #### Example Configuration
@@ -113,7 +113,7 @@ Here's a complete example showing how to create a custom configuration using the
 ```yaml
 # Import the hardware package for your board revision
 packages:
-  fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.3.yaml@main
+  fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-3.3.yaml@main
 
 esphome:
   name: my-fancontroller
@@ -184,7 +184,7 @@ Visual feedback module that updates each fan's RGB LED based on its RPM reading.
 ```yaml
 packages:
   rpm_status_leds:
-    url: https://github.com/zeroflow/esphome-fancontroller
+    url: https://github.com/zeroflow/wifi-fancontroller
     files: 
       - path: modules/rpm_status_leds.yaml
         vars:
@@ -215,7 +215,7 @@ Simple linear fan control based on temperature. Creates a temperature curve with
 ```yaml
 packages:
   temperature_linear:
-    url: https://github.com/zeroflow/esphome-fancontroller
+    url: https://github.com/zeroflow/wifi-fancontroller
     files: 
       - path: modules/temperature_linear.yaml
         vars:
@@ -255,7 +255,7 @@ Shoutout to [patrickcollins12/esphome-fan-controller](https://github.com/patrick
 ```yaml
 packages:
   temperature_pid:
-    url: https://github.com/zeroflow/esphome-fancontroller
+    url: https://github.com/zeroflow/wifi-fancontroller
     files:
       - path: modules/temperature_pid.yaml
         vars:
@@ -296,11 +296,11 @@ PI (Proportional-Integral) controller that regulates PWM output to achieve and m
 ```yaml
 packages:
   hardware:
-    url: https://github.com/zeroflow/esphome-fancontroller
+    url: https://github.com/zeroflow/wifi-fancontroller
     files: [hardware-rev-3.1.yaml]
     ref: main
   rpm_pi_control:
-    url: https://github.com/zeroflow/esphome-fancontroller
+    url: https://github.com/zeroflow/wifi-fancontroller
     files: [modules/rpm_pi_control.yaml]
     ref: main
     vars:
@@ -375,7 +375,7 @@ These values have been measured via a DPS3005 power supply, therefore, their acc
 
 **Troubleshooting Discovery Issues**: If your board doesn't appear in ESPHome after connecting to WiFi, check for mDNS issues on your network. You can work around this by manually specifying the board's IP address using the [manual_ip](https://esphome.io/components/wifi.html) configuration in your WiFi settings.
 
-**Need Help?** Open an issue on [GitHub](https://github.com/zeroflow/esphome-fancontroller/issues) or consult the ESPHome documentation.
+**Need Help?** Open an issue on [GitHub](https://github.com/zeroflow/wifi-fancontroller/issues) or consult the ESPHome documentation.
 
 ---
 
@@ -390,4 +390,4 @@ These values have been measured via a DPS3005 power supply, therefore, their acc
 
 ## Contributing
 
-Found a bug or have a feature request? Open an issue or submit a pull request on [GitHub](https://github.com/zeroflow/esphome-fancontroller).
+Found a bug or have a feature request? Open an issue or submit a pull request on [GitHub](https://github.com/zeroflow/wifi-fancontroller).

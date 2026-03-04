@@ -15,7 +15,7 @@ author:
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/zeroflow/esphome-fancontroller"
+      url: "https://github.com/zeroflow/wifi-fancontroller"
     - label: "Buy on Elecrow"
       icon: "fas fa-fw fa-shopping-cart"
       url: "https://www.elecrow.com/wifi-fancontroller1.html"

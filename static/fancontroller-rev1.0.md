@@ -36,9 +36,9 @@ toc_icon: "microchip"
 
 This board uses a modular package-based configuration system. Check out these examples to get started:
 
-- **[Basic Configuration](https://github.com/zeroflow/esphome-fancontroller/blob/main/examples/basic-rev-1.0.yaml)** - Minimal setup with 4 fans and essential features
+- **[Basic Configuration](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-1.0.yaml)** - Minimal setup with 4 fans and essential features
 
-For more examples and advanced features, see the [examples directory](https://github.com/zeroflow/esphome-fancontroller/tree/main/examples).
+For more examples and advanced features, see the [examples directory](https://github.com/zeroflow/wifi-fancontroller/tree/main/examples).
 
 ## Board
 

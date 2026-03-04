@@ -8,7 +8,7 @@
 #
 # Usage (GitHub):
 #   packages:
-#     fancontroller: github://zeroflow/esphome-fancontroller/hardware-rev-3.0.yaml@main
+#     fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-3.0.yaml@main
 
 # Boot sequence: Status LED slow pulse
 esphome:

@@ -6,7 +6,7 @@
 # Usage:
 #   packages:
 #     rpm_status_leds:
-#       url: https://github.com/zeroflow/esphome-fancontroller
+#       url: https://github.com/zeroflow/wifi-fancontroller
 #       files: [modules/rpm_status_leds.yaml]
 #       ref: main
 #       vars:

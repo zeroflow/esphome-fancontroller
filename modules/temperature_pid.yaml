@@ -8,7 +8,7 @@
 # Usage:
 #   packages:
 #     temperature_pid:
-#       url: https://github.com/zeroflow/esphome-fancontroller
+#       url: https://github.com/zeroflow/wifi-fancontroller
 #       files: [modules/temperature_pid.yaml]
 #       ref: main
 #       vars:

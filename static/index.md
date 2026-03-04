@@ -8,7 +8,7 @@ header:
     - label: "Buy Now - $35,99"
       url: "https://www.elecrow.com/wifi-fancontroller1.html"
     - label: "View on GitHub"
-      url: "https://github.com/zeroflow/esphome-fancontroller"
+      url: "https://github.com/zeroflow/wifi-fancontroller"
   caption: "CE-certified ESP32 Fan Controller"
 excerpt: "**Smart fan control for your Home Assistant setup**<br/>Control up to 4 fans with temperature-based automation, remote monitoring, and seamless Home Assistant integration."
 
@@ -101,8 +101,8 @@ Flash pre-built firmware directly from your browser. Connect your board via USB-
 
 **Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35,99.
 
-**Customizable**: ESPHome configurations and documentation available on [GitHub](https://github.com/zeroflow/esphome-fancontroller). Create custom automations and share your configurations with the community.
+**Customizable**: ESPHome configurations and documentation available on [GitHub](https://github.com/zeroflow/wifi-fancontroller). Create custom automations and share your configurations with the community.
 
-**Need Help?** Check the [documentation](https://github.com/zeroflow/esphome-fancontroller#readme) or open an issue on GitHub.
+**Need Help?** Check the [documentation](https://github.com/zeroflow/wifi-fancontroller#readme) or open an issue on GitHub.
 
 <script type="module" src="https://unpkg.com/esp-web-tools@8.0.6/dist/web/install-button.js?module"></script>

@@ -10,7 +10,7 @@
 # Usage:
 #   packages:
 #     temperature_linear:
-#       url: https://github.com/zeroflow/esphome-fancontroller
+#       url: https://github.com/zeroflow/wifi-fancontroller
 #       files: [modules/temperature_linear.yaml]
 #       ref: main
 #       vars:
