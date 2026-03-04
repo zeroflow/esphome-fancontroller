@@ -20,7 +20,8 @@ substitutions:
   full_rpm: 2500 # default
 
 interval:
-  - interval: 10s
+  - id: rpm_status_leds_interval
+    interval: 10s
     then:
       # Fan 1 LED color based on RPM
       - lambda: |-

@@ -62,6 +62,7 @@ number:
   # KP
   - platform: template
     name: PID kp
+    id: pid_kp_number
     icon: mdi:chart-bell-curve
     restore_value: true
     initial_value: 0.3
@@ -69,13 +70,14 @@ number:
     max_value: 5
     step: 0.001
     optimistic: true
-    set_action: 
-      lambda: |- 
+    set_action:
+      lambda: |-
         id(console_thermostat).set_kp( x );
 
   # KI
   - platform: template
     name: PID ki
+    id: pid_ki_number
     icon: mdi:chart-bell-curve
     restore_value: true
     initial_value: 0.0015
@@ -83,12 +85,13 @@ number:
     max_value: 1
     step: 0.0001
     optimistic: true
-    set_action: 
+    set_action:
       lambda: id(console_thermostat).set_ki( x );
 
   # KD
   - platform: template
     name: PID kd
+    id: pid_kd_number
     icon: mdi:chart-bell-curve
     restore_value: true
     initial_value: 0.0
@@ -96,12 +99,13 @@ number:
     max_value: 50
     step: 0.001
     optimistic: true
-    set_action: 
+    set_action:
       lambda: id(console_thermostat).set_kd( x );
 
   # Set threshold low
   - platform: template
     name: PID Deadband Threshold Low
+    id: pid_threshold_low
     icon: mdi:chart-bell-curve
     restore_value: true
     initial_value: 0.25
@@ -109,12 +113,13 @@ number:
     max_value: 5
     step: 0.05
     optimistic: true
-    set_action: 
+    set_action:
       lambda: id(console_thermostat).set_threshold_low( x * -1.0 );
 
   # Set threshold high
   - platform: template
     name: PID Deadband Threshold High
+    id: pid_threshold_high
     icon: mdi:chart-bell-curve
     restore_value: true
     initial_value: 0.25
@@ -122,12 +127,13 @@ number:
     max_value: 5
     step: 0.05
     optimistic: true
-    set_action: 
+    set_action:
       lambda: id(console_thermostat).set_threshold_high( x );
 
   # Set ki multiplier
   - platform: template
     name: PID Deadband ki Multiplier
+    id: pid_ki_multiplier
     icon: mdi:chart-bell-curve
     restore_value: true
     initial_value: 0.04
@@ -135,7 +141,7 @@ number:
     max_value: .2
     step: 0.01
     optimistic: true
-    set_action: 
+    set_action:
       lambda: id(console_thermostat).set_ki_multiplier( x );
 
   - platform: template
@@ -336,5 +342,6 @@ climate:
 button:
 - platform: template
   name: "PID Climate Autotune"
-  on_press: 
+  id: pid_autotune
+  on_press:
     - climate.pid.autotune: console_thermostat

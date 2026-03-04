@@ -404,6 +404,7 @@ sensor:
 button:
   - platform: template
     name: "${friendly_name} Reset PI Integrators"
+    id: pi_reset_button
     icon: mdi:restart
     entity_category: config
     on_press:
@@ -416,7 +417,8 @@ button:
 
 # Main PI control loop
 interval:
-  - interval: ${update_interval}s
+  - id: pi_control_interval
+    interval: ${update_interval}s
     then:
       - lambda: |-
           // Get PI parameters (scale down by 100000 for actual control values)
