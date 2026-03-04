@@ -78,7 +78,7 @@ Revision | Left                      | Fan Ports             | Right   | Details
 
 Flash pre-built firmware directly from your browser at **[fancontroller.arthofer.dev](https://fancontroller.arthofer.dev/)**
 
-**Note for ESP32-S2 boards (Rev 2.0, 3.x):** Web-based flashing may have connectivity issues. If the browser flash fails, use Method 2 (esptool) instead.
+**Note for ESP32-S2 boards (Rev 2.0, 3.x):** Web-based flashing may have connectivity issues. Currently (4.3.2025) the most reliable web tool is [ESPWEBTOOL by Spacehuhn](https://esptool.spacehuhn.com/). If the browser flash fails, use Method 2 (esptool) instead. 
 
 ### Method 2: esptool (Alternative for ESP32-S2)
 
