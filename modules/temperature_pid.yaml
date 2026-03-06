@@ -67,12 +67,12 @@ number:
     restore_value: true
     initial_value: ${kp}
     min_value: 0
-    max_value: 500
+    max_value: 50
     step: 0.1
     optimistic: true
     set_action:
       lambda: |-
-        id(console_thermostat).set_kp( x / 100.0 );
+        id(pid_thermostat).set_kp( x / 100.0 );
 
   # KI (scaled x100)
   - platform: template
@@ -82,11 +82,11 @@ number:
     restore_value: true
     initial_value: ${ki}
     min_value: 0
-    max_value: 100
-    step: 0.01
+    max_value: 0.2
+    step: 0.001
     optimistic: true
     set_action:
-      lambda: id(console_thermostat).set_ki( x / 100.0 );
+      lambda: id(pid_thermostat).set_ki( x / 100.0 );
 
   # KD (scaled x100)
   - platform: template
@@ -95,12 +95,12 @@ number:
     icon: mdi:chart-bell-curve
     restore_value: true
     initial_value: ${kd}
-    min_value: -5000
-    max_value: 5000
-    step: 0.1
+    min_value: 0
+    max_value: 200
+    step: 1
     optimistic: true
     set_action:
-      lambda: id(console_thermostat).set_kd( x / 100.0 );
+      lambda: id(pid_thermostat).set_kd( x / 100.0 );
 
   # Set threshold low
   - platform: template
@@ -114,7 +114,7 @@ number:
     step: 0.05
     optimistic: true
     set_action:
-      lambda: id(console_thermostat).set_threshold_low( x * -1.0 );
+      lambda: id(pid_thermostat).set_threshold_low( x * -1.0 );
 
   # Set threshold high
   - platform: template
@@ -128,7 +128,7 @@ number:
     step: 0.05
     optimistic: true
     set_action:
-      lambda: id(console_thermostat).set_threshold_high( x );
+      lambda: id(pid_thermostat).set_threshold_high( x );
 
   # Set ki multiplier
   - platform: template
@@ -142,12 +142,13 @@ number:
     step: 0.01
     optimistic: true
     set_action:
-      lambda: id(console_thermostat).set_ki_multiplier( x );
+      lambda: id(pid_thermostat).set_ki_multiplier( x );
 
   - platform: template
     entity_category: config
     name: PWM Minimum
     id: pwm_minimum
+    restore_value: true
     min_value: 0
     max_value: 30
     step: 1
@@ -285,7 +286,7 @@ sensor:
 climate:
   - platform: pid
     name: $friendly_name Thermostat
-    id: console_thermostat
+    id: pid_thermostat
     sensor: fancontroller_temperature
 
     # It is summer right now, so 30c is a decent target.
@@ -298,22 +299,22 @@ climate:
     on_state:
       - sensor.template.publish:
           id: p_term
-          state: !lambda 'return -id(console_thermostat).get_proportional_term() * 100.0;'
+          state: !lambda 'return -id(pid_thermostat).get_proportional_term() * 100.0;'
       - sensor.template.publish:
           id: i_term
-          state: !lambda 'return -id(console_thermostat).get_integral_term()* 100.0;'
+          state: !lambda 'return -id(pid_thermostat).get_integral_term()* 100.0;'
       - sensor.template.publish:
           id: d_term
-          state: !lambda 'return -id(console_thermostat).get_derivative_term()* 100.0;'
+          state: !lambda 'return -id(pid_thermostat).get_derivative_term()* 100.0;'
       - sensor.template.publish:
           id: o_term
-          state: !lambda 'return -id(console_thermostat).get_output_value()* 100.0;'
+          state: !lambda 'return -id(pid_thermostat).get_output_value()* 100.0;'
       - sensor.template.publish:
           id: in_deadband_term
-          state: !lambda 'return id(console_thermostat).in_deadband();'
+          state: !lambda 'return id(pid_thermostat).in_deadband();'
       - sensor.template.publish:
           id: e_term
-          state: !lambda 'return -id(console_thermostat).get_error_value();'
+          state: !lambda 'return -id(pid_thermostat).get_error_value();'
         
     # The extents of the HA Thermostat
     visual:
@@ -346,4 +347,4 @@ button:
   name: "PID Climate Autotune"
   id: pid_autotune
   on_press:
-    - climate.pid.autotune: console_thermostat
+    - climate.pid.autotune: pid_thermostat
