@@ -39,7 +39,7 @@ Rev 3.1 builds upon Rev 3.0 with visual feedback improvements:
 - Visual indication of board status and fan activity
 - Same firmware compatibility as Rev 3.0
 
-## Generic Firmware Installation
+## Factory Firmware Installation
 
 <esp-web-install-button manifest="firmware/fancontroller-r3-1.manifest.json"></esp-web-install-button>
 

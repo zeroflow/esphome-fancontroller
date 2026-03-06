@@ -32,7 +32,7 @@ toc_icon: "microchip"
 
 > **_NOTE:_**  The neopixel port requires usage of the ```arduino``` framework, since GPIO42 requires use of the ```fastled_clockless``` platform, which is not supported on ```esp-idf```.
 
-## Generic Firmware Installation
+## Factory Firmware Installation
 
 <esp-web-install-button manifest="firmware/fancontroller-r3-0.manifest.json"></esp-web-install-button>
 

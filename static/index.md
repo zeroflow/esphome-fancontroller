@@ -15,7 +15,7 @@ excerpt: "**Smart fan control for your Home Assistant setup**<br/>Control up to 
 feature_row_rev3:
   - image_path: board_rev3.3_front.jpg
     title: "Rev 3.1, 3.2, 3.3 - Latest Generation"
-    excerpt: "RGB status LEDs, enhanced signal integrity, improved USB resilience, and full expansion capabilities. Revisions 3.2 and 3.3 include minor component upgrades.<br/><br/>This firmware is compatible with Rev 3.1, 3.2, and 3.3.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-1.manifest.json\"></esp-web-install-button><br/><br/><details><summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary><p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback:<ol><li>Connect the board via USB-C</li><li>Hold BOOT, press RESET to enter boot mode</li><li>Click \"Connect\" in ESPWEBTOOL</li><li>Remove all flash entries except one</li><li>Flash the <code>.bin</code> file at address <code>0x0</code></li></ol></p></details><br/><br/>Also available: [Rev 3.1](fancontroller-rev3.1) • [Rev 3.2](fancontroller-rev3.2)"
+    excerpt: "RGB status LEDs, enhanced signal integrity, improved USB resilience, and full expansion capabilities. Revisions 3.2 and 3.3 include minor component upgrades.<br/><br/>This firmware is compatible with Rev 3.1, 3.2, and 3.3.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-1.manifest.json\"></esp-web-install-button><br/><br/>⚠️ USB flashing has known issues on the ESP32-S2 - there is no permanent fix. If the browser installer fails, download the <a href=\"https://fancontroller.arthofer.dev/firmware/fancontroller-r3-3-esp32s2.factory.bin\">factory firmware> and use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback."
     url: "fancontroller-rev3.3"
     btn_label: "Learn More (Rev 3.3)"
     btn_class: "btn--primary"
@@ -23,7 +23,7 @@ feature_row_rev3:
 feature_row_rev30:
   - image_path: board_rev3.0.jpg
     title: "Rev 3.0 - Expansion Focus"
-    excerpt: "Added Qwiic I2C port, 5V NeoPixel output, and GPIO expansion header for maximum hackability.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-0.manifest.json\"></esp-web-install-button><br/><br/><details><summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary><p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback:<ol><li>Connect the board via USB-C</li><li>Hold BOOT, press RESET to enter boot mode</li><li>Click \"Connect\" in ESPWEBTOOL</li><li>Remove all flash entries except one</li><li>Flash the <code>.bin</code> file at address <code>0x0</code></li></ol></p></details>"
+    excerpt: "Added Qwiic I2C port, 5V NeoPixel output, and GPIO expansion header for maximum hackability.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-0.manifest.json\"></esp-web-install-button><br/><br/>⚠️ USB flashing has known issues on the ESP32-S2 - there is no permanent fix. If the browser installer fails, download the <a href=\"https://fancontroller.arthofer.dev/firmware/fancontroller-r3-0-esp32s2.factory.bin\">factory firmware> and use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback."
     url: "fancontroller-rev3.0"
     btn_label: "Learn More"
     btn_class: "btn--primary"
@@ -31,7 +31,7 @@ feature_row_rev30:
 feature_row_rev2:
   - image_path: board_rev2.0.jpg
     title: "Rev 2.0 - USB-C"
-    excerpt: "Upgraded to ESP32-S2 with USB-C flashing support, eliminating the need for serial programming adapters.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r2-0.manifest.json\"></esp-web-install-button><br/><br/><details><summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary><p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback:<ol><li>Connect the board via USB-C</li><li>Hold BOOT, press RESET to enter boot mode</li><li>Click \"Connect\" in ESPWEBTOOL</li><li>Remove all flash entries except one</li><li>Flash the <code>.bin</code> file at address <code>0x0</code></li></ol></p></details>"
+    excerpt: "Upgraded to ESP32-S2 with USB-C flashing support, eliminating the need for serial programming adapters.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r2-0.manifest.json\"></esp-web-install-button><br/><br/>⚠️ USB flashing has known issues on the ESP32-S2 - there is no permanent fix. If the browser installer fails, download the <a href=\"https://fancontroller.arthofer.dev/firmware/fancontroller-r2-0-esp32s2.factory.bin\">factory firmware> and use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback."
     url: "fancontroller-rev2.0"
     btn_label: "Learn More"
     btn_class: "btn--primary"

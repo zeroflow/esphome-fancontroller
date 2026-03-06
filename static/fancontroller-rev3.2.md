@@ -39,9 +39,9 @@ Rev 3.2 improves upon Rev 3.1 with enhanced USB protection:
 - Enhanced USB resilience and safety
 - Compatible firmware and pinout — hardware improvements only
 
-## Generic Firmware Installation
+## Factory Firmware Installation
 
-<esp-web-install-button manifest="firmware/fancontroller-r3-1.manifest.json"></esp-web-install-button>
+<esp-web-install-button manifest="firmware/fancontroller-r3.2.manifest.json"></esp-web-install-button>
 
 <details>
 <summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary>
@@ -54,7 +54,7 @@ Rev 3.2 improves upon Rev 3.1 with enhanced USB protection:
 <li>Flash the <code>.bin</code> file at address <code>0x0</code></li>
 </ol>
 <p>Alternatively, use <a href="https://github.com/espressif/esptool">esptool</a> from the command line: <code>esptool.py --chip esp32s2 write_flash 0x0 firmware.bin</code></p>
-<p><a href="/firmware/fancontroller-r3-1-esp32s2.factory.bin">Download prebuilt binary</a></p>
+<p><a href="/firmware/fancontroller-r3-2-esp32s2.factory.bin">Download prebuilt binary</a></p>
 </details>
 
 ## Example Configurations
@@ -62,7 +62,7 @@ Rev 3.2 improves upon Rev 3.1 with enhanced USB protection:
 This board uses a modular package-based configuration system. Check out these examples to get started:
 
 ### Basic Setup
-- **[Basic Configuration](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-3.1.yaml)** - Minimal setup with 4 fans and essential features
+- **[Basic Configuration](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-3.2.yaml)** - Minimal setup with 4 fans and essential features
 
 ### Advanced Features
 - **[RGB Status LEDs](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-rgb-status-leds-rev-3.1.yaml)** - Visual fan speed feedback with color-coded LEDs (red=slow, green=fast)

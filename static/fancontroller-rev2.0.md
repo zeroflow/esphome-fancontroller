@@ -27,7 +27,7 @@ toc_icon: "microchip"
   * 3× User Buttons
   * I2C Expansion Port (100mil, SCL, SDA & Int)
 
-## Generic Firmware Installation
+## Factory Firmware Installation
 
 <esp-web-install-button manifest="firmware/fancontroller-r2-0.manifest.json"></esp-web-install-button>
 
