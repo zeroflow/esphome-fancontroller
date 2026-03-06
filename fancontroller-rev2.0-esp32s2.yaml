@@ -35,10 +35,22 @@ logger:
 api:
   id: api_component
 
+# Required by ota.http_request and update.http_request
+http_request:
+
 # OTA is required for Over-the-Air updating
 ota:
   - platform: esphome
     id: ota_esphome
+  - platform: http_request
+    id: ota_http_request
+
+# Firmware update check via HTTP
+update:
+  - platform: http_request
+    id: firmware_update
+    name: "Firmware Update"
+    source: https://fancontroller.arthofer.dev/firmware/fancontroller-r2-0.manifest.json
 
 wifi:
   id: wifi_component
