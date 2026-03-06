@@ -4,15 +4,18 @@
 # flexible multi-point fan speed control based on temperature.
 
 packages:
-  # Include the hardware-specific configuration
-  hardware: !include ../hardware-rev-3.1.yaml
-
-  # Include the RPM status LEDs module
-  rpm_status_leds: !include ../modules/rpm_status_leds.yaml
-
-  # Include the temperature curve module
-  # This provides 5 configurable temperature/speed points with linear interpolation
-  temperature_curve: !include ../modules/temperature_curve.yaml
+  hardware:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    files: [hardware-rev-3.1.yaml]
+    ref: main
+  rpm_status_leds:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    files: [modules/rpm_status_leds.yaml]
+    ref: main
+  temperature_curve:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    files: [modules/temperature_curve.yaml]
+    ref: main
 
 esphome:
   name: my-fancontroller
