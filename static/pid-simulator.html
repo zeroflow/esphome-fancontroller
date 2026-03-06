@@ -312,13 +312,13 @@
         <div>
           <div class="col-title">Enclosure Preset</div>
           <div class="presets" id="plant-presets">
-            <button class="chip active" data-plant="rack">Rack (slow &mdash; placeholder)</button>
+            <button class="chip active" data-plant="rack">Rack</button>
             <button class="chip" data-plant="tent">Grow Tent</button>
             <button class="chip" data-plant="fast">Fast (debug)</button>
           </div>
           <p class="note">
-            Rack defaults are placeholders pending measurement.
-            Step response: fans off → 63% rise gives &tau;&#8342;. Fans 100% → 63% drop gives &tau;&#8338;.
+            Rack values measured from a 12U network rack (tamb&nbsp;18&deg;C, step response 2026-03).
+            Your enclosure will likely differ - use the sliders to match your setup.
           </p>
         </div>
         <div>
@@ -450,11 +450,11 @@ const PID_PRESETS = {
   aggressive:   { kp: 15, ki: 0.1,   kd: 30 },
 };
 
-// Rack: measured 2026-03 — tamb=18°C, tmax=35°C (no fans), 30% fans held 22.5°C
-// K derived from 30%-fan equilibrium; tHeat estimated from ~2h rise time (≈3τ)
-// tCool and L still to be measured from 100% step response
+// Rack: step response measured 2026-03-06 on a 12U network rack, tamb=18°C.
+// Fans off → T_max=30°C; fans 100% → T_min≈22°C; K=8°C, tHeat≈33min, tCool≈10min.
+// Dead time < 1min (below logging resolution); L=15s conservative estimate.
 const PLANT_PRESETS = {
-  rack: { tHeat: 2400, tCool: 600,  L: 45, K: 15, tamb: 18, tmax: 35, pv: 35, sp: 24 },
+  rack: { tHeat: 2000, tCool: 600,  L: 15, K: 8,  tamb: 18, tmax: 30, pv: 30, sp: 24 },
   tent: { tHeat: 120,  tCool: 60,   L: 10, K: 8,  tamb: 22, tmax: 32, pv: 32, sp: 26 },
   fast: { tHeat: 60,   tCool: 30,   L: 5,  K: 12, tamb: 22, tmax: 40, pv: 38, sp: 28 },
 };
