@@ -68,6 +68,7 @@ number:
     name: PID kp
     id: pid_kp_number
     icon: mdi:chart-bell-curve
+    mode: box
     restore_value: true
     initial_value: ${kp}
     min_value: 0
@@ -83,6 +84,7 @@ number:
     name: PID ki
     id: pid_ki_number
     icon: mdi:chart-bell-curve
+    mode: box
     restore_value: true
     initial_value: ${ki}
     min_value: 0
@@ -97,6 +99,7 @@ number:
     name: PID kd
     id: pid_kd_number
     icon: mdi:chart-bell-curve
+    mode: box
     restore_value: true
     initial_value: ${kd}
     min_value: 0
@@ -106,11 +109,13 @@ number:
     set_action:
       lambda: id(pid_thermostat).set_kd( x / 100.0 );
 
-  # Set threshold low
+  # Lower threshold
+  # How far below setpoint (°C) temp may drop before PID reacts; value is negated internally as set_threshold_low() expects negative
   - platform: template
     name: PID Deadband Threshold Low
     id: pid_threshold_low
     icon: mdi:chart-bell-curve
+    mode: box
     restore_value: true
     initial_value: 0.25
     min_value: 0
@@ -121,10 +126,12 @@ number:
       lambda: id(pid_thermostat).set_threshold_low( x * -1.0 );
 
   # Set threshold high
+  # How far above setpoint (°C) temp may rise before PID reacts
   - platform: template
     name: PID Deadband Threshold High
     id: pid_threshold_high
     icon: mdi:chart-bell-curve
+    mode: box
     restore_value: true
     initial_value: 0.25
     min_value: 0
@@ -134,11 +141,12 @@ number:
     set_action:
       lambda: id(pid_thermostat).set_threshold_high( x );
 
-  # Set ki multiplier
+  # Scales down Ki inside the deadband (0.04 = 4% of normal Ki) to prevent integral windup while allowing slow drift correction
   - platform: template
     name: PID Deadband ki Multiplier
     id: pid_ki_multiplier
     icon: mdi:chart-bell-curve
+    mode: box
     restore_value: true
     initial_value: 0.04
     min_value: 0
@@ -148,18 +156,21 @@ number:
     set_action:
       lambda: id(pid_thermostat).set_ki_multiplier( x );
 
+  # Minimum fan speed by PID value. Can be used to keep the fan always on.
   - platform: template
     entity_category: config
-    name: PWM Minimum
+    name: Fan Minimum Speed
     id: pwm_minimum
+    unit_of_measurement: "%"
     restore_value: true
     min_value: 0
     max_value: 30
     step: 1
-    initial_value: 20
+    initial_value: 0
     optimistic: True
 
 output:
+  # Internal Proxy Output which then distributes it's value to the individual fans.
   - platform: template
     id: proxy_output
     type: float
