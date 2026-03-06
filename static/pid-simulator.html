@@ -176,6 +176,7 @@
 
     /* ── Charts ── */
     .chart-wrap { position: relative; height: 210px; }
+    .chart-wrap-main { position: relative; height: 320px; }
 
     /* ── Metrics ── */
     .metrics-row {
@@ -313,11 +314,11 @@
           <div class="col-title">Enclosure Preset</div>
           <div class="presets" id="plant-presets">
             <button class="chip active" data-plant="rack">Rack</button>
-            <button class="chip" data-plant="tent">Grow Tent</button>
+            <button class="chip" data-plant="tent">Grow Tent (assumption)</button>
             <button class="chip" data-plant="fast">Fast (debug)</button>
           </div>
           <p class="note">
-            Rack values measured from a 12U network rack (tamb&nbsp;18&deg;C, step response 2026-03).
+            Rack values measured from a 12U network rack (tamb&nbsp;18&deg;C).
             Your enclosure will likely differ - use the sliders to match your setup.
           </p>
         </div>
@@ -371,17 +372,17 @@
     </div>
   </div>
 
-  <!-- ── Temperature chart ── -->
+  <!-- ── Temperature + Fan Output chart ── -->
   <div class="card">
-    <div class="section-title">Temperature</div>
-    <div class="chart-wrap">
+    <div class="section-title">Temperature &amp; Fan Output</div>
+    <div class="chart-wrap-main">
       <canvas id="chart-temp"></canvas>
     </div>
   </div>
 
-  <!-- ── PID output chart ── -->
+  <!-- ── PID terms chart ── -->
   <div class="card">
-    <div class="section-title">PID Output &amp; Terms</div>
+    <div class="section-title">PID Terms</div>
     <div class="chart-wrap">
       <canvas id="chart-pid"></canvas>
     </div>
@@ -667,25 +668,29 @@ function initCharts() {
     type: 'line',
     data: {
       datasets: [
-        { label: 'Temperature (°C)', data: [], borderColor: '#f38ba8', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.2 },
-        { label: 'Setpoint (°C)',    data: [], borderColor: '#a6e3a1', backgroundColor: 'transparent', borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 },
-        { label: 'T_ambient (°C)',   data: [], borderColor: '#7878a0', backgroundColor: 'transparent', borderWidth: 1,   borderDash: [3, 5], pointRadius: 0 },
+        { label: 'Temperature (°C)', yAxisID: 'yTemp', data: [], borderColor: '#f38ba8', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.2 },
+        { label: 'Setpoint (°C)',    yAxisID: 'yTemp', data: [], borderColor: '#a6e3a1', backgroundColor: 'transparent', borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 },
+        { label: 'T_ambient (°C)',   yAxisID: 'yTemp', data: [], borderColor: '#7878a0', backgroundColor: 'transparent', borderWidth: 1,   borderDash: [3, 5], pointRadius: 0 },
+        { label: 'Output (%)',       yAxisID: 'yOut',  data: [], borderColor: '#89b4fa', backgroundColor: 'rgba(137,180,250,0.08)', borderWidth: 2, pointRadius: 0, fill: true, tension: 0.2 },
       ],
     },
-    options: { ...CHART_OPT_BASE, scales: { ...CHART_OPT_BASE.scales, y: yAxis('°C', '#f38ba8') } },
+    options: { ...CHART_OPT_BASE, scales: {
+      ...CHART_OPT_BASE.scales,
+      yTemp: { ...yAxis('°C', '#f38ba8'), position: 'left' },
+      yOut:  { ...yAxis('%', '#89b4fa'), position: 'right', min: -10, max: 110, grid: { color: 'transparent' } },
+    }},
   });
 
   chartPid = new Chart(document.getElementById('chart-pid'), {
     type: 'line',
     data: {
       datasets: [
-        { label: 'Output (%)', data: [], borderColor: '#89b4fa', backgroundColor: 'rgba(137,180,250,0.08)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.2 },
-        { label: 'P-Term',    data: [], borderColor: '#fab387', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
-        { label: 'I-Term',    data: [], borderColor: '#f9e2af', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
-        { label: 'D-Term',    data: [], borderColor: '#cba6f7', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
+        { label: 'P-Term', data: [], borderColor: '#fab387', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, borderDash: [2, 3], tension: 0.2 },
+        { label: 'I-Term', data: [], borderColor: '#f9e2af', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, borderDash: [2, 3], tension: 0.2 },
+        { label: 'D-Term', data: [], borderColor: '#cba6f7', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, borderDash: [2, 3], tension: 0.2 },
       ],
     },
-    options: { ...CHART_OPT_BASE, scales: { ...CHART_OPT_BASE.scales, y: { ...yAxis('%', '#89b4fa'), min: -20, max: 110 } } },
+    options: { ...CHART_OPT_BASE, scales: { ...CHART_OPT_BASE.scales, y: { ...yAxis('%', '#7878a0'), min: -20, max: 110 } } },
   });
 }
 
@@ -705,12 +710,12 @@ function updateCharts(data) {
   chartTemp.data.datasets[0].data = pts(timeArr, tempArr, steps);
   chartTemp.data.datasets[1].data = [{ x: 0, y: sp },       { x: simTime, y: sp }];
   chartTemp.data.datasets[2].data = [{ x: 0, y: P.tamb }, { x: simTime, y: P.tamb }];
+  chartTemp.data.datasets[3].data = pts(timeArr, outArr, steps);
   chartTemp.update('none');
 
-  chartPid.data.datasets[0].data = pts(timeArr, outArr, steps);
-  chartPid.data.datasets[1].data = pts(timeArr, pArr,   steps);
-  chartPid.data.datasets[2].data = pts(timeArr, iArr,   steps);
-  chartPid.data.datasets[3].data = pts(timeArr, dArr,   steps);
+  chartPid.data.datasets[0].data = pts(timeArr, pArr, steps);
+  chartPid.data.datasets[1].data = pts(timeArr, iArr, steps);
+  chartPid.data.datasets[2].data = pts(timeArr, dArr, steps);
   chartPid.update('none');
 }
 
