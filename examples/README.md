@@ -1,4 +1,4 @@
-# ESPHome Fan Controller - Example Configurations
+# WiFi Fan Controller - Example Configurations
 
 This directory contains example configurations showing how to use the hardware packages.
 

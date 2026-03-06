@@ -85,7 +85,7 @@ Flash pre-built firmware directly from your browser at **[fancontroller.arthofer
 Reliable flashing method, especially for ESP32-S2 boards:
 
 1. Install [esptool](https://github.com/espressif/esptool): `pip install esptool`
-2. Download prebuilt binary from [fancontroller.arthofer.dev/firmware](https://fancontroller.arthofer.dev/firmware/)
+2. Download prebuilt binary from [GitHub Releases](https://github.com/zeroflow/wifi-fancontroller/releases/)
 3. Connect board via USB-C, hold BOOT button, press RESET
 4. Flash: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
 5. Press RESET to boot

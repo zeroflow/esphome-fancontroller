@@ -1,4 +1,4 @@
-# ESPHome Fan Controller Hardware Package - Revision 3.1
+# WiFi Fan Controller Hardware Package - Revision 3.1
 # Hardware: ESP32-S2, esp32-s2-saola-1 board
 # This package contains all hardware-specific configuration
 #
@@ -127,6 +127,7 @@ sensor:
     humidity:
       name: "Humidity"
       id: fancontroller_humidity
+    update_interval: 10s
 
   # Fan 1 Speed
   - platform: pulse_counter

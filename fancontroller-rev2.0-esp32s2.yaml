@@ -1,4 +1,4 @@
-# ESPHome Fan Controller - Revision 2.0 (ESP32-S2)
+# WiFi Fan Controller - Revision 2.0 (ESP32-S2)
 # Base configuration file for production use
 #
 # This file contains the core ESPHome configuration and includes

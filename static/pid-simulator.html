@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PID Tuning Simulator — WiFi FanController</title>
+  <meta name="description" content="Interactive PID tuning simulator for WiFi FanController temperature control. Visualize P/I/D terms and tune parameters before deploying to hardware.">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #1c1c2e;
+      --surface:      #252540;
+      --surface2:     #1e1e38;
+      --border:       #3a3a5c;
+      --text:         #dde0f0;
+      --text-dim:     #7878a0;
+      --accent:       #89b4fa;
+      --green:        #a6e3a1;
+      --red:          #f38ba8;
+      --yellow:       #f9e2af;
+      --peach:        #fab387;
+      --mauve:        #cba6f7;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    header h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+    header .subtitle { color: var(--text-dim); font-size: 0.85rem; }
+    header a.back-link {
+      margin-left: auto;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    header a.back-link:hover { text-decoration: underline; }
+
+    main {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.1rem 1.25rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      margin-bottom: 0.9rem;
+    }
+
+    /* ── Two-column controls ── */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 720px) { .controls-grid { grid-template-columns: 1fr; } }
+
+    .col-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 0.65rem;
+    }
+
+    /* ── Preset chips ── */
+    .presets { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .chip {
+      padding: 0.2rem 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chip.active { border-color: var(--accent); color: var(--accent); background: rgba(137,180,250,0.08); }
+
+    /* ── Parameter rows ── */
+    .param-group { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .param-row {
+      display: grid;
+      grid-template-columns: 155px 1fr 72px;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .param-label { font-size: 0.83rem; }
+    .param-label small { display: block; color: var(--text-dim); font-size: 0.72rem; line-height: 1.3; }
+
+    input[type=range] {
+      width: 100%;
+      height: 4px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    input[type=number] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text);
+      padding: 0.25rem 0.4rem;
+      font-size: 0.83rem;
+      text-align: right;
+    }
+    input[type=number]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* ── Action bar ── */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.45rem 1.25rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.8; }
+    .btn-primary { background: var(--accent); color: #1c1c2e; }
+    .btn-ghost   { background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); }
+
+    .sim-window {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-dim);
+      font-size: 0.83rem;
+    }
+    .sim-window input[type=range] { width: 110px; }
+    #time-display { min-width: 50px; text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* ── Charts ── */
+    .chart-wrap { position: relative; height: 210px; }
+
+    /* ── Metrics ── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+    .metric {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65rem 0.9rem;
+    }
+    .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-dim); }
+    .metric-value { font-size: 1.35rem; font-weight: 700; margin-top: 0.15rem; font-variant-numeric: tabular-nums; }
+    .metric-unit  { font-size: 0.72rem; color: var(--text-dim); }
+
+    /* ── Plant model note ── */
+    .note {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      border-left: 2px solid var(--border);
+      line-height: 1.5;
+    }
+
+    /* ── Expert settings collapsible ── */
+    .expert-section {
+      margin-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+    .expert-section summary {
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      user-select: none;
+    }
+    .expert-section summary::-webkit-details-marker { display: none; }
+    .expert-section summary::before {
+      content: '▶';
+      font-size: 0.6rem;
+      transition: transform 0.15s;
+      display: inline-block;
+    }
+    .expert-section[open] summary::before { transform: rotate(90deg); }
+    .expert-section summary:hover { color: var(--text); }
+    .expert-body {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 720px) { .expert-body { grid-template-columns: 1fr; } }
+
+    footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.78rem;
+      padding: 1.25rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>PID Tuning Simulator</h1>
+  <span class="subtitle">WiFi FanController &mdash; Temperature Control</span>
+  <a class="back-link" href="/">&#8592; Back to FanController</a>
+</header>
+
+<main>
+
+  <!-- ── Controls ── -->
+  <div class="card">
+    <div class="section-title">Parameters</div>
+
+      <!-- PID column -->
+      <div>
+        <div class="col-title">PID Controller</div>
+        <div class="presets" id="pid-presets">
+          <button class="chip" data-pid="p-only">P-only</button>
+          <button class="chip active" data-pid="conservative">Conservative</button>
+          <button class="chip" data-pid="moderate">Moderate</button>
+          <button class="chip" data-pid="aggressive">Aggressive</button>
+        </div>
+        <div class="param-group">
+          <div class="param-row">
+            <label class="param-label">Present Value<small>Starting temperature</small></label>
+            <input type="range" id="s-pv" min="20" max="55" step="0.5" value="35">
+            <input type="number" id="n-pv" min="20" max="55" step="0.5" value="35">
+          </div>
+          <div class="param-row">
+            <label class="param-label">Setpoint<small>Target temperature</small></label>
+            <input type="range" id="s-sp" min="18" max="50" step="0.5" value="24">
+            <input type="number" id="n-sp" min="18" max="50" step="0.5" value="24">
+          </div>
+          <div class="param-row">
+            <label class="param-label">Kp<small>Proportional gain</small></label>
+            <input type="range" id="s-kp" min="0" max="50" step="0.5" value="3">
+            <input type="number" id="n-kp" min="0" max="50" step="0.5" value="3">
+          </div>
+          <div class="param-row">
+            <label class="param-label">Ki<small>Integral gain</small></label>
+            <input type="range" id="s-ki" min="0" max="0.2" step="0.001" value="0.005">
+            <input type="number" id="n-ki" min="0" max="0.2" step="0.001" value="0.005">
+          </div>
+          <div class="param-row">
+            <label class="param-label">Kd<small>Derivative gain</small></label>
+            <input type="range" id="s-kd" min="0" max="200" step="1" value="0">
+            <input type="number" id="n-kd" min="0" max="200" step="1" value="0">
+          </div>
+          <div class="param-row">
+            <label class="param-label">Deadband<small>&deg;C &mdash; inhibit integral</small></label>
+            <input type="range" id="s-db" min="0" max="5" step="0.1" value="0">
+            <input type="number" id="n-db" min="0" max="5" step="0.1" value="0">
+          </div>
+        </div>
+      </div>
+
+    <details class="expert-section">
+      <summary>Expert Settings &mdash; Plant Model</summary>
+      <div class="expert-body">
+        <div>
+          <div class="col-title">Enclosure Preset</div>
+          <div class="presets" id="plant-presets">
+            <button class="chip active" data-plant="rack">Rack (slow &mdash; placeholder)</button>
+            <button class="chip" data-plant="tent">Grow Tent</button>
+            <button class="chip" data-plant="fast">Fast (debug)</button>
+          </div>
+          <p class="note">
+            Rack defaults are placeholders pending measurement.
+            Step response: fans off → 63% rise gives &tau;&#8342;. Fans 100% → 63% drop gives &tau;&#8338;.
+          </p>
+        </div>
+        <div>
+          <div class="col-title">Thermal Parameters</div>
+          <div class="param-group">
+            <div class="param-row">
+              <label class="param-label">&tau;&#8342; &mdash; Heat time constant<small>seconds &mdash; passive warm-up</small></label>
+              <input type="range" id="s-tHeat" min="30" max="14400" step="60" value="2400">
+              <input type="number" id="n-tHeat" min="30" max="14400" step="60" value="2400">
+            </div>
+            <div class="param-row">
+              <label class="param-label">&tau;&#8338; &mdash; Cool time constant<small>seconds &mdash; fans at 100%</small></label>
+              <input type="range" id="s-tCool" min="30" max="7200" step="60" value="600">
+              <input type="number" id="n-tCool" min="30" max="7200" step="60" value="600">
+            </div>
+            <div class="param-row">
+              <label class="param-label">L &mdash; Dead time<small>seconds</small></label>
+              <input type="range" id="s-L" min="0" max="180" step="5" value="45">
+              <input type="number" id="n-L" min="0" max="180" step="5" value="45">
+            </div>
+            <div class="param-row">
+              <label class="param-label">K &mdash; Static gain<small>&deg;C per 100% output</small></label>
+              <input type="range" id="s-K" min="1" max="30" step="0.5" value="15">
+              <input type="number" id="n-K" min="1" max="30" step="0.5" value="15">
+            </div>
+            <div class="param-row">
+              <label class="param-label">T_ambient<small>&deg;C &mdash; room temperature</small></label>
+              <input type="range" id="s-tamb" min="10" max="35" step="0.5" value="18">
+              <input type="number" id="n-tamb" min="10" max="35" step="0.5" value="18">
+            </div>
+            <div class="param-row">
+              <label class="param-label">T_max (no fans)<small>&deg;C &mdash; passive equilibrium</small></label>
+              <input type="range" id="s-tmax" min="25" max="65" step="0.5" value="35">
+              <input type="number" id="n-tmax" min="25" max="65" step="0.5" value="35">
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+  </div>
+
+  <!-- ── Action bar ── -->
+  <div class="action-bar">
+    <button class="btn btn-ghost" id="btn-reset">Reset</button>
+    <div class="sim-window">
+      <span>Window:</span>
+      <input type="range" id="s-time" min="120" max="14400" step="300" value="1800">
+      <span id="time-display">1800 s</span>
+    </div>
+  </div>
+
+  <!-- ── Temperature chart ── -->
+  <div class="card">
+    <div class="section-title">Temperature</div>
+    <div class="chart-wrap">
+      <canvas id="chart-temp"></canvas>
+    </div>
+  </div>
+
+  <!-- ── PID output chart ── -->
+  <div class="card">
+    <div class="section-title">PID Output &amp; Terms</div>
+    <div class="chart-wrap">
+      <canvas id="chart-pid"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Metrics ── -->
+  <div class="card">
+    <div class="section-title">Performance Metrics</div>
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">Overshoot</div>
+        <div class="metric-value" id="m-overshoot">&mdash;</div>
+        <div class="metric-unit">&deg;C below setpoint</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Settling Time</div>
+        <div class="metric-value" id="m-settle">&mdash;</div>
+        <div class="metric-unit">to &plusmn;0.5&deg;C band</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Steady-State Error</div>
+        <div class="metric-value" id="m-ss-error">&mdash;</div>
+        <div class="metric-unit">&deg;C (last 10% of window)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Max Duty Cycle</div>
+        <div class="metric-value" id="m-max-duty">&mdash;</div>
+        <div class="metric-unit">%</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Final Temperature</div>
+        <div class="metric-value" id="m-final-temp">&mdash;</div>
+        <div class="metric-unit">&deg;C</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <a href="/">WiFi FanController</a> &nbsp;&mdash;&nbsp;
+  PID Simulator &nbsp;&mdash;&nbsp;
+  <a href="https://github.com/zeroflow/wifi-fancontroller">GitHub</a>
+</footer>
+
+<script>
+// ============================================================
+// PID Simulator — output range 0–100 (%), matches firmware logic
+// Plant model: first-order thermal with dead time
+// ============================================================
+
+const DEFAULTS = {
+  pv: 35, sp: 24,
+  kp: 3, ki: 0.005, kd: 0, db: 0,
+  tHeat: 2400, tCool: 600, L: 45, K: 15, tamb: 18, tmax: 35,
+  simTime: 7200
+};
+
+// Ki values scaled for the rack's slow time constant (tau ~2400s).
+// At tau=2400s, Ki=1 saturates the integral in ~9s — far too fast.
+// Rule of thumb: Ki ≈ Kp / tau gives ~1 time constant integral action.
+const PID_PRESETS = {
+  'p-only':     { kp: 6,  ki: 0,    kd: 0  },
+  conservative: { kp: 3,  ki: 0.005, kd: 0  },
+  moderate:     { kp: 6,  ki: 0.02,  kd: 0  },
+  aggressive:   { kp: 15, ki: 0.1,   kd: 30 },
+};
+
+// Rack: measured 2026-03 — tamb=18°C, tmax=35°C (no fans), 30% fans held 22.5°C
+// K derived from 30%-fan equilibrium; tHeat estimated from ~2h rise time (≈3τ)
+// tCool and L still to be measured from 100% step response
+const PLANT_PRESETS = {
+  rack: { tHeat: 2400, tCool: 600,  L: 45, K: 15, tamb: 18, tmax: 35, pv: 35, sp: 24 },
+  tent: { tHeat: 120,  tCool: 60,   L: 10, K: 8,  tamb: 22, tmax: 32, pv: 32, sp: 26 },
+  fast: { tHeat: 60,   tCool: 30,   L: 5,  K: 12, tamb: 22, tmax: 40, pv: 38, sp: 28 },
+};
+
+// ── Parameter state ──────────────────────────────────────────
+const P = { ...DEFAULTS };
+
+function linkParam(id) {
+  const sl = document.getElementById('s-' + id);
+  const nu = document.getElementById('n-' + id);
+  const sync = (src, dst) => {
+    dst.value = src.value;
+    P[id] = parseFloat(src.value);
+    scheduleRun();
+  };
+  sl.addEventListener('input',  () => sync(sl, nu));
+  nu.addEventListener('change', () => sync(nu, sl));
+  P[id] = parseFloat(sl.value);
+}
+['pv','sp','kp','ki','kd','db','tHeat','tCool','L','K','tamb','tmax'].forEach(linkParam);
+
+const timeSlider  = document.getElementById('s-time');
+const timeDisplay = document.getElementById('time-display');
+timeSlider.addEventListener('input', () => {
+  P.simTime = parseInt(timeSlider.value);
+  timeDisplay.textContent = P.simTime + ' s';
+  scheduleRun();
+});
+P.simTime = parseInt(timeSlider.value);
+
+// ── Preset buttons ───────────────────────────────────────────
+function applyParams(obj) {
+  Object.entries(obj).forEach(([k, v]) => {
+    const sl = document.getElementById('s-' + k);
+    const nu = document.getElementById('n-' + k);
+    if (sl) { sl.value = v; nu.value = v; P[k] = v; }
+  });
+}
+
+document.querySelectorAll('[data-pid]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-pid]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyParams(PID_PRESETS[btn.dataset.pid]);
+    scheduleRun();
+  });
+});
+
+document.querySelectorAll('[data-plant]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-plant]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyParams(PLANT_PRESETS[btn.dataset.plant]);
+    scheduleRun();
+  });
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  document.querySelectorAll('[data-pid]').forEach(b => b.classList.toggle('active', b.dataset.pid === 'conservative'));
+  document.querySelectorAll('[data-plant]').forEach(b => b.classList.toggle('active', b.dataset.plant === 'rack'));
+  applyParams(DEFAULTS);
+  timeSlider.value = DEFAULTS.simTime;
+  timeDisplay.textContent = DEFAULTS.simTime + ' s';
+  scheduleRun();
+});
+
+// ============================================================
+// Simulation
+// ============================================================
+function simulate() {
+  const { pv, sp, kp, ki, kd, db, tHeat, tCool, L, K, tamb, tmax, simTime } = P;
+
+  const dt    = 1;                    // 1 s timestep
+  const steps = Math.ceil(simTime / dt);
+  const dSteps = Math.max(0, Math.round(L / dt));
+  const bufLen = dSteps + 1;
+
+  // Fan gain: s.t. steady-state at u=100% gives T = tmax - K
+  const Tmin = tmax - K;
+  const Kfan = (Tmin > tamb + 0.1)
+    ? (tmax - tamb) / (Tmin - tamb) - 1
+    : 10;
+
+  // Initial steady-state fan output for T=pv (P-only estimate)
+  const init_error  = pv - sp;
+  const init_output = Math.max(0, Math.min(100, kp * init_error));
+
+  // Dead-time ring buffer — pre-filled with P-term output so the plant
+  // responds immediately at t=0 rather than after a dead-time delay on
+  // the very first step. i_accum starts at 0 (no prior integral history).
+  const fanBuf = new Float64Array(bufLen).fill(init_output);
+  let bufIdx = 0;
+
+  let T        = pv;
+  let i_accum  = 0;
+  let prev_err = init_error;
+
+  const timeArr   = new Float32Array(steps + 1);
+  const tempArr   = new Float32Array(steps + 1);
+  const outArr    = new Float32Array(steps + 1);
+  const pArr      = new Float32Array(steps + 1);
+  const iArr      = new Float32Array(steps + 1);
+  const dArr      = new Float32Array(steps + 1);
+
+  timeArr[0]  = 0;
+  tempArr[0]  = T;
+  outArr[0]   = init_output;
+  pArr[0]     = kp * init_error;
+  iArr[0]     = i_accum;
+  dArr[0]     = 0;
+
+  for (let s = 1; s <= steps; s++) {
+    // ── PID (error positive → too hot → fan up) ──
+    const err = T - sp;
+    const p_term = kp * err;
+
+    if (Math.abs(err) > db) {
+      i_accum += ki * err * dt;
+    }
+    i_accum = Math.max(-100, Math.min(100, i_accum));
+
+    const d_term = kd * (err - prev_err) / dt;
+    prev_err = err;
+
+    const output = Math.max(0, Math.min(100, p_term + i_accum + d_term));
+
+    // ── Dead-time buffer ──
+    fanBuf[bufIdx] = output;
+    bufIdx = (bufIdx + 1) % bufLen;
+    const fan_delayed = fanBuf[bufIdx];   // oldest entry = L seconds ago
+
+    // ── Plant: asymmetric τ based on heating/cooling direction ──
+    // raw = sign of net dT (positive = heating, negative = cooling)
+    const raw = (tmax - tamb) - (T - tamb) * (1 + Kfan * fan_delayed / 100);
+    const tau_eff = raw > 0 ? tHeat : tCool;
+    const dT = raw / tau_eff;
+    T += dT * dt;
+
+    timeArr[s] = s * dt;
+    tempArr[s] = T;
+    outArr[s]  = output;
+    pArr[s]    = p_term;
+    iArr[s]    = i_accum;
+    dArr[s]    = d_term;
+  }
+
+  return { timeArr, tempArr, outArr, pArr, iArr, dArr, steps, sp, simTime };
+}
+
+function metrics(data) {
+  const { tempArr, outArr, steps, sp, simTime } = data;
+
+  let minT = Infinity, maxDuty = 0;
+  for (let i = 0; i <= steps; i++) {
+    if (tempArr[i] < minT) minT = tempArr[i];
+    if (outArr[i]  > maxDuty) maxDuty = outArr[i];
+  }
+  const overshoot = Math.max(0, sp - minT);
+
+  // Settling: last step where |T - sp| > 0.5
+  let settleStep = -1;
+  for (let i = steps; i >= 0; i--) {
+    if (Math.abs(tempArr[i] - sp) > 0.5) { settleStep = i; break; }
+  }
+
+  // SS error: mean of last 10% of window
+  const ssWindow = Math.max(10, Math.floor(steps * 0.1));
+  let ssSum = 0;
+  for (let i = steps - ssWindow; i <= steps; i++) ssSum += tempArr[i] - sp;
+  const ssError = ssSum / (ssWindow + 1);
+
+  return { overshoot, settleStep, ssError, maxDuty, finalTemp: tempArr[steps] };
+}
+
+// ============================================================
+// Charts (Chart.js 4)
+// ============================================================
+const CHART_OPT_BASE = {
+  animation: false,
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: { mode: 'index', intersect: false },
+  plugins: {
+    legend: {
+      labels: { color: '#7878a0', boxWidth: 14, font: { size: 11 } }
+    },
+  },
+  scales: {
+    x: {
+      type: 'linear',
+      ticks: { color: '#7878a0', maxTicksLimit: 10 },
+      grid:  { color: '#2a2a45' },
+      title: { display: true, text: 'Time (s)', color: '#7878a0', font: { size: 11 } },
+    },
+  },
+};
+
+function yAxis(label, color) {
+  return {
+    ticks: { color: color || '#7878a0' },
+    grid:  { color: '#2a2a45' },
+    title: { display: true, text: label, color: color || '#7878a0', font: { size: 11 } },
+  };
+}
+
+let chartTemp, chartPid;
+
+function initCharts() {
+  chartTemp = new Chart(document.getElementById('chart-temp'), {
+    type: 'line',
+    data: {
+      datasets: [
+        { label: 'Temperature (°C)', data: [], borderColor: '#f38ba8', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.2 },
+        { label: 'Setpoint (°C)',    data: [], borderColor: '#a6e3a1', backgroundColor: 'transparent', borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 },
+        { label: 'T_ambient (°C)',   data: [], borderColor: '#7878a0', backgroundColor: 'transparent', borderWidth: 1,   borderDash: [3, 5], pointRadius: 0 },
+      ],
+    },
+    options: { ...CHART_OPT_BASE, scales: { ...CHART_OPT_BASE.scales, y: yAxis('°C', '#f38ba8') } },
+  });
+
+  chartPid = new Chart(document.getElementById('chart-pid'), {
+    type: 'line',
+    data: {
+      datasets: [
+        { label: 'Output (%)', data: [], borderColor: '#89b4fa', backgroundColor: 'rgba(137,180,250,0.08)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.2 },
+        { label: 'P-Term',    data: [], borderColor: '#fab387', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
+        { label: 'I-Term',    data: [], borderColor: '#f9e2af', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
+        { label: 'D-Term',    data: [], borderColor: '#cba6f7', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
+      ],
+    },
+    options: { ...CHART_OPT_BASE, scales: { ...CHART_OPT_BASE.scales, y: { ...yAxis('%', '#89b4fa'), min: -20, max: 110 } } },
+  });
+}
+
+function pts(timeArr, valArr, steps) {
+  // Downsample to ≤1000 points
+  const stride = Math.max(1, Math.floor(steps / 1000));
+  const out = [];
+  for (let i = 0; i <= steps; i += stride) {
+    out.push({ x: timeArr[i], y: +valArr[i].toFixed(2) });
+  }
+  return out;
+}
+
+function updateCharts(data) {
+  const { timeArr, tempArr, outArr, pArr, iArr, dArr, steps, sp, simTime } = data;
+
+  chartTemp.data.datasets[0].data = pts(timeArr, tempArr, steps);
+  chartTemp.data.datasets[1].data = [{ x: 0, y: sp },       { x: simTime, y: sp }];
+  chartTemp.data.datasets[2].data = [{ x: 0, y: P.tamb }, { x: simTime, y: P.tamb }];
+  chartTemp.update('none');
+
+  chartPid.data.datasets[0].data = pts(timeArr, outArr, steps);
+  chartPid.data.datasets[1].data = pts(timeArr, pArr,   steps);
+  chartPid.data.datasets[2].data = pts(timeArr, iArr,   steps);
+  chartPid.data.datasets[3].data = pts(timeArr, dArr,   steps);
+  chartPid.update('none');
+}
+
+function fmtSeconds(s) {
+  if (s < 60) return s + ' s';
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return h + 'h ' + m + 'min' + (sec ? ' ' + sec + 's' : '');
+  return m + 'min' + (sec ? ' ' + sec + 's' : '');
+}
+
+function updateMetrics(m, simTime) {
+  const f = (v, d = 1) => (isFinite(v) ? Math.abs(v) < 0.005 ? '0.0' : v.toFixed(d) : '—');
+  document.getElementById('m-overshoot').textContent   = f(m.overshoot) + '°C';
+  document.getElementById('m-settle').textContent      = m.settleStep >= 0 ? fmtSeconds(m.settleStep) : '< ' + fmtSeconds(simTime);
+  document.getElementById('m-ss-error').textContent    = (m.ssError >= 0 ? '+' : '') + f(m.ssError) + '°C';
+  document.getElementById('m-max-duty').textContent    = f(m.maxDuty, 0) + '%';
+  document.getElementById('m-final-temp').textContent  = f(m.finalTemp) + '°C';
+}
+
+// ============================================================
+// Run loop
+// ============================================================
+let runTimer = null;
+
+function scheduleRun() {
+  clearTimeout(runTimer);
+  runTimer = setTimeout(run, 80);
+}
+
+function run() {
+  const data = simulate();
+  updateCharts(data);
+  updateMetrics(metrics(data), P.simTime);
+}
+
+// ── Bootstrap ────────────────────────────────────────────────
+initCharts();
+run();
+</script>
+</body>
+</html>

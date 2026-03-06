@@ -1,5 +1,5 @@
 #!/bin/bash
-# Local Jekyll development setup for ESPHome Fancontroller website
+# Local Jekyll development setup for WiFi Fancontroller website
 
 set -e
 

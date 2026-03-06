@@ -1,4 +1,4 @@
-# ESPHome Fan Controller Hardware Package - Revision 3.2
+# WiFi Fan Controller Hardware Package - Revision 3.2
 # Hardware: ESP32-S2, esp32-s2-saola-1 board
 # This package contains all hardware-specific configuration
 #

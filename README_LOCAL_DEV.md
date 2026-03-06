@@ -1,6 +1,6 @@
 # Local Development Setup
 
-This document describes how to run the ESPHome Fancontroller website locally for development.
+This document describes how to run the WiFi Fancontroller website locally for development.
 
 ## Option 1: Docker (Recommended)
 

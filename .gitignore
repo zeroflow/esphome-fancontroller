@@ -16,3 +16,7 @@ static/vendor/
 
 # Ruby gems
 gems/
+
+# Claude
+CLAUDE.md
+agents/*

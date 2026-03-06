@@ -85,6 +85,37 @@ A CE-certified, ESP32-based PWM fan controller designed for home server racks, m
 
 Flash pre-built firmware directly from your browser. Connect your board via USB-C and click the button for your hardware revision below.
 
+## ESPHome Modules
+
+The fan controller firmware is built around reusable ESPHome packages. Drop any module into your configuration with a single `packages:` entry — no copy-pasting required. All parameters have sensible defaults and can be tuned live from Home Assistant.
+
+| Module | File | Description |
+|--------|------|-------------|
+| <i class="fa-solid fa-sliders"></i> **Temperature PID** | `modules/temperature_pid.yaml` | Full PID thermostat with Home Assistant climate entity. Live kp/ki/kd tuning, one-click autotune, and deadband to prevent oscillation. [→ PID Simulator](pid-simulator) |
+| <i class="fa-solid fa-chart-line"></i> **Temperature Curve** | `modules/temperature_curve.yaml` | Up to 5 configurable temperature/speed points with linear interpolation. Points are editable from Home Assistant and auto-sorted at runtime. |
+| <i class="fa-solid fa-temperature-half"></i> **Temperature Linear** | `modules/temperature_linear.yaml` | Simple three-zone control: off below a threshold, constant minimum speed, then linear ramp to full speed. |
+| <i class="fa-solid fa-gauge-high"></i> **RPM PI Control** | `modules/rpm_pi_control.yaml` | Holds each fan at a target RPM using a PI controller. Includes anti-windup, deadband, and per-fan debug sensors. |
+| <i class="fa-solid fa-circle-dot"></i> **RPM Status LEDs** | `modules/rpm_status_leds.yaml` | Colors each fan's RGB LED from red (stopped) to green (full speed) based on live RPM. Configurable max RPM scale. |
+
+### Usage Example
+
+Add any module to your ESPHome config via the `packages` key:
+
+```yaml
+packages:
+  hardware: !include hardware-rev-3.3.yaml
+  temperature_pid:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    files: [modules/temperature_pid.yaml]
+    ref: main
+    vars:
+      friendly_name: "Server Rack"
+      kp: "3.0"
+      ki: "0.005"
+```
+
+Modules can be combined — for example, pair `temperature_pid` for automatic control with `rpm_status_leds` for visual feedback.
+
 ## Hardware Revisions
 
 {% include feature_row id="feature_row_rev3" type="left" %}

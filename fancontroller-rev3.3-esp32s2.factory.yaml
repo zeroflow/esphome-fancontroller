@@ -1,4 +1,4 @@
-# ESPHome Fan Controller - Revision 3.3 (ESP32-S2) - Factory Configuration
+# WiFi Fan Controller - Revision 3.3 (ESP32-S2) - Factory Configuration
 # This configuration is used for initial device provisioning and flashing.
 #
 # It includes additional features for first-time setup:

@@ -13,18 +13,18 @@
 #       ref: main
 #       vars:
 #         friendly_name: "My Fan Controller"
-#         kp: "0.39509"                      # Proportional gain
-#         ki: "0.00470"                      # Integral gain
-#         kd: "20.74267"                     # Derivative gain
+#         kp: "3.0"                          # Proportional gain (UI scale ×100: % fan per °C)
+#         ki: "0.005"                        # Integral gain     (UI scale ×100)
+#         kd: "0.0"                          # Derivative gain   (UI scale ×100)
 #         max_integral: "0.0"                # Maximum integral term
 #         output_averaging_samples: "1"      # Output smoothing samples
 #         derivative_averaging_samples: "5"  # Derivative smoothing samples
 #
 # Configuration Variables:
 #   - friendly_name: Device name prefix (default: "Fancontroller")
-#   - kp: Proportional gain coefficient (default: 0.39509)
-#   - ki: Integral gain coefficient (default: 0.00470)
-#   - kd: Derivative gain coefficient (default: 20.74267)
+#   - kp: Proportional gain coefficient (default: 0.03)
+#   - ki: Integral gain coefficient (default: 0.00005)
+#   - kd: Derivative gain coefficient (default: 0.0)
 #   - max_integral: Max integral term value (default: 0.0)
 #   - output_averaging_samples: Output averaging samples (default: 1)
 #   - derivative_averaging_samples: Derivative averaging samples (default: 5)
@@ -45,12 +45,12 @@
 #
 substitutions:
   friendly_name: "Fancontroller" # default
-  kp: 0.39509 # kp: 0.3
-  ki: 0.00470 # ki: 0.0015
-  kd: 20.74267 # kd: 0
-  max_integral: 0.0
-  output_averaging_samples: 1
-  derivative_averaging_samples: 5
+  kp: "3.0"   # UI scale (×100): 3 ≈ 3% fan per °C
+  ki: "0.005" # UI scale (×100)
+  kd: "0.0"   # UI scale (×100)
+  max_integral: "0.0"
+  output_averaging_samples: "1"
+  derivative_averaging_samples: "5"
 
 number:
   ## OPTIONAL:
@@ -59,48 +59,48 @@ number:
   # These helper values will get saved to flash thus permanently over-riding 
   # the initial values set in the PID below.
 
-  # KP
+  # KP (scaled x100: 1.0 = 1% fan speed per °C error)
   - platform: template
     name: PID kp
     id: pid_kp_number
     icon: mdi:chart-bell-curve
     restore_value: true
-    initial_value: 0.3
+    initial_value: ${kp}
     min_value: 0
-    max_value: 5
-    step: 0.001
+    max_value: 500
+    step: 0.1
     optimistic: true
     set_action:
       lambda: |-
-        id(console_thermostat).set_kp( x );
+        id(console_thermostat).set_kp( x / 100.0 );
 
-  # KI
+  # KI (scaled x100)
   - platform: template
     name: PID ki
     id: pid_ki_number
     icon: mdi:chart-bell-curve
     restore_value: true
-    initial_value: 0.0015
+    initial_value: ${ki}
     min_value: 0
-    max_value: 1
-    step: 0.0001
+    max_value: 100
+    step: 0.01
     optimistic: true
     set_action:
-      lambda: id(console_thermostat).set_ki( x );
+      lambda: id(console_thermostat).set_ki( x / 100.0 );
 
-  # KD
+  # KD (scaled x100)
   - platform: template
     name: PID kd
     id: pid_kd_number
     icon: mdi:chart-bell-curve
     restore_value: true
-    initial_value: 0.0
-    min_value: -50
-    max_value: 50
-    step: 0.001
+    initial_value: ${kd}
+    min_value: -5000
+    max_value: 5000
+    step: 0.1
     optimistic: true
     set_action:
-      lambda: id(console_thermostat).set_kd( x );
+      lambda: id(console_thermostat).set_kd( x / 100.0 );
 
   # Set threshold low
   - platform: template
@@ -320,12 +320,14 @@ climate:
       min_temperature: 20 °C
       max_temperature: 50 °C
   
-    # See the README for setting up these parameters.
-    # These are over ridden by the number templates above.
+    # Boot-time fallback only (internal 0-1 scale).
+    # Overridden within milliseconds by the number entities above (which
+    # restore from flash and call set_kp/ki/kd via set_action on boot).
+    # Tune via the HA sliders — substitutions kp/ki/kd set those initial values.
     control_parameters:
-      kp: ${kp} # kp: 0.3
-      ki: ${ki} # ki: 0.0015
-      kd: ${kd} # kd: 0
+      kp: 0.03     # = kp default / 100
+      ki: 0.00005  # = ki default / 100
+      kd: 0.0      # = kd default / 100
       max_integral: 0.0
       output_averaging_samples: 1
       derivative_averaging_samples: 5
