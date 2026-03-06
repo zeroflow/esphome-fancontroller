@@ -13,13 +13,14 @@
 #     hardware: !include hardware-rev-3.1.yaml
 #     rpm_pi_control:
 #       url: https://github.com/zeroflow/wifi-fancontroller
-#       files: [modules/rpm_pi_control.yaml]
 #       ref: main
-#       vars:
-#         friendly_name: "My Fan Controller"
-#         kp: "50"             # Proportional gain (scaled by 100000, actual: 0.0005)
-#         ki: "10"             # Integral gain (scaled by 100000, actual: 0.0001)
-#         update_interval: "1" # Control loop interval (matches 1s sensor update)
+#       files: 
+#         - path: modules/rpm_pi_control.yaml]
+#           vars:
+#             friendly_name: "My Fan Controller"
+#             kp: "50"             # Proportional gain (scaled by 100000, actual: 0.0005)
+#             ki: "10"             # Integral gain (scaled by 100000, actual: 0.0001)
+#             update_interval: "1" # Control loop interval (matches 1s sensor update)
 #
 #   # OPTIONAL: Add filtering only if your fans have very noisy tachometer signals
 #   sensor:

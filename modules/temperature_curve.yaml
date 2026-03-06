@@ -7,21 +7,22 @@
 #   packages:
 #     temperature_curve:
 #       url: https://github.com/zeroflow/wifi-fancontroller
-#       files: [modules/temperature_curve.yaml]
 #       ref: main
-#       vars:
-#         friendly_name: "My Fan Controller"
-#         # Define your curve points (temperature in °C, fan speed in %)
-#         curve_temp1: "20.0"    # Point 1: Below this temp, fans off
-#         curve_speed1: "0.0"
-#         curve_temp2: "25.0"    # Point 2: Start spinning
-#         curve_speed2: "25.0"
-#         curve_temp3: "30.0"    # Point 3: Medium speed
-#         curve_speed3: "50.0"
-#         curve_temp4: "40.0"    # Point 4: High speed
-#         curve_speed4: "75.0"
-#         curve_temp5: "50.0"    # Point 5: Maximum speed
-#         curve_speed5: "100.0"
+#       files: 
+#         - path: modules/temperature_curve.yaml       
+#           vars:
+#             friendly_name: "My Fan Controller"
+#             # Define your curve points (temperature in °C, fan speed in %)
+#             curve_temp1: "20.0"    # Point 1: Below this temp, fans off
+#             curve_speed1: "0.0"
+#             curve_temp2: "25.0"    # Point 2: Start spinning
+#             curve_speed2: "25.0"
+#             curve_temp3: "30.0"    # Point 3: Medium speed
+#             curve_speed3: "50.0"
+#             curve_temp4: "40.0"    # Point 4: High speed
+#             curve_speed4: "75.0"
+#             curve_temp5: "50.0"    # Point 5: Maximum speed
+#             curve_speed5: "100.0"
 #
 # Configuration Variables:
 #   - friendly_name: Device name prefix (default: "fancontroller")

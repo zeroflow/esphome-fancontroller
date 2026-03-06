@@ -9,16 +9,16 @@
 packages:
   hardware:
     url: https://github.com/zeroflow/wifi-fancontroller
-    files: [hardware-rev-3.1.yaml]
     ref: main
+    files: [hardware-rev-3.1.yaml]
   rpm_status_leds:
     url: https://github.com/zeroflow/wifi-fancontroller
-    files: [modules/rpm_status_leds.yaml]
     ref: main
+    files: [modules/rpm_status_leds.yaml]
   temperature_pid:
     url: https://github.com/zeroflow/wifi-fancontroller
-    files: [modules/temperature_pid.yaml]
     ref: main
+    files: [modules/temperature_pid.yaml]
 
 esphome:
   name: my-fancontroller

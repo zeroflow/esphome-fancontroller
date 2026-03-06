@@ -210,6 +210,7 @@ Visual feedback module that updates each fan's RGB LED based on its RPM reading.
 packages:
   rpm_status_leds:
     url: https://github.com/zeroflow/wifi-fancontroller
+    ref: main 
     files: 
       - path: modules/rpm_status_leds.yaml
         vars:
@@ -325,17 +326,18 @@ PI (Proportional-Integral) controller that regulates PWM output to achieve and m
 packages:
   hardware:
     url: https://github.com/zeroflow/wifi-fancontroller
-    files: [hardware-rev-3.1.yaml]
     ref: main
+    files: [hardware-rev-3.1.yaml]
   rpm_pi_control:
     url: https://github.com/zeroflow/wifi-fancontroller
-    files: [modules/rpm_pi_control.yaml]
     ref: main
-    vars:
-      friendly_name: "Server Rack"
-      kp: "0.005"           # Proportional gain
-      ki: "0.001"           # Integral gain
-      update_interval: "2"  # Update every 2 seconds (matches sensor update)
+    files: 
+      - path: modules/rpm_pi_control.yaml
+        vars:
+          friendly_name: "Server Rack"
+          kp: "0.005"           # Proportional gain
+          ki: "0.001"           # Integral gain
+          update_interval: "2"  # Update every 2 seconds (matches sensor update)
 
 # REQUIRED: Override hardware sensors for faster updates
 sensor:

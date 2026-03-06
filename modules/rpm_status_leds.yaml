@@ -6,11 +6,13 @@
 # Usage:
 #   packages:
 #     rpm_status_leds:
-#       url: https://github.com/zeroflow/wifi-fancontroller
-#       files: [modules/rpm_status_leds.yaml]
-#       ref: main
-#       vars:
-#         full_rpm: "2500"  # RPM value considered as 100% speed (green LED)
+#       url: https://github.com/zeroflow/wifi-fancontroller 
+#       ref: main 
+#       files: 
+#         - path: modules/rpm_status_leds.yaml
+#           vars: 
+#             full_rpm: "2500"  # RPM value considered as 100% speed (green LED) 
+#
 #
 # Configuration Variables:
 #   - full_rpm: Maximum RPM for color scaling (default: 2500)

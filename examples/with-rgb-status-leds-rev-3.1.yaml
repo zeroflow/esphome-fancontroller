@@ -7,15 +7,18 @@ packages:
   # Include the hardware-specific configuration
   hardware:
     url: https://github.com/zeroflow/wifi-fancontroller
-    files: [hardware-rev-3.1.yaml]
     ref: main
+    files: [hardware-rev-3.1.yaml]
 
   # Include the RPM status LEDs module
   # This displays fan speed as LED colors (red=slow, green=fast)
   rpm_status_leds:
-    url: https://github.com/zeroflow/wifi-fancontroller
-    files: [modules/rpm_status_leds.yaml]
-    ref: main
+    url: https://github.com/zeroflow/wifi-fancontroller 
+    ref: main 
+    files: 
+      - path: modules/rpm_status_leds.yaml
+        vars: 
+          full_rpm: "2500"  # RPM value considered as 100% speed (green LED) 
 
 esphome:
   name: my-fancontroller

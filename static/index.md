@@ -134,12 +134,13 @@ packages:
   hardware: !include hardware-rev-3.3.yaml
   temperature_pid:
     url: https://github.com/zeroflow/wifi-fancontroller
-    files: [modules/temperature_pid.yaml]
     ref: main
-    vars:
-      friendly_name: "Server Rack"
-      kp: "3.0"
-      ki: "0.005"
+    files: 
+      - path: modules/temperature_pid.yaml
+        vars:
+          friendly_name: "Server Rack"
+          kp: "3.0"
+          ki: "0.005"
 ```
 
 Modules can be combined — for example, pair `temperature_pid` for automatic control with `rpm_status_leds` for visual feedback.

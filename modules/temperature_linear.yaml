@@ -11,8 +11,8 @@
 #   packages:
 #     temperature_linear:
 #       url: https://github.com/zeroflow/wifi-fancontroller
-#       files: [modules/temperature_linear.yaml]
 #       ref: main
+#       files: [modules/temperature_linear.yaml]
 #       vars:
 #         friendly_name: "My Fan Controller"
 #         t_off: "25.0"        # Temperature below which fans turn off
