@@ -4,6 +4,9 @@
 # Automatically adjusts fan speeds to maintain a target temperature with minimal overshoot.
 #
 # Credit to https://github.com/patrickcollins12/esphome-fan-controller
+# 
+# A PID simulator is available at https://fancontroller.arthofer.dev/pid-simulator.
+# It uses simplified thermal models — treat results as a starting point for tuning.
 #
 # Usage:
 #   packages:
@@ -211,6 +214,8 @@ fan:
     id: manual_fan_control
     output: proxy_output
     name: "Fan Manual Override"
+    on_turn_off:
+      - climate.pid.reset_integral_term: pid_thermostat
 
 # Switches to select which fan is controlled by PID
 switch:
@@ -292,7 +297,6 @@ climate:
     # It is summer right now, so 30c is a decent target.
     default_target_temperature: 30°C
     cool_output: proxy_output
-    # cool_output: console_fan_speed
 
     # ON state change, publish the values to the x_term numbers defined 
     # above, so that they can be viewed in HA

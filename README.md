@@ -258,6 +258,9 @@ Advanced PID (Proportional-Integral-Derivative) control for precise temperature 
 
 Shoutout to [patrickcollins12/esphome-fan-controller](https://github.com/patrickcollins12/esphome-fan-controller) for the example code.
 
+A PID simulator is available at https://fancontroller.arthofer.dev/pid-simulator.
+It uses simplified thermal models — treat results as a starting point for tuning.
+
 **Configuration Variables:**
 - `friendly_name`: Device name prefix (default: "fancontroller")
 - `kp`: Proportional gain coefficient (default: 0.39509)
