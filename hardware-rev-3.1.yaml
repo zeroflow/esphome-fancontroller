@@ -4,11 +4,11 @@
 #
 # Usage (local):
 #   packages:
-#     fancontroller: !include hardware-rev-3.0.yaml
+#     fancontroller: !include hardware-rev-3.1.yaml
 #
 # Usage (GitHub):
 #   packages:
-#     fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-3.0.yaml@main
+#     fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-3.1.yaml@main
 
 # Globals
 globals:
