@@ -5,17 +5,17 @@ header:
   overlay_filter: "0.5"
   overlay_image: /board_rev3.3_front.jpg
   actions:
-    - label: "Buy Now - $35,99"
+    - label: "Buy Now - $35.99"
       url: "https://www.elecrow.com/wifi-fancontroller1.html"
     - label: "View on GitHub"
       url: "https://github.com/zeroflow/wifi-fancontroller"
-  caption: "CE-certified ESP32 Fan Controller"
+  caption: "CE-certified WiFi Fan Controller"
 excerpt: "**Smart fan control for your Home Assistant setup**<br/>Control up to 4 fans with temperature-based automation, remote monitoring, and seamless Home Assistant integration."
 
 feature_row_rev3:
   - image_path: board_rev3.3_front.jpg
     title: "Rev 3.1, 3.2, 3.3 - Latest Generation"
-    excerpt: "RGB status LEDs, enhanced signal integrity, improved USB resilience, and full expansion capabilities. Revisions 3.2 and 3.3 include minor component upgrades.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-1.manifest.json\"></esp-web-install-button><br/><br/>Also available: [Rev 3.1](fancontroller-rev3.1) • [Rev 3.2](fancontroller-rev3.2)"
+    excerpt: "RGB status LEDs, enhanced signal integrity, improved USB resilience, and full expansion capabilities. Revisions 3.2 and 3.3 include minor component upgrades.<br/><br/>This firmware is compatible with Rev 3.1, 3.2, and 3.3.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-1.manifest.json\"></esp-web-install-button><br/><br/><details><summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary><p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback:<ol><li>Connect the board via USB-C</li><li>Hold BOOT, press RESET to enter boot mode</li><li>Click \"Connect\" in ESPWEBTOOL</li><li>Remove all flash entries except one</li><li>Flash the <code>.bin</code> file at address <code>0x0</code></li></ol></p></details><br/><br/>Also available: [Rev 3.1](fancontroller-rev3.1) • [Rev 3.2](fancontroller-rev3.2)"
     url: "fancontroller-rev3.3"
     btn_label: "Learn More (Rev 3.3)"
     btn_class: "btn--primary"
@@ -23,7 +23,7 @@ feature_row_rev3:
 feature_row_rev30:
   - image_path: board_rev3.0.jpg
     title: "Rev 3.0 - Expansion Focus"
-    excerpt: "Added Qwiic I2C port, 5V NeoPixel output, and GPIO expansion header for maximum hackability.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-0.manifest.json\"></esp-web-install-button>"
+    excerpt: "Added Qwiic I2C port, 5V NeoPixel output, and GPIO expansion header for maximum hackability.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r3-0.manifest.json\"></esp-web-install-button><br/><br/><details><summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary><p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback:<ol><li>Connect the board via USB-C</li><li>Hold BOOT, press RESET to enter boot mode</li><li>Click \"Connect\" in ESPWEBTOOL</li><li>Remove all flash entries except one</li><li>Flash the <code>.bin</code> file at address <code>0x0</code></li></ol></p></details>"
     url: "fancontroller-rev3.0"
     btn_label: "Learn More"
     btn_class: "btn--primary"
@@ -31,7 +31,7 @@ feature_row_rev30:
 feature_row_rev2:
   - image_path: board_rev2.0.jpg
     title: "Rev 2.0 - USB-C"
-    excerpt: "Upgraded to ESP32-S2 with USB-C flashing support, eliminating the need for serial programming adapters.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r2-0.manifest.json\"></esp-web-install-button>"
+    excerpt: "Upgraded to ESP32-S2 with USB-C flashing support, eliminating the need for serial programming adapters.<br/><br/><esp-web-install-button manifest=\"firmware/fancontroller-r2-0.manifest.json\"></esp-web-install-button><br/><br/><details><summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary><p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href=\"https://esptool.spacehuhn.com/\">ESPWEBTOOL by Spacehuhn</a> as a fallback:<ol><li>Connect the board via USB-C</li><li>Hold BOOT, press RESET to enter boot mode</li><li>Click \"Connect\" in ESPWEBTOOL</li><li>Remove all flash entries except one</li><li>Flash the <code>.bin</code> file at address <code>0x0</code></li></ol></p></details>"
     url: "fancontroller-rev2.0"
     btn_label: "Learn More"
     btn_class: "btn--primary"
@@ -83,7 +83,35 @@ A CE-certified, ESP32-based PWM fan controller designed for home server racks, m
 
 ## Get Started in Minutes
 
-Flash pre-built firmware directly from your browser. Connect your board via USB-C and click the button for your hardware revision below.
+Flash pre-built firmware directly from your browser. Select your hardware revision below and click the install button — no drivers or software required.
+
+→ [Jump to hardware revisions & flash buttons](#hardware-revisions)
+
+## Hardware Revisions
+
+{% include feature_row id="feature_row_rev3" type="left" %}
+
+{% include feature_row id="feature_row_rev30" type="left" %}
+
+{% include feature_row id="feature_row_rev2" type="left" %}
+
+{% include feature_row id="feature_row_rev1" type="left" %}
+
+<div style="text-align: center; margin: 2em 0;">
+  <a href="https://www.elecrow.com/wifi-fancontroller1.html" class="btn btn--primary btn--large">Buy Now — $35.99</a>
+</div>
+
+---
+
+## Get Your Board
+
+**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35.99.
+
+**Customizable**: ESPHome configurations and documentation available on [GitHub](https://github.com/zeroflow/wifi-fancontroller). Create custom automations and share your configurations with the community.
+
+**Need Help?** Check the [documentation](https://github.com/zeroflow/wifi-fancontroller#readme) or open an issue on GitHub.
+
+---
 
 ## ESPHome Modules
 
@@ -115,25 +143,5 @@ packages:
 ```
 
 Modules can be combined — for example, pair `temperature_pid` for automatic control with `rpm_status_leds` for visual feedback.
-
-## Hardware Revisions
-
-{% include feature_row id="feature_row_rev3" type="left" %}
-
-{% include feature_row id="feature_row_rev30" type="left" %}
-
-{% include feature_row id="feature_row_rev2" type="left" %}
-
-{% include feature_row id="feature_row_rev1" type="left" %}
-
----
-
-## Get Your Board
-
-**Ready to upgrade your setup?** Boards and 3D-printed cases available at [Elecrow](https://www.elecrow.com/wifi-fancontroller1.html) for $35,99.
-
-**Customizable**: ESPHome configurations and documentation available on [GitHub](https://github.com/zeroflow/wifi-fancontroller). Create custom automations and share your configurations with the community.
-
-**Need Help?** Check the [documentation](https://github.com/zeroflow/wifi-fancontroller#readme) or open an issue on GitHub.
 
 <script type="module" src="https://unpkg.com/esp-web-tools@8.0.6/dist/web/install-button.js?module"></script>

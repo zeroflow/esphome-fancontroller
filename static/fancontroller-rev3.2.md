@@ -37,19 +37,25 @@ toc_icon: "microchip"
 Rev 3.2 improves upon Rev 3.1 with enhanced USB protection:
 - Improved USB-C fuse for better overcurrent protection
 - Enhanced USB resilience and safety
-- Same firmware and pin configuration as Rev 3.1
+- Compatible firmware and pinout — hardware improvements only
 
 ## Generic Firmware Installation
 
 <esp-web-install-button manifest="firmware/fancontroller-r3-1.manifest.json"></esp-web-install-button>
 
-> **Note:** ESP32-S2 boards may have connectivity issues with web-based flashing. If browser flash fails, use [esptool](https://github.com/espressif/esptool) for reliable flashing:
->
-> ```bash
-> esptool.py --chip esp32s2 write_flash 0x0 firmware.bin
-> ```
->
-> [Download prebuilt binary](/firmware/fancontroller-r3-1-esp32s2.factory.bin)
+<details>
+<summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary>
+<p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
+<ol>
+<li>Connect the board via USB-C</li>
+<li>Hold BOOT, press RESET to enter boot mode</li>
+<li>Click "Connect" in ESPWEBTOOL</li>
+<li>Remove all flash entries except one</li>
+<li>Flash the <code>.bin</code> file at address <code>0x0</code></li>
+</ol>
+<p>Alternatively, use <a href="https://github.com/espressif/esptool">esptool</a> from the command line: <code>esptool.py --chip esp32s2 write_flash 0x0 firmware.bin</code></p>
+<p><a href="/firmware/fancontroller-r3-1-esp32s2.factory.bin">Download prebuilt binary</a></p>
+</details>
 
 ## Example Configurations
 

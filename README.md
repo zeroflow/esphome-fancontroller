@@ -16,6 +16,16 @@ A CE-certified, ESP32-based PWM fan controller designed for home server racks, m
 
 **Professional Quality**: CE certified hardware with RGB status LEDs showing system status at a glance. Standard 12V barrel jack power input works with commonly available power supplies.
 
+## Get Your Board
+
+**Ready to upgrade your setup?**
+
+**[Buy on Elecrow - $35.99](https://www.elecrow.com/wifi-fancontroller1.html)** - Boards and 3D-printed cases available
+
+**[Complete Documentation & Web Installer](https://fancontroller.arthofer.dev/)** - Flash firmware directly from your browser
+
+**DIY Case**: Print your own case using the [WiFi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) design on Printables.com.
+
 ## Specifications
 
 * **Power**
@@ -36,24 +46,36 @@ A CE-certified, ESP32-based PWM fan controller designed for home server racks, m
   * WiFi (ESP32/ESP32-S2)
   * USB-C for programming and power (Rev 2.0+)
 
-## Get Your Board
+## Power Draw
 
-**Ready to upgrade your setup?**
+The power usage of the device is dominated by the fans.
+As a standalone device, these are the measured power figures in different operation modes.
 
-**[Buy on Elecrow - $35,99](https://www.elecrow.com/wifi-fancontroller1.html)** - Boards and 3D-printed cases available
+Mode | Power Draw
+---- | ----------
+Active Wifi Transfer (e.g. OTA Upload) | 0.6W
+Wifi connected, power save mode deactivated (not default) | 0.52W
+```Default``` Wifi connected, LEDs showing status (one-colored) | 0.25W
+Wifi connected, LEDs off | 0.2W
+Deep Sleep | 0.07W
 
-**[Complete Documentation & Web Installer](https://fancontroller.arthofer.dev/)** - Flash firmware directly from your browser
+Disabling Wifi while not in deep sleep does not reduce power consumption, as the default light power save mode already does a good job.
 
-**DIY Case**: Print your own case using the [WiFi Fancontroller Case](https://www.printables.com/model/987263-wifi-fancontroller-case) design on Printables.com.
+These values have been measured via a DPS3005 power supply, therefore, their accuracy cannot be guaranteed.
+
+---
 
 ## Quick Start
 
 All boards come pre-flashed with an ESPHome factory image that's ready to use:
 
-1. **Power up the board** via USB-C or 12V DC
+1. **Power up the board** via USB-C or 12V DC (USB-C is for flashing only, power via 12V DC barrel jack is required for fans)
 2. **Connect to the WiFi hotspot** (e.g. `fancontroller-r3-1-abcdef`)
 3. **Configure your WiFi** through the captive portal
 4. **Done!** Board appears in Home Assistant via ESPHome
+
+**What you get out of the box:**
+The factory firmware exposes all 4 fan channels as speed controls in Home Assistant, along with temperature and humidity readings from the onboard sensor. Fan speeds can be adjusted manually from 0–100% or automated via Home Assistant. RPM monitoring is available for each fan port.
 
 For custom firmware or troubleshooting, see [Installation Methods](#installation-methods) below.
 
@@ -67,8 +89,8 @@ Revision | Left                      | Fan Ports             | Right   | Details
 2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev2.0) |
 3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.0) |
 3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.1) |
-3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) | Functionally identical to Rev 3.1
-3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) | Functionally identical to Rev 3.1
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) | Compatible firmware and pinout — hardware-only revisions
+3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) | Compatible firmware and pinout — hardware-only revisions
 
 ---
 
@@ -78,7 +100,7 @@ Revision | Left                      | Fan Ports             | Right   | Details
 
 Flash pre-built firmware directly from your browser at **[fancontroller.arthofer.dev](https://fancontroller.arthofer.dev/)**
 
-**Note for ESP32-S2 boards (Rev 2.0, 3.x):** Web-based flashing may have connectivity issues. Currently (4.3.2025) the most reliable web tool is [ESPWEBTOOL by Spacehuhn](https://esptool.spacehuhn.com/). If the browser flash fails, use Method 2 (esptool) instead. 
+Note for ESP32-S2 boards (Rev 2.0, 3.x): Web-based flashing may have connectivity issues. The most reliable web tool is [ESPWEBTOOL by Spacehuhn](https://esptool.spacehuhn.com/). If the browser flash fails, use Method 2 (esptool) instead.
 
 ### Method 2: esptool (Alternative for ESP32-S2)
 
@@ -166,6 +188,9 @@ The hardware package automatically configures all board features:
 No manual pin configuration needed - just import the package and customize your automations!
 
 ---
+
+<details>
+<summary><strong>Fan Control Modules (advanced — click to expand)</strong></summary>
 
 ## Fan Control Modules
 
@@ -348,24 +373,7 @@ You can combine multiple modules in your configuration. For example:
 - Use RPM PI control with temperature sensors to create a custom automation that sets target RPM based on temperature thresholds
 - Combine linear temperature control with RPM status LEDs for simple automatic control with visual feedback
 
----
-
-## Power Draw
-
-The power usage of the device is dominated by the fans.
-As a standalone device, these are the measured power figures in different operation modes.
-
-Mode | Power Draw
----- | ----------
-Active Wifi Transfer (e.g. OTA Upload) | 0.6W
-Wifi connected, power save mode deactivated (not default) | 0.52W
-```Default``` Wifi connected, LEDs showing status (one-colored) | 0.25W
-Wifi connected, LEDs off | 0.2W
-Deep Sleep | 0.07W
-
-Disabling Wifi while not in deep sleep does not reduce power consumption, as the default light power save mode already does a good job.
-
-These values have been measured via a DPS3005 power supply, therefore, their accuracy cannot be guaranteed.
+</details>
 
 ---
 
@@ -376,17 +384,6 @@ These values have been measured via a DPS3005 power supply, therefore, their acc
 **Troubleshooting Discovery Issues**: If your board doesn't appear in ESPHome after connecting to WiFi, check for mDNS issues on your network. You can work around this by manually specifying the board's IP address using the [manual_ip](https://esphome.io/components/wifi.html) configuration in your WiFi settings.
 
 **Need Help?** Open an issue on [GitHub](https://github.com/zeroflow/wifi-fancontroller/issues) or consult the ESPHome documentation.
-
----
-
-## Resources
-
-- **Documentation & Web Installer**: [fancontroller.arthofer.dev](https://fancontroller.arthofer.dev/)
-- **Purchase Boards**: [Elecrow Store - $35,99](https://www.elecrow.com/wifi-fancontroller1.html)
-- **3D Printable Case**: [Printables.com](https://www.printables.com/model/987263-wifi-fancontroller-case)
-- **Hardware Packages**: Available in this repository under `hardware-rev-*.yaml`
-- **ESPHome Documentation**: [esphome.io](https://esphome.io/)
-- **Home Assistant**: [home-assistant.io](https://home-assistant.io/)
 
 ## Contributing
 
