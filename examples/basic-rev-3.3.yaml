@@ -1,21 +1,11 @@
-# Example: Hardware Rev 3.1 with RGB Status LEDs Module
+# Example: Basic Configuration for Hardware Revision 3.3
 #
-# This example shows how to use the hardware package together with
-# the RGB status LEDs module for visual fan speed feedback.
+# This example shows the minimal configuration needed to use the hardware package.
+# Perfect for getting started quickly.
 
 packages:
   # Include the hardware-specific configuration
-  hardware:
-    url: https://github.com/zeroflow/wifi-fancontroller
-    files: [hardware-rev-3.1.yaml]
-    ref: main
-
-  # Include the RPM status LEDs module
-  # This displays fan speed as LED colors (red=slow, green=fast)
-  rpm_status_leds:
-    url: https://github.com/zeroflow/wifi-fancontroller
-    files: [modules/rpm_status_leds.yaml]
-    ref: main
+  hardware: github://zeroflow/wifi-fancontroller/hardware-rev-3.3.yaml@main
 
 esphome:
   name: my-fancontroller
