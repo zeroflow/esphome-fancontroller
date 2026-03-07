@@ -1,0 +1,12 @@
+---
+// Serve the PID simulator as a standalone page (no Starlight chrome).
+// The HTML is self-contained with inline CSS/JS and a Chart.js CDN import.
+import fs from 'node:fs';
+import path from 'node:path';
+
+const html = fs.readFileSync(
+  path.join(process.cwd(), 'public', 'pid-simulator', 'index.html'),
+  'utf-8'
+);
+---
+<Fragment set:html={html} />
