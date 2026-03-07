@@ -138,8 +138,8 @@ When you set `kp = 3.0` in the HA interface, the controller internally uses `0.0
 
 To convert: **Internal = UI / 100**
 
-:::caution[PID Simulator Uses Internal Values]
-The [PID simulator](/pid-simulator/) works with **internal (unscaled) values**. If the simulator suggests `kp = 0.05`, enter `5.0` in Home Assistant (multiply by 100). Always divide simulator values by 100 before comparing with HA UI values.
+:::tip[PID Simulator Uses the Same Scale]
+The [PID simulator](/pid-simulator/) uses the same UI-scale values as Home Assistant. You can enter simulator values directly into HA number entities without any conversion.
 :::
 
 ## Tuning Tips
