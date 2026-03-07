@@ -17,6 +17,14 @@ static/vendor/
 # Ruby gems
 gems/
 
+# Astro site
+site/node_modules/
+site/dist/
+site/.astro/
+site/public/firmware/
+
 # Claude
 CLAUDE.md
-agents/*
+.planning/
+GITHUB-PAT-GUIDE.md
+pat_token

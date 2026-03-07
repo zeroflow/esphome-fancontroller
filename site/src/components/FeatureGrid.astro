@@ -1,0 +1,165 @@
+---
+import FeatureCard from './FeatureCard.astro';
+---
+
+<div class="feature-grid-wrapper">
+  <section class="feature-section">
+    <h2 class="section-heading">Why This Fan Controller?</h2>
+    <div class="feature-grid feature-grid-3">
+      <FeatureCard
+        icon="🌡️"
+        title="Intelligent Climate Control"
+        description="Built-in HDC1080 temperature and humidity sensor with PID, linear, or curve-based automation. Your fans respond to real conditions, not guesswork."
+      />
+      <FeatureCard
+        icon="🏠"
+        title="Home Assistant Native"
+        description="ESPHome-based firmware means instant Home Assistant discovery. Control fans from your dashboard, create automations, and monitor everything."
+      />
+      <FeatureCard
+        icon="🔧"
+        title="Hackable and Expandable"
+        description="Qwiic/I2C expansion port, NeoPixel RGB LEDs, 3 user buttons, and fully open-source YAML configs. Make it yours."
+      />
+    </div>
+  </section>
+
+  <section class="feature-section">
+    <h2 class="section-heading">Key Features</h2>
+    <div class="feature-grid feature-grid-3">
+      <FeatureCard
+        icon="🌀"
+        title="4x PWM Fan Outputs"
+        description="Control up to four 4-pin PWM fans independently with smooth speed regulation."
+      />
+      <FeatureCard
+        icon="🌡️"
+        title="Temp & Humidity Sensor"
+        description="Onboard HDC1080 provides accurate temperature and humidity readings for automation."
+      />
+      <FeatureCard
+        icon="💡"
+        title="RGB Status LEDs"
+        description="Per-fan NeoPixel LEDs show status at a glance. Fully customizable colors and effects."
+      />
+      <FeatureCard
+        icon="🔌"
+        title="Qwiic / I2C Expansion"
+        description="Standard Qwiic connector for adding external sensors, displays, or other peripherals."
+      />
+      <FeatureCard
+        icon="⚡"
+        title="USB-C Flashing"
+        description="Modern USB-C port for initial firmware flashing and serial debugging."
+      />
+      <FeatureCard
+        icon="📡"
+        title="OTA Updates"
+        description="Update firmware wirelessly over WiFi. No cables needed after initial setup."
+      />
+      <FeatureCard
+        icon="🎛️"
+        title="3 User Buttons"
+        description="Physical buttons for manual overrides, mode switching, or custom automations."
+      />
+      <FeatureCard
+        icon="⚡"
+        title="Low Power — 0.25W Idle"
+        description="Energy-efficient design draws just 0.25W at idle. Always on without the guilt."
+      />
+      <FeatureCard
+        icon="📝"
+        title="Fully Customizable"
+        description="Open-source ESPHome YAML. Add modules, change behavior, or build your own control logic."
+      />
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2 class="cta-heading">Ready to upgrade your setup?</h2>
+    <p class="cta-description">Get the WiFi Fan Controller and take control of your cooling.</p>
+    <a href="https://www.elecrow.com/wifi-fancontroller1.html" class="cta-button">
+      Buy Now — $35.99
+    </a>
+  </section>
+</div>
+
+<style>
+  .feature-grid-wrapper {
+    max-width: 72rem;
+    margin: 2rem auto 0;
+    padding: 0 1rem;
+  }
+
+  .feature-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-heading {
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--sl-color-white);
+    margin-bottom: 1.5rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .feature-grid > :global(*) {
+    margin-top: 0;
+  }
+
+  @media (min-width: 640px) {
+    .feature-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .feature-grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: 3rem 1rem;
+    border-top: 1px solid var(--sl-color-gray-5);
+    margin-top: 2rem;
+  }
+
+  .cta-heading {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--sl-color-white);
+    margin-bottom: 0.5rem;
+  }
+
+  .cta-description {
+    font-size: 1.1rem;
+    color: var(--sl-color-gray-2);
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-button {
+    display: inline-block;
+    background: var(--sl-color-accent);
+    color: var(--sl-color-black);
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .cta-button:hover {
+    opacity: 0.9;
+    text-decoration: none;
+  }
+</style>
