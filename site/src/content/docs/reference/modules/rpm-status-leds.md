@@ -21,7 +21,6 @@ See the [modules overview](/reference/modules/) for a comparison of all availabl
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `friendly_name` | `"Fancontroller"` | Device name prefix (used by the hardware package) |
 | `full_rpm` | `"2500"` | RPM value that maps to fully green LED |
 
 ## How It Works
