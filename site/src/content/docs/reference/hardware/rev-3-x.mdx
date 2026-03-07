@@ -66,6 +66,10 @@ The ESP32-S2 has known USB reliability issues. If the flash button doesn't detec
 4. As last resort, use `esptool.py` CLI: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
 </Aside>
 
+<Aside type="caution" title="USB-C is for flashing only">
+The USB-C port provides power to the ESP32-S2 microcontroller only. It cannot power the fans. Fans require an external 12V DC power supply connected to the DC input jack (5.5x2.1mm).
+</Aside>
+
 ## ESP32-S2 Pin Assignment
 
 This pin table applies to all Rev 3.1, 3.2, and 3.3 boards.
@@ -73,7 +77,7 @@ This pin table applies to all Rev 3.1, 3.2, and 3.3 boards.
 | Pin | Usage |
 |------|------|
 | GPIO0 | Boot Button, Push to enter flashing mode |
-| GPIO1 | Builtin LEDs, SK6805 |
+| GPIO1 | RGB Status LEDs, SK6805 (5 LEDs, ESPHome uses WS2812 driver, GRB color order) |
 | GPIO2 | Expansion Header (Bottom) |
 | GPIO3 | Expansion Header (Bottom) |
 | GPIO4 | Expansion Header (Bottom) |
