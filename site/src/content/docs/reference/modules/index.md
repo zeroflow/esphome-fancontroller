@@ -46,7 +46,7 @@ Modules define their configuration through `vars:` -- substitution variables tha
 ### Temperature modules are mutually exclusive
 
 :::caution
-You can only use **one** temperature control module at a time. These modules define overlapping internal component IDs -- PID and Linear both define `proxy_output`, while Linear and Curve both define `auto_control_fan1`--`auto_control_fan4` switches. Importing more than one temperature module will cause an ESPHome compile error due to duplicate component IDs.
+You can only use **one** temperature control module at a time. These modules define overlapping internal component IDs -- PID and Linear both define `proxy_output`, while Linear and Curve both define `auto_control_fan1`--`auto_control_fan4` switches. Even where IDs don't conflict, running two temperature controllers simultaneously would cause unpredictable fan behavior.
 :::
 
 ### RPM modules combine freely
