@@ -76,7 +76,7 @@ This guide walks you through the complete first-time setup of your WiFi Fan Cont
 
    The factory firmware includes **ESP Improv Serial** for easy WiFi provisioning.
 
-   After flashing, the serial console will prompt you to enter your WiFi credentials. Enter your **2.4 GHz** WiFi network name and password -- 5 GHz networks are not supported by the ESP32-S2.
+   After flashing, the serial console will prompt you to enter your WiFi credentials. Enter your **2.4 GHz** WiFi network name and password -- 5 GHz networks are not supported by any board revision.
 
    Once connected, the board displays its IP address in the serial output.
 
@@ -86,9 +86,13 @@ This guide walks you through the complete first-time setup of your WiFi Fan Cont
 
 3. **Connect your fans**
 
-   - Connect your **12V DC power supply** to the board's power input
+   - Connect your **12V DC power supply** to the board's power input (5.5x2.1mm barrel jack)
    - Plug your **PWM fans** (4-pin) into the fan headers (Fan 1 through Fan 4)
    - Check your hardware revision page for the correct pin layout and connector orientation
+
+   <Aside type="caution" title="USB-C does not power fans">
+   The USB-C port is for flashing and serial communication only. Fans require 12V DC power through the barrel jack connector. The USB-C port provides only 5V to the ESP32 microcontroller.
+   </Aside>
 
 4. **Adopt in Home Assistant**
 

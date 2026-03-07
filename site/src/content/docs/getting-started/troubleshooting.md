@@ -8,14 +8,14 @@ Find solutions to common issues below. Each section is organized by symptom so y
 ## WiFi won't connect
 
 - **Check your credentials** -- make sure you entered the correct WiFi network name and password during provisioning
-- **2.4 GHz only** -- the ESP32-S2 does not support 5 GHz WiFi networks
+- **2.4 GHz only** -- the ESP32 and ESP32-S2 do not support 5 GHz WiFi networks. This applies to all board revisions.
 - **Check signal strength** -- move the board closer to your access point or check for interference
 - **Fallback hotspot** -- if the board can't connect, it creates a hotspot called **"Fan Controller Fallback"**. Connect to this hotspot from your phone or laptop to re-enter WiFi credentials.
 - **Factory reset** -- if nothing works, [reflash the factory firmware via USB](/getting-started/firmware-updates/) to start fresh
 
 ## Fans not spinning
 
-- **Check 12V power** -- the fans are powered by the 12V DC input, not USB. Make sure your power supply is connected and providing power.
+- **Check 12V power** -- the fans are powered by the 12V DC barrel jack input, not USB-C. The USB-C port only provides 5V to the microcontroller and cannot power fans. Make sure your 12V power supply is connected and providing power.
 - **Use PWM fans** -- the board controls fan speed via the PWM signal. Standard 3-pin DC fans won't respond to speed control (though they may run at full speed).
 - **Check fan speed in HA** -- verify the fan speed is set above 0% in Home Assistant. A newly adopted device defaults to fans off.
 - **Minimum startup speed** -- some fans require a higher PWM percentage to start spinning (typically 20-30%). Try setting the fan to 100% first, then lower gradually to find the minimum speed your fans support.
