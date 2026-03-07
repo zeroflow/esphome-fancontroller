@@ -36,6 +36,10 @@ The ESP32-S2 has known USB reliability issues. If the flash button doesn't detec
 [Download prebuilt binary](/firmware/fancontroller-r2-0-esp32s2.factory.bin)
 </Aside>
 
+<Aside type="caution" title="USB-C is for flashing only">
+The USB-C port provides power to the ESP32-S2 microcontroller only. It cannot power the fans. Fans require an external 12V DC power supply connected to the DC input jack (5.5x2.1mm).
+</Aside>
+
 ## ESP32-S2 Pin Assignment
 
 | Pin | Usage |
@@ -61,17 +65,17 @@ The ESP32-S2 has known USB reliability issues. If the flash button doesn't detec
 | GPIO18 | Fan 4 PWM |
 | GPIO21 | Fan 4 Speed Sense |
 | GPIO26 | unused |
-| GPIO33 | unused |
-| GPIO34 | unused |
-| GPIO35 | unused |
+| GPIO33 | I2C SDA (HDC1080 + expansion header) |
+| GPIO34 | I2C SCL (HDC1080 + expansion header) |
+| GPIO35 | I2C INT (expansion header) |
 | GPIO36 | unused |
 | GPIO37 | unused |
 | GPIO38 | unused |
 | GPIO39 | unused |
 | GPIO40 | unused |
-| GPIO41 | unused |
-| GPIO42 | unused |
-| GPIO45 | unused (strapping) |
+| GPIO41 | User Button 3 |
+| GPIO42 | User Button 2 |
+| GPIO45 | User Button 1 (strapping) |
 | GPIO46 | unused (strapping) |
 
 ## I2C Extension Port
