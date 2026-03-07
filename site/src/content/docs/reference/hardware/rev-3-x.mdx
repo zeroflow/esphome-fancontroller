@@ -1,0 +1,164 @@
+---
+title: "Rev 3.x (3.1 / 3.2 / 3.3)"
+description: Latest generation ESP32-S2 with RGB status LEDs, QWIIC expansion, and NeoPixel output
+---
+
+import FlashButton from '../../../../components/FlashButton.astro';
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The Rev 3.x series is the latest generation of the WiFi Fan Controller. All 3.1, 3.2, and 3.3 boards share identical firmware and pinout -- differences between sub-revisions are hardware-only improvements.
+
+Key features over Rev 3.0: RGB status LEDs (SK6805) for board status and per-fan visual feedback.
+
+## Board Photos
+
+### Rev 3.3
+
+![Rev 3.3 front](/images/board_rev3.3_front.jpg)
+![Rev 3.3 back](/images/board_rev3.3_back.jpg)
+
+### Rev 3.2
+
+![Rev 3.2 front](/images/board_rev3.2_front.png)
+![Rev 3.2 back](/images/board_rev3.2_back.png)
+
+### Rev 3.1
+
+![Rev 3.1 board](/images/board_rev3.1.jpg)
+
+## Specifications
+
+- **MCU:** ESP32S2-Mini-2
+- **Board platform:** esp32-s2-saola-1
+- **Power:** DC Input (12V, 5.5x2.1mm)
+- **Flashing:** USB-C port
+- **Fan outputs:** 4x PWM headers with signal buffering
+- **Status LEDs:** SK6805 RGB LEDs for board status and each fan connector
+- **Sensor:** HDC1080 Temperature and Humidity
+- **Buttons:** Reset, Boot, 3x User
+- **Expansion:** QWIIC I2C, I2C port (100mil), NeoPixel port (5V, max 2A), SMD expansion header
+
+<Aside type="note" title="NeoPixel framework requirement">
+The NeoPixel port requires the `arduino` framework, since GPIO42 requires use of the `fastled_clockless` platform, which is not supported on `esp-idf`.
+</Aside>
+
+## Factory Firmware Installation
+
+Select your board revision and click the button to flash the factory firmware directly from your browser via USB.
+
+<Tabs>
+  <TabItem label="Rev 3.3">
+    <FlashButton manifest="/firmware/fancontroller-r3-3.manifest.json" label="Flash Rev 3.3 Factory Firmware" />
+  </TabItem>
+  <TabItem label="Rev 3.2">
+    <FlashButton manifest="/firmware/fancontroller-r3.2.manifest.json" label="Flash Rev 3.2 Factory Firmware" />
+  </TabItem>
+  <TabItem label="Rev 3.1">
+    <FlashButton manifest="/firmware/fancontroller-r3-1.manifest.json" label="Flash Rev 3.1 Factory Firmware" />
+  </TabItem>
+</Tabs>
+
+<Aside type="caution" title="USB not working?">
+The ESP32-S2 has known USB reliability issues. If the flash button doesn't detect your board:
+1. Try a different USB cable (data cable, not charge-only)
+2. Hold BOOT button while plugging in USB
+3. Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative web flasher
+4. As last resort, use `esptool.py` CLI: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
+</Aside>
+
+## ESP32-S2 Pin Assignment
+
+This pin table applies to all Rev 3.1, 3.2, and 3.3 boards.
+
+| Pin | Usage |
+|------|------|
+| GPIO0 | Boot Button, Push to enter flashing mode |
+| GPIO1 | Builtin LEDs, SK6805 |
+| GPIO2 | Expansion Header (Bottom) |
+| GPIO3 | Expansion Header (Bottom) |
+| GPIO4 | Expansion Header (Bottom) |
+| GPIO5 | Expansion Header (Bottom) |
+| GPIO6 | Expansion Header (Bottom) |
+| GPIO7 | Expansion Header (Bottom) |
+| GPIO8 | Expansion Header (Bottom) |
+| GPIO9 | Expansion Header (Bottom) |
+| GPIO10 | Expansion Header (Bottom) |
+| GPIO11 | Expansion Header (Bottom) |
+| GPIO12 | Fan 1 PWM |
+| GPIO13 | Fan 2 PWM |
+| GPIO14 | Fan 3 PWM |
+| GPIO15 | Fan 4 PWM |
+| GPIO16 | Fan 1 Speed Sense |
+| GPIO17 | Fan 2 Speed Sense |
+| GPIO18 | Fan 3 Speed Sense |
+| GPIO21 | Fan 4 Speed Sense |
+| GPIO26 | unused |
+| GPIO33 | I2C SDA |
+| GPIO34 | I2C SCL |
+| GPIO35 | I2C INT |
+| GPIO36 | USR3 |
+| GPIO37 | USR2 |
+| GPIO38 | USR1 |
+| GPIO42 | Neopixel Expansion Port |
+| GPIO45 | unused (strapping) |
+| GPIO46 | unused (strapping) |
+
+## I2C Extension Port
+
+The board offers an I2C extension port above Fan 4.
+
+| Nr. | Pin | Description |
+|-----|-----|-------------|
+| 1 | GND | |
+| 2 | INT | GPIO 35 |
+| 3 | SCL | GPIO 34, 4.7k Pull-Up |
+| 4 | SDA | GPIO 33, 4.7k Pull-Up |
+| 5 | +3V3 | |
+
+## SMD Expansion Port
+
+The board offers an SMD expansion port on the back.
+
+| Nr. | Pin | Description |
+|-----|-----|-------------|
+| 1 | +3V3 | |
+| 2 | +5V | |
+| 3 | I/O | GPIO02 |
+| 4 | I/O | GPIO03 |
+| 5 | I/O | GPIO04 |
+| 6 | I/O | GPIO05 |
+| 7 | I/O | GPIO06 |
+| 8 | I/O | GPIO07 |
+| 9 | I/O | GPIO08 |
+| 10 | I/O | GPIO09 |
+| 11 | I/O | GPIO10 |
+| 12 | I/O | GPIO11 |
+| 13 | GND | |
+| 14 | GND | |
+
+## Example Configurations
+
+### Basic Setup
+
+- **[Rev 3.3 Basic](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-3.3.yaml)** -- Minimal setup with 4 fans
+- **[Rev 3.2 Basic](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-3.2.yaml)** -- Minimal setup with 4 fans
+- **[Rev 3.1 Basic](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-3.1.yaml)** -- Minimal setup with 4 fans
+
+### Advanced Features
+
+- **[RGB Status LEDs](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-rgb-status-leds-rev-3.1.yaml)** -- Visual fan speed feedback with color-coded LEDs (red=slow, green=fast)
+- **[RPM PI Control](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-rpm-pi-control-rev-3.1.yaml)** -- Closed-loop RPM regulation per fan
+- **[Temperature Control (Linear/PID)](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-temperature-control-rev-3.1.yaml)** -- Automatic fan speed adjustment based on temperature
+- **[Temperature Curve](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/with-temperature-curve-rev-3.1.yaml)** -- Flexible 5-point temperature curve with linear interpolation
+
+For all available examples, see the [examples directory](https://github.com/zeroflow/wifi-fancontroller/tree/main/examples).
+
+## Revision History
+
+All Rev 3.1, 3.2, and 3.3 boards share identical firmware and pinout. The differences between sub-revisions are hardware-only improvements:
+
+| Revision | Changes |
+|----------|---------|
+| Rev 3.1 | Added RGB status LEDs (SK6805) for board + per-fan indication |
+| Rev 3.2 | Improved USB-C fuse for better overcurrent protection |
+| Rev 3.3 | Open-drain fan outputs, optimized component selection, enhanced power supply stability |

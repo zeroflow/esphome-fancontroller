@@ -1,0 +1,104 @@
+---
+title: First Setup
+description: Flash firmware, connect to WiFi, and adopt your fan controller into Home Assistant
+---
+
+import FlashButton from '../../../components/FlashButton.astro';
+import { Steps, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<Aside type="tip" title="Don't have a board yet?">
+Get yours from the [Elecrow store](https://www.elecrow.com/wifi-fancontroller1.html).
+</Aside>
+
+This guide walks you through the complete first-time setup of your WiFi Fan Controller -- from unboxing to a working fan controller in Home Assistant.
+
+## What You'll Need
+
+- WiFi Fan Controller board
+- USB-C data cable (not charge-only)
+- 12V DC power supply (5.5x2.1mm barrel jack)
+- One or more PWM fans (4-pin)
+- Computer with **Chrome** or **Edge** browser (required for Web Serial flashing)
+
+## Setup Steps
+
+<Steps>
+
+1. **Flash the factory firmware**
+
+   Connect your board to your computer via USB-C and click the flash button for your hardware revision below.
+
+   <Tabs syncKey="revision">
+     <TabItem label="Rev 3.3">
+       <FlashButton manifest="/firmware/fancontroller-r3-3.manifest.json" label="Flash Rev 3.3" />
+
+       See [Rev 3.x hardware details](/reference/hardware/rev-3-x/) for board specs and pin layout.
+     </TabItem>
+     <TabItem label="Rev 3.2">
+       <FlashButton manifest="/firmware/fancontroller-r3.2.manifest.json" label="Flash Rev 3.2" />
+
+       See [Rev 3.x hardware details](/reference/hardware/rev-3-x/) for board specs and pin layout.
+     </TabItem>
+     <TabItem label="Rev 3.1">
+       <FlashButton manifest="/firmware/fancontroller-r3-1.manifest.json" label="Flash Rev 3.1" />
+
+       See [Rev 3.x hardware details](/reference/hardware/rev-3-x/) for board specs and pin layout.
+     </TabItem>
+     <TabItem label="Rev 3.0">
+       <FlashButton manifest="/firmware/fancontroller-r3-0.manifest.json" label="Flash Rev 3.0" />
+
+       See [Rev 3.0 hardware details](/reference/hardware/rev-3-0/) for board specs and pin layout.
+     </TabItem>
+     <TabItem label="Rev 2.0">
+       <FlashButton manifest="/firmware/fancontroller-r2-0.manifest.json" label="Flash Rev 2.0" />
+
+       See [Rev 2.0 hardware details](/reference/hardware/rev-2-0/) for board specs and pin layout.
+     </TabItem>
+     <TabItem label="Rev 1.0">
+       Rev 1.0 uses an ESP32 with a serial header instead of USB-C. You'll need a USB-to-serial adapter (3.3V FTDI or similar) connected to the programming header.
+
+       Flash using [ESPHome CLI](https://esphome.io/guides/installing_esphome) or [ESPWEBTOOL](https://esptool.spacehuhn.com/).
+
+       See [Rev 1.0 hardware details](/reference/hardware/rev-1-0/) for board specs and pin layout.
+     </TabItem>
+   </Tabs>
+
+   <Aside type="caution" title="USB not detected? (ESP32-S2)">
+   The ESP32-S2 (Rev 2.0+) has known USB reliability issues on some systems. Try these steps:
+
+   - Use a different USB-C cable (must be a **data** cable, not charge-only)
+   - Hold the **BOOT** button while plugging in the USB cable
+   - Try a different USB port (avoid USB hubs)
+   - Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative flash tool
+   </Aside>
+
+2. **Connect to WiFi**
+
+   The factory firmware includes **ESP Improv Serial** for easy WiFi provisioning.
+
+   After flashing, the serial console will prompt you to enter your WiFi credentials. Enter your **2.4 GHz** WiFi network name and password -- 5 GHz networks are not supported by the ESP32-S2.
+
+   Once connected, the board displays its IP address in the serial output.
+
+   <Aside type="note" title="Fallback hotspot">
+   If WiFi connection fails, the board creates a fallback hotspot called **"Fan Controller Fallback"**. Connect to this hotspot from your phone or laptop to reconfigure WiFi credentials.
+   </Aside>
+
+3. **Connect your fans**
+
+   - Connect your **12V DC power supply** to the board's power input
+   - Plug your **PWM fans** (4-pin) into the fan headers (Fan 1 through Fan 4)
+   - Check your hardware revision page for the correct pin layout and connector orientation
+
+4. **Adopt in Home Assistant**
+
+   Your fan controller is automatically discovered by Home Assistant via the ESPHome integration.
+
+   - **If you have the ESPHome add-on:** The device appears in your ESPHome Dashboard. Click **Adopt** to add it.
+   - **If you don't have the ESPHome add-on:** Go to **Settings > Devices & Services > Integrations**. The fan controller appears under **Discovered** devices. Click **Configure** to add it.
+
+   Once adopted, your fan controller's entities (fans, temperature, humidity, RPM sensors) appear in Home Assistant ready to use.
+
+   See [Home Assistant Integration](/getting-started/home-assistant/) for dashboard setup and automation examples.
+
+</Steps>

@@ -1,0 +1,90 @@
+---
+title: Rev 1.0
+description: Original ESP32 design with serial flashing, 4 PWM fan headers, and I2C expansion
+---
+
+import FlashButton from '../../../../components/FlashButton.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+The Rev 1.0 is the original WiFi Fan Controller design based on the ESP32-WROOM-32E. It features serial flashing via a dedicated header and includes two external input ports not found on later revisions.
+
+![Rev 1.0 board](/images/board_rev1.0.jpg)
+
+## Specifications
+
+- **MCU:** ESP32-WROOM-32E
+- **Board platform:** esp32dev
+- **Power:** DC Input (12V, 5.5x2.1mm)
+- **Flashing:** Serial header (100mil and SOCbite)
+- **Fan outputs:** 4x PWM headers
+- **Status LED:** Red (single)
+- **Sensor:** HDC1080 Temperature and Humidity
+- **Buttons:** Reset, Boot, 3x User
+- **Expansion:** I2C port (100mil, SCL, SDA, INT), 2x external input (100mil)
+
+## Factory Firmware Installation
+
+<FlashButton manifest="/firmware/fancontroller-r1-0.manifest.json" label="Flash Rev 1.0 Factory Firmware" />
+
+<Aside type="note" title="Serial flashing required">
+Rev 1.0 uses a serial header for flashing -- you need a USB-to-serial adapter connected to the flashing header. This is different from Rev 2.0+ which use USB-C directly.
+</Aside>
+
+## ESP32 Pin Assignment
+
+| Pin | Usage |
+|------|------|
+| GPIO0 | Boot Button, Push to enter flashing mode |
+| GPIO1 | Serial TX |
+| GPIO2 | Builtin LED, Low=On |
+| GPIO3 | Serial RX |
+| GPIO4 | Fan 4 PWM |
+| GPIO5 | Unused (strapping pin) |
+| GPIO12 | Unused (strapping pin) |
+| GPIO13 | Fan 3 Speed Sense |
+| GPIO14 | Unused (outputs PWM at boot) |
+| GPIO15 | Unused (outputs PWM at boot, strapping pin) |
+| GPIO16 | Fan 4 Speed Sense |
+| GPIO17 | I2C SDA (HDC1080 + expansion header) |
+| GPIO18 | I2C SCL (HDC1080 + expansion header) |
+| GPIO19 | I2C INT (expansion header) |
+| GPIO21 | User Button 3 |
+| GPIO22 | User Button 2 |
+| GPIO23 | User Button 1 |
+| GPIO25 | Fan 2 PWM |
+| GPIO26 | Fan 2 Speed Sense |
+| GPIO27 | Fan 3 PWM |
+| GPIO32 | Fan 1 PWM |
+| GPIO33 | Fan 1 Sense |
+| GPIO34 | External Input 1 |
+| GPIO35 | External Input 2 |
+| GPIO36 | Unused |
+| GPIO39 | Unused |
+
+## I2C Expansion Port
+
+The board offers an I2C extension port above Fan 4.
+
+| Nr. | Pin | Description |
+|-----|-----|-------------|
+| 1 | GND | |
+| 2 | INT | GPIO 19 |
+| 3 | SCL | GPIO 18, 4.7k Pull-Up |
+| 4 | SDA | GPIO 17, 4.7k Pull-Up |
+| 5 | +3V3 | |
+
+## External Input Port
+
+The board offers two external inputs, e.g. for a door intrusion alarm or a 100% power switch.
+
+| Nr. | Pin | Description |
+|-----|-----|-------------|
+| 1 | GND | |
+| 2 | IN2 | 10k Pull-Up |
+| 3 | IN1 | 10k Pull-Up |
+
+## Example Configurations
+
+- **[Basic Configuration](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-1.0.yaml)** -- Minimal setup with 4 fans and essential features
+
+For more examples, see the [examples directory](https://github.com/zeroflow/wifi-fancontroller/tree/main/examples).
