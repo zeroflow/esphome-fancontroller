@@ -1,0 +1,20 @@
+@layer base, starlight, theme, components, utilities;
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+:root {
+  color-scheme: dark light;
+}
+
+/* Teal accent color overrides for Starlight */
+:root {
+  --sl-color-accent-low: #0d3b4a;
+  --sl-color-accent: #0ea5a5;
+  --sl-color-accent-high: #b8f0f0;
+}
+:root[data-theme='light'] {
+  --sl-color-accent-low: #b8f0f0;
+  --sl-color-accent: #0d7a7a;
+  --sl-color-accent-high: #0d3b4a;
+}

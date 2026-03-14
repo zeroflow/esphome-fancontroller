@@ -33,7 +33,7 @@ toc_icon: "microchip"
 
 <details>
 <summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary>
-<p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
+<p>The ESP32-S2 has known USB reliability issues - there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
 <ol>
 <li>Connect the board via USB-C</li>
 <li>Hold BOOT, press RESET to enter boot mode</li>
@@ -82,17 +82,17 @@ GPIO17 | Fan 3 Speed Sense
 GPIO18 | Fan 4 PWM
 GPIO21 | Fan 4 Speed Sense
 GPIO26 | unused
-GPIO33 | unused
-GPIO34 | unused
-GPIO35 | unused
+GPIO33 | I2C SDA (HDC1080, Expansion Port)
+GPIO34 | I2C SCL (HDC1080, Expansion Port)
+GPIO35 | I2C INT (Expansion Port)
 GPIO36 | unused
 GPIO37 | unused
 GPIO38 | unused
 GPIO39 | unused
 GPIO40 | unused
-GPIO41 | unused
-GPIO42 | unused
-GPIO45 | unused (strapping)
+GPIO41 | User Button 3 (USR3)
+GPIO42 | User Button 2 (USR2)
+GPIO45 | User Button 1 (USR1, strapping pin)
 GPIO46 | unused (strapping)
 
 ### I2C extension port

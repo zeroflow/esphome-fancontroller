@@ -1,0 +1,165 @@
+---
+title: Home Assistant Integration
+description: Discover entities, build dashboards, and create automations with your fan controller
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Once your fan controller is [adopted in Home Assistant](/getting-started/first-setup/), its entities are available for dashboards and automations.
+
+## Entities
+
+After adoption, the following entities appear in Home Assistant:
+
+| Entity | HA Domain | Description |
+|--------|-----------|-------------|
+| Fan 1--4 | `fan` | PWM speed control (0--100%) |
+| Temperature | `sensor` | Ambient temperature from HDC1080 sensor |
+| Humidity | `sensor` | Ambient humidity from HDC1080 sensor |
+| Fan 1--4 RPM | `sensor` | Tachometer readings (RPM) |
+| Button USR1--3 | `binary_sensor` | Physical buttons on the board |
+
+<Aside type="note" title="RGB LEDs (Rev 3.x only)">
+Rev 3.x boards have 5 RGB LEDs (1 status + 4 per-fan) but they are marked as **internal** by default and won't appear in Home Assistant. To expose them, override `internal: false` on the light entities in your custom ESPHome config:
+
+```yaml
+light:
+  - id: !extend status_led
+    internal: false
+  - id: !extend fan1_led
+    internal: false
+```
+</Aside>
+
+## Dashboard Setup
+
+### Fan Control Card
+
+Add a fan entity to your dashboard for direct speed control:
+
+```yaml
+type: entities
+title: Fan Controller
+entities:
+  - entity: fan.fan_controller_fan_1
+  - entity: fan.fan_controller_fan_2
+  - entity: fan.fan_controller_fan_3
+  - entity: fan.fan_controller_fan_4
+```
+
+### Temperature and Humidity
+
+Use a sensor card or glance card to monitor the onboard HDC1080:
+
+```yaml
+type: glance
+title: Environment
+entities:
+  - entity: sensor.fan_controller_temperature
+  - entity: sensor.fan_controller_humidity
+```
+
+### RPM History Graph
+
+Track fan speeds over time with a history graph card:
+
+```yaml
+type: history-graph
+title: Fan RPM
+hours_to_show: 24
+entities:
+  - entity: sensor.fan_controller_fan_1_speed
+  - entity: sensor.fan_controller_fan_2_speed
+  - entity: sensor.fan_controller_fan_3_speed
+  - entity: sensor.fan_controller_fan_4_speed
+```
+
+## Automation Examples
+
+### Temperature-Based Fan Speed
+
+Increase fan speed when temperature rises above 30 C, reduce it when the temperature drops below 25 C:
+
+```yaml
+automation:
+  - alias: "Increase fan speed when hot"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.fan_controller_temperature
+        above: 30
+    action:
+      - service: fan.set_percentage
+        target:
+          entity_id: fan.fan_controller_fan_1
+        data:
+          percentage: 75
+
+  - alias: "Reduce fan speed when cool"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.fan_controller_temperature
+        below: 25
+    action:
+      - service: fan.set_percentage
+        target:
+          entity_id: fan.fan_controller_fan_1
+        data:
+          percentage: 30
+```
+
+### Night Mode Schedule
+
+Lower fan speeds during nighttime hours to reduce noise:
+
+```yaml
+automation:
+  - alias: "Night mode - quiet fans"
+    trigger:
+      - platform: time
+        at: "22:00:00"
+    action:
+      - service: fan.set_percentage
+        target:
+          entity_id:
+            - fan.fan_controller_fan_1
+            - fan.fan_controller_fan_2
+        data:
+          percentage: 20
+
+  - alias: "Day mode - normal fans"
+    trigger:
+      - platform: time
+        at: "07:00:00"
+    action:
+      - service: fan.set_percentage
+        target:
+          entity_id:
+            - fan.fan_controller_fan_1
+            - fan.fan_controller_fan_2
+        data:
+          percentage: 50
+```
+
+### Fan Failure Alert
+
+Get notified if a fan's RPM drops to zero while it should be running, which may indicate a failed or disconnected fan:
+
+```yaml
+automation:
+  - alias: "Fan failure alert"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.fan_controller_fan_1_speed
+        below: 1
+        for:
+          minutes: 2
+    condition:
+      - condition: state
+        entity_id: fan.fan_controller_fan_1
+        state: "on"
+    action:
+      - service: notify.persistent_notification
+        data:
+          title: "Fan Controller Alert"
+          message: "Fan 1 RPM has dropped to zero. Check the fan connection."
+```

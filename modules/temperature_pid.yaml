@@ -6,7 +6,7 @@
 # Credit to https://github.com/patrickcollins12/esphome-fan-controller
 # 
 # A PID simulator is available at https://fancontroller.arthofer.dev/pid-simulator.
-# It uses simplified thermal models — treat results as a starting point for tuning.
+# It uses simplified thermal models - treat results as a starting point for tuning.
 #
 # Usage:
 #   packages:
@@ -340,7 +340,7 @@ climate:
     # Boot-time fallback only (internal 0-1 scale).
     # Overridden within milliseconds by the number entities above (which
     # restore from flash and call set_kp/ki/kd via set_action on boot).
-    # Tune via the HA sliders — substitutions kp/ki/kd set those initial values.
+    # Tune via the HA sliders - substitutions kp/ki/kd set those initial values.
     control_parameters:
       kp: 0.03     # = kp default / 100
       ki: 0.00005  # = ki default / 100

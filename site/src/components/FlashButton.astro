@@ -1,0 +1,11 @@
+---
+interface Props {
+  manifest: string;
+  label?: string;
+}
+const { manifest, label } = Astro.props;
+---
+<esp-web-install-button manifest={manifest}>
+  {label && <span slot="activate">{label}</span>}
+</esp-web-install-button>
+<script is:inline type="module" src="https://unpkg.com/esp-web-tools@8.0.6/dist/web/install-button.js?module"></script>

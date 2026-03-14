@@ -1,0 +1,97 @@
+---
+title: Rev 2.0
+description: ESP32-S2 with USB-C flashing, 4 PWM fan headers, and I2C expansion
+---
+
+import FlashButton from '../../../../components/FlashButton.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+Rev 2.0 introduced USB-C flashing by switching from the ESP32 to the ESP32-S2. This eliminates the need for a separate USB-to-serial adapter.
+
+![Rev 2.0 board](/images/board_rev2.0.jpg)
+
+## Specifications
+
+- **MCU:** ESP32S2-Mini-2
+- **Board platform:** esp32-s2-saola-1
+- **Power:** DC Input (12V, 5.5x2.1mm)
+- **Flashing:** USB-C port
+- **Fan outputs:** 4x PWM headers
+- **Status LED:** Red (single)
+- **Sensor:** HDC1080 Temperature and Humidity
+- **Buttons:** Reset, Boot, 3x User
+- **Expansion:** I2C port (100mil, SCL, SDA, INT)
+
+## Factory Firmware Installation
+
+<FlashButton manifest="/firmware/fancontroller-r2-0.manifest.json" label="Flash Rev 2.0 Factory Firmware" />
+
+<Aside type="caution" title="USB not working?">
+The ESP32-S2 has known USB reliability issues. If the flash button doesn't detect your board:
+1. Try a different USB cable (data cable, not charge-only)
+2. Hold BOOT button while plugging in USB
+3. Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative web flasher
+4. As last resort, use `esptool.py` CLI: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
+
+[Download prebuilt binary](/firmware/fancontroller-r2-0-esp32s2.factory.bin)
+</Aside>
+
+<Aside type="caution" title="USB-C is for flashing only">
+The USB-C port provides power to the ESP32-S2 microcontroller only. It cannot power the fans. Fans require an external 12V DC power supply connected to the DC input jack (5.5x2.1mm).
+</Aside>
+
+## ESP32-S2 Pin Assignment
+
+| Pin | Usage |
+|------|------|
+| GPIO0 | Boot Button, Push to enter flashing mode |
+| GPIO1 | Builtin LED, Low=On |
+| GPIO2 | unused |
+| GPIO3 | unused |
+| GPIO4 | unused |
+| GPIO5 | unused |
+| GPIO6 | unused |
+| GPIO7 | unused |
+| GPIO8 | unused |
+| GPIO9 | unused |
+| GPIO10 | unused |
+| GPIO11 | unused |
+| GPIO12 | Fan 1 PWM |
+| GPIO13 | Fan 1 Sense |
+| GPIO14 | Fan 2 PWM |
+| GPIO15 | Fan 2 Speed Sense |
+| GPIO16 | Fan 3 PWM |
+| GPIO17 | Fan 3 Speed Sense |
+| GPIO18 | Fan 4 PWM |
+| GPIO21 | Fan 4 Speed Sense |
+| GPIO26 | unused |
+| GPIO33 | I2C SDA (HDC1080 + expansion header) |
+| GPIO34 | I2C SCL (HDC1080 + expansion header) |
+| GPIO35 | I2C INT (expansion header) |
+| GPIO36 | unused |
+| GPIO37 | unused |
+| GPIO38 | unused |
+| GPIO39 | unused |
+| GPIO40 | unused |
+| GPIO41 | User Button 3 |
+| GPIO42 | User Button 2 |
+| GPIO45 | User Button 1 (strapping) |
+| GPIO46 | unused (strapping) |
+
+## I2C Extension Port
+
+The board offers an I2C extension port above Fan 4.
+
+| Nr. | Pin | Description |
+|-----|-----|-------------|
+| 1 | GND | |
+| 2 | INT | GPIO 35 |
+| 3 | SCL | GPIO 34, 4.7k Pull-Up |
+| 4 | SDA | GPIO 33, 4.7k Pull-Up |
+| 5 | +3V3 | |
+
+## Example Configurations
+
+- **[Basic Configuration](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-2.0.yaml)** -- Minimal setup with 4 fans and essential features
+
+For more examples, see the [examples directory](https://github.com/zeroflow/wifi-fancontroller/tree/main/examples).

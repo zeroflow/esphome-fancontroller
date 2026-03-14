@@ -30,7 +30,7 @@ toc_icon: "microchip"
   * I2C Expansion Port (100mil, SCL, SDA & Int)
   * Neopixel Port (5V, max. 2A total)
 
-> **_NOTE:_**  The neopixel port requires usage of the ```arduino``` framework, since GPIO42 requires use of the ```fastled_clockless``` platform, which is not supported on ```esp-idf```.
+> **_NOTE:_**  The neopixel port requires usage of the ```arduino``` framework. The ```esp32_rmt_led_strip``` platform is used for GPIO42, which requires the Arduino framework on ESP32-S2.
 
 ## Factory Firmware Installation
 
@@ -38,7 +38,7 @@ toc_icon: "microchip"
 
 <details>
 <summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary>
-<p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
+<p>The ESP32-S2 has known USB reliability issues - there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
 <ol>
 <li>Connect the board via USB-C</li>
 <li>Hold BOOT, press RESET to enter boot mode</li>

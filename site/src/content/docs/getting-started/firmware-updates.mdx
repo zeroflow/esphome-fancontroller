@@ -1,0 +1,86 @@
+---
+title: Firmware Updates
+description: Update your fan controller firmware over-the-air or via USB
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Your WiFi Fan Controller supports over-the-air (OTA) firmware updates through the ESPHome Dashboard in Home Assistant. USB reflashing is available as a fallback for recovery situations.
+
+## OTA Updates (Recommended)
+
+OTA is the easiest way to update your fan controller. No cables needed -- the update is pushed over your WiFi network.
+
+<Steps>
+
+1. **Open the ESPHome Dashboard** in Home Assistant (Settings > Add-ons > ESPHome)
+
+2. **Check for updates** -- your fan controller shows an "Update Available" badge when new firmware is available
+
+3. **Click Update** to start the OTA flash. The firmware is uploaded wirelessly to the board.
+
+4. **Wait for reboot** -- the device reboots automatically with the new firmware (takes about 30 seconds)
+
+5. **Verify** in Home Assistant that the device is online and all entities are working
+
+</Steps>
+
+<Aside type="note">
+OTA updates require the device to be reachable on your network. If the device is unreachable or the update fails, use the USB reflashing method below.
+</Aside>
+
+## USB Reflashing (Fallback / Recovery)
+
+Use USB reflashing when OTA is not possible -- for example if the device is unreachable, the firmware is corrupted, or the device won't boot.
+
+<Steps>
+
+1. **Disconnect the 12V power supply** from the board
+
+2. **Connect the board via USB-C** to your computer
+
+3. **Visit your hardware revision page** and use the flash button to reflash the factory firmware:
+   - [Rev 3.x (3.1 / 3.2 / 3.3)](/reference/hardware/rev-3-x/)
+   - [Rev 3.0](/reference/hardware/rev-3-0/)
+   - [Rev 2.0](/reference/hardware/rev-2-0/)
+   - [Rev 1.0](/reference/hardware/rev-1-0/)
+
+4. **Re-provision WiFi** -- after flashing factory firmware, the board needs WiFi credentials again via Improv Serial or the fallback hotspot
+
+5. **Re-adopt in Home Assistant** -- the device appears as a new device in the ESPHome Dashboard
+
+</Steps>
+
+<Aside type="caution" title="USB not detected? (ESP32-S2)">
+The ESP32-S2 (Rev 2.0+) has known USB reliability issues on some systems. Try these steps:
+
+- Use a different USB-C cable (must be a **data** cable, not charge-only)
+- Hold the **BOOT** button while plugging in the USB cable
+- Try a different USB port (avoid USB hubs)
+- Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative flash tool
+</Aside>
+
+## Custom Firmware
+
+If you've customized your ESPHome YAML configuration, you can compile and flash your own firmware builds.
+
+**Via ESPHome Dashboard:**
+
+1. Edit your device's YAML config in the ESPHome Dashboard
+2. Click **Install** and choose **Wirelessly** (OTA) or **Plug into this computer** (USB)
+3. ESPHome compiles and flashes the custom firmware automatically
+
+**Via ESPHome CLI:**
+
+```bash
+# Compile your custom config
+esphome compile my-fancontroller.yaml
+
+# Flash over-the-air
+esphome upload my-fancontroller.yaml
+
+# Or flash via USB
+esphome upload my-fancontroller.yaml --device /dev/ttyUSB0
+```
+
+Custom firmware retains OTA capability, so future updates can still be pushed wirelessly.

@@ -1,0 +1,125 @@
+---
+title: Rev 3.0
+description: ESP32-S2 with Qwiic I2C, NeoPixel expansion, and PWM buffering
+---
+
+import FlashButton from '../../../../components/FlashButton.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+Rev 3.0 added Qwiic I2C connectivity, a NeoPixel expansion port, PWM signal buffering for improved fan signal integrity, and a bottom SMD expansion header. Unlike Rev 3.1+, it does not have RGB status LEDs.
+
+### Front
+
+![Rev 3.0 board front](/images/board_rev3.0.jpg)
+
+### Back
+
+![Rev 3.0 board back](/images/board_rev3.0_back.jpg)
+
+## Specifications
+
+- **MCU:** ESP32S2-Mini-2
+- **Board platform:** esp32-s2-saola-1
+- **Power:** DC Input (12V, 5.5x2.1mm)
+- **Flashing:** USB-C port
+- **Fan outputs:** 4x PWM headers with signal buffering
+- **Status LED:** Red (single)
+- **Sensor:** HDC1080 Temperature and Humidity
+- **Buttons:** Reset, Boot, 3x User
+- **Expansion:** QWIIC I2C, I2C port (100mil), NeoPixel port (5V, max 2A), SMD expansion header
+
+<Aside type="note" title="NeoPixel framework requirement">
+The NeoPixel port requires the `arduino` framework, since GPIO42 requires use of the `fastled_clockless` platform, which is not supported on `esp-idf`.
+</Aside>
+
+## Factory Firmware Installation
+
+<FlashButton manifest="/firmware/fancontroller-r3-0.manifest.json" label="Flash Rev 3.0 Factory Firmware" />
+
+<Aside type="caution" title="USB not working?">
+The ESP32-S2 has known USB reliability issues. If the flash button doesn't detect your board:
+1. Try a different USB cable (data cable, not charge-only)
+2. Hold BOOT button while plugging in USB
+3. Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative web flasher
+4. As last resort, use `esptool.py` CLI: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
+
+[Download prebuilt binary](/firmware/fancontroller-r3-0-esp32s2.factory.bin)
+</Aside>
+
+<Aside type="caution" title="USB-C is for flashing only">
+The USB-C port provides power to the ESP32-S2 microcontroller only. It cannot power the fans. Fans require an external 12V DC power supply connected to the DC input jack (5.5x2.1mm).
+</Aside>
+
+## ESP32-S2 Pin Assignment
+
+| Pin | Usage |
+|------|------|
+| GPIO0 | Boot Button, Push to enter flashing mode |
+| GPIO1 | Status LED (PWM-controlled, monochromatic with pulse effects) |
+| GPIO2 | Expansion Header (Bottom) |
+| GPIO3 | Expansion Header (Bottom) |
+| GPIO4 | Expansion Header (Bottom) |
+| GPIO5 | Expansion Header (Bottom) |
+| GPIO6 | Expansion Header (Bottom) |
+| GPIO7 | Expansion Header (Bottom) |
+| GPIO8 | Expansion Header (Bottom) |
+| GPIO9 | Expansion Header (Bottom) |
+| GPIO10 | Expansion Header (Bottom) |
+| GPIO11 | Expansion Header (Bottom) |
+| GPIO12 | Fan 1 PWM |
+| GPIO13 | Fan 2 PWM |
+| GPIO14 | Fan 3 PWM |
+| GPIO15 | Fan 4 PWM |
+| GPIO16 | Fan 1 Speed Sense |
+| GPIO17 | Fan 2 Speed Sense |
+| GPIO18 | Fan 3 Speed Sense |
+| GPIO21 | Fan 4 Speed Sense |
+| GPIO26 | unused |
+| GPIO33 | I2C SDA |
+| GPIO34 | I2C SCL |
+| GPIO35 | I2C INT |
+| GPIO36 | USR3 |
+| GPIO37 | USR2 |
+| GPIO38 | USR1 |
+| GPIO42 | Neopixel Expansion Port |
+| GPIO45 | unused (strapping) |
+| GPIO46 | unused (strapping) |
+
+## I2C Extension Port
+
+The board offers an I2C extension port above Fan 4.
+
+| Nr. | Pin | Description |
+|-----|-----|-------------|
+| 1 | GND | |
+| 2 | INT | GPIO 35 |
+| 3 | SCL | GPIO 34, 4.7k Pull-Up |
+| 4 | SDA | GPIO 33, 4.7k Pull-Up |
+| 5 | +3V3 | |
+
+## SMD Expansion Port
+
+The board offers an SMD expansion port on the back.
+
+| Nr. | Pin | Description |
+|-----|-----|-------------|
+| 1 | +3V3 | |
+| 2 | +5V | |
+| 3 | I/O | GPIO02 |
+| 4 | I/O | GPIO03 |
+| 5 | I/O | GPIO04 |
+| 6 | I/O | GPIO05 |
+| 7 | I/O | GPIO06 |
+| 8 | I/O | GPIO07 |
+| 9 | I/O | GPIO08 |
+| 10 | I/O | GPIO09 |
+| 11 | I/O | GPIO10 |
+| 12 | I/O | GPIO11 |
+| 13 | GND | |
+| 14 | GND | |
+
+## Example Configurations
+
+- **[Basic Configuration](https://github.com/zeroflow/wifi-fancontroller/blob/main/examples/basic-rev-3.0.yaml)** -- Minimal setup with 4 fans and essential features
+
+For more examples, see the [examples directory](https://github.com/zeroflow/wifi-fancontroller/tree/main/examples).

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'static/**'
+      - 'site/**'
       - '.github/workflows/publish-pages.yml'
   workflow_run:
     workflows:
@@ -14,9 +14,8 @@ on:
       - completed
   pull_request:
     paths:
-      - 'static/**'
+      - 'site/**'
       - '.github/workflows/publish-pages.yml'
-
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -28,37 +27,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
-          working-directory: ./static
-
-      - run: mkdir -p output/firmware
-
-      - name: Build Jekyll site
-        working-directory: ./static
-        run: |
-          bundle install
-          bundle exec jekyll build --destination ../output
-        env:
-          JEKYLL_ENV: production
+      - name: Create firmware directory
+        run: mkdir -p site/public/firmware
 
       - name: Fetch firmware files
         uses: robinraju/release-downloader@v1
         with:
           latest: true
           fileName: '*'
-          out-file-path: output/firmware
+          out-file-path: site/public/firmware
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+      - name: Build Astro site
+        uses: withastro/action@v5
         with:
-          path: output
-          retention-days: 1
+          path: ./site
 
   publish:
     if: github.event_name != 'pull_request'
