@@ -123,7 +123,7 @@ The fan controller firmware is built around reusable ESPHome packages. Drop any 
 | <i class="fa-solid fa-chart-line"></i> **Temperature Curve** | `modules/temperature_curve.yaml` | Up to 5 configurable temperature/speed points with linear interpolation. Points are editable from Home Assistant and auto-sorted at runtime. |
 | <i class="fa-solid fa-temperature-half"></i> **Temperature Linear** | `modules/temperature_linear.yaml` | Simple three-zone control: off below a threshold, constant minimum speed, then linear ramp to full speed. |
 | <i class="fa-solid fa-gauge-high"></i> **RPM PI Control** | `modules/rpm_pi_control.yaml` | Holds each fan at a target RPM using a PI controller. Includes anti-windup, deadband, and per-fan debug sensors. |
-| <i class="fa-solid fa-circle-dot"></i> **RPM Status LEDs** | `modules/rpm_status_leds.yaml` | Colors each fan's RGB LED from red (stopped) to green (full speed) based on live RPM. Configurable max RPM scale. |
+| <i class="fa-solid fa-circle-dot"></i> **RPM Status LEDs** | `modules/rpm_status_leds.yaml` | Colors each fan's RGB LED from red (stopped) to green (full speed) based on live RPM. Configurable max RPM scale. The update interval is exposed as `rpm_status_leds_interval` for ESPHome config overrides. |
 
 ### Usage Example
 

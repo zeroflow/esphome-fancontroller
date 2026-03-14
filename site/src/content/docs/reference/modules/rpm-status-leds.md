@@ -33,6 +33,8 @@ The module reads the RPM sensor for each fan every 10 seconds and maps the value
 
 LED brightness is set to 50%. The module writes directly to the `fan1_led` through `fan4_led` partition light entities defined in the Rev 3.x hardware packages.
 
+The interval component is exposed as `rpm_status_leds_interval`, allowing you to override it in your own config (e.g., to change the update frequency).
+
 ## Home Assistant Entities
 
 This module creates **no additional Home Assistant entities**. It writes directly to the existing LED partition light entities (`fan1_led` through `fan4_led`) that are already exposed by the Rev 3.x hardware package.
@@ -65,6 +67,23 @@ packages:
       - path: modules/rpm_status_leds.yaml
         vars:
           full_rpm: "1500"
+```
+
+### Changing the Update Interval
+
+The interval defaults to 10 seconds. Override `rpm_status_leds_interval` to change the frequency:
+
+```yaml
+packages:
+  rpm_status_leds:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    ref: main
+    files:
+      - path: modules/rpm_status_leds.yaml
+
+interval:
+  - id: rpm_status_leds_interval
+    interval: 5s
 ```
 
 ## Tuning Tips
