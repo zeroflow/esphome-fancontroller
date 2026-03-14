@@ -200,21 +200,26 @@ Beyond the basic hardware configuration, this project includes optional control 
 
 #### 1. RPM Status LEDs (`modules/rpm_status_leds.yaml`)
 
-Visual feedback module that updates each fan's RGB LED based on its RPM reading. LEDs transition from red (stopped) through orange to green (full speed).
+Visual feedback module that updates each fan's RGB LED based on its RPM reading. LEDs sweep hue from red (stopped) through orange and yellow to green (full speed) using HSV color rotation, keeping the LED at full brightness at every point for vivid, easy-to-read colors.
 
 **Configuration Variables:**
 - `full_rpm`: Maximum RPM for color scaling (default: 2500). At 0 RPM = red, at full_rpm = green
+- `brightness`: LED brightness 0.0–1.0 (default: 0.5)
+- `fan1_led_enabled` … `fan4_led_enabled`: Enable/disable each LED individually (default: true)
 
 **Example:**
 ```yaml
 packages:
   rpm_status_leds:
     url: https://github.com/zeroflow/wifi-fancontroller
-    ref: main 
-    files: 
+    ref: main
+    files:
       - path: modules/rpm_status_leds.yaml
         vars:
-          full_rpm: 2500 # RPM value considered as 100% speed
+          full_rpm: "2500"           # RPM value considered as 100% speed
+          brightness: "0.3"          # Adjust for your environment
+          fan3_led_enabled: "false"  # disable LED for unused fan channels
+          fan4_led_enabled: "false"
 ```
 
 #### 2. Linear Temperature Control (`modules/temperature_linear.yaml`)
