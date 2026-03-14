@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PID Tuning Simulator — WiFi FanController</title>
+  <title>PID Tuning Simulator - WiFi FanController</title>
   <meta name="description" content="Interactive PID tuning simulator for WiFi FanController temperature control. Visualize P/I/D terms and tune parameters before deploying to hardware.">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -430,7 +430,7 @@
 
 <script>
 // ============================================================
-// PID Simulator — output range 0–100 (%), matches firmware logic
+// PID Simulator - output range 0–100 (%), matches firmware logic
 // Plant model: first-order thermal with dead time
 // ============================================================
 
@@ -442,7 +442,7 @@ const DEFAULTS = {
 };
 
 // Ki values scaled for the rack's slow time constant (tau ~2400s).
-// At tau=2400s, Ki=1 saturates the integral in ~9s — far too fast.
+// At tau=2400s, Ki=1 saturates the integral in ~9s - far too fast.
 // Rule of thumb: Ki ≈ Kp / tau gives ~1 time constant integral action.
 const PID_PRESETS = {
   'p-only':     { kp: 6,  ki: 0,    kd: 0  },
@@ -543,7 +543,7 @@ function simulate() {
   const init_error  = pv - sp;
   const init_output = Math.max(0, Math.min(100, kp * init_error));
 
-  // Dead-time ring buffer — pre-filled with P-term output so the plant
+  // Dead-time ring buffer - pre-filled with P-term output so the plant
   // responds immediately at t=0 rather than after a dead-time delay on
   // the very first step. i_accum starts at 0 (no prior integral history).
   const fanBuf = new Float64Array(bufLen).fill(init_output);
@@ -729,7 +729,7 @@ function fmtSeconds(s) {
 }
 
 function updateMetrics(m, simTime) {
-  const f = (v, d = 1) => (isFinite(v) ? Math.abs(v) < 0.005 ? '0.0' : v.toFixed(d) : '—');
+  const f = (v, d = 1) => (isFinite(v) ? Math.abs(v) < 0.005 ? '0.0' : v.toFixed(d) : '-');
   document.getElementById('m-overshoot').textContent   = f(m.overshoot) + '°C';
   document.getElementById('m-settle').textContent      = m.settleStep >= 0 ? fmtSeconds(m.settleStep) : '< ' + fmtSeconds(simTime);
   document.getElementById('m-ss-error').textContent    = (m.ssError >= 0 ? '+' : '') + f(m.ssError) + '°C';

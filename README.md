@@ -89,8 +89,8 @@ Revision | Left                      | Fan Ports             | Right   | Details
 2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev2.0) |
 3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.0) |
 3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.1) |
-3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) | Compatible firmware and pinout — hardware-only revisions
-3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) | Compatible firmware and pinout — hardware-only revisions
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) | Compatible firmware and pinout - hardware-only revisions
+3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) | Compatible firmware and pinout - hardware-only revisions
 
 ---
 
@@ -190,7 +190,7 @@ No manual pin configuration needed - just import the package and customize your 
 ---
 
 <details>
-<summary><strong>Fan Control Modules (advanced — click to expand)</strong></summary>
+<summary><strong>Fan Control Modules (advanced - click to expand)</strong></summary>
 
 ## Fan Control Modules
 
@@ -260,7 +260,7 @@ Advanced PID (Proportional-Integral-Derivative) control for precise temperature 
 Shoutout to [patrickcollins12/esphome-fan-controller](https://github.com/patrickcollins12/esphome-fan-controller) for the example code.
 
 A PID simulator is available at https://fancontroller.arthofer.dev/pid-simulator.
-It uses simplified thermal models — treat results as a starting point for tuning.
+It uses simplified thermal models - treat results as a starting point for tuning.
 
 **Configuration Variables:**
 - `friendly_name`: Device name prefix (default: "fancontroller")
@@ -397,4 +397,4 @@ Found a bug or have a feature request? Open an issue or submit a pull request on
 ---
 
 Copyright (C) 2026 Arthofer Engineering e.U.
-Licensed under the GNU General Public License v3.0 — see [LICENSE](LICENSE) for details.
+Licensed under the GNU General Public License v3.0 - see [LICENSE](LICENSE) for details.

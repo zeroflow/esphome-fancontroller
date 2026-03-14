@@ -37,7 +37,7 @@ toc_icon: "microchip"
 Rev 3.2 improves upon Rev 3.1 with enhanced USB protection:
 - Improved USB-C fuse for better overcurrent protection
 - Enhanced USB resilience and safety
-- Compatible firmware and pinout — hardware improvements only
+- Compatible firmware and pinout - hardware improvements only
 
 ## Factory Firmware Installation
 
@@ -45,7 +45,7 @@ Rev 3.2 improves upon Rev 3.1 with enhanced USB protection:
 
 <details>
 <summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary>
-<p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
+<p>The ESP32-S2 has known USB reliability issues - there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
 <ol>
 <li>Connect the board via USB-C</li>
 <li>Hold BOOT, press RESET to enter boot mode</li>

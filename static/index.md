@@ -83,7 +83,7 @@ A CE-certified, ESP32-based PWM fan controller designed for home server racks, m
 
 ## Get Started in Minutes
 
-Flash pre-built firmware directly from your browser. Select your hardware revision below and click the install button — no drivers or software required.
+Flash pre-built firmware directly from your browser. Select your hardware revision below and click the install button - no drivers or software required.
 
 → [Jump to hardware revisions & flash buttons](#hardware-revisions)
 
@@ -98,7 +98,7 @@ Flash pre-built firmware directly from your browser. Select your hardware revisi
 {% include feature_row id="feature_row_rev1" type="left" %}
 
 <div style="text-align: center; margin: 2em 0;">
-  <a href="https://www.elecrow.com/wifi-fancontroller1.html" class="btn btn--primary btn--large">Buy Now — $35.99</a>
+  <a href="https://www.elecrow.com/wifi-fancontroller1.html" class="btn btn--primary btn--large">Buy Now - $35.99</a>
 </div>
 
 ---
@@ -115,7 +115,7 @@ Flash pre-built firmware directly from your browser. Select your hardware revisi
 
 ## ESPHome Modules
 
-The fan controller firmware is built around reusable ESPHome packages. Drop any module into your configuration with a single `packages:` entry — no copy-pasting required. All parameters have sensible defaults and can be tuned live from Home Assistant.
+The fan controller firmware is built around reusable ESPHome packages. Drop any module into your configuration with a single `packages:` entry - no copy-pasting required. All parameters have sensible defaults and can be tuned live from Home Assistant.
 
 | Module | File | Description |
 |--------|------|-------------|
@@ -143,6 +143,6 @@ packages:
           ki: "0.005"
 ```
 
-Modules can be combined — for example, pair `temperature_pid` for automatic control with `rpm_status_leds` for visual feedback.
+Modules can be combined - for example, pair `temperature_pid` for automatic control with `rpm_status_leds` for visual feedback.
 
 <script type="module" src="https://unpkg.com/esp-web-tools@8.0.6/dist/web/install-button.js?module"></script>

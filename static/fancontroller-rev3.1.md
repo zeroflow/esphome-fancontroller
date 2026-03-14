@@ -37,7 +37,7 @@ toc_icon: "microchip"
 Rev 3.1 builds upon Rev 3.0 with visual feedback improvements:
 - RGB status LEDs (SK6805) for board and individual fan connectors
 - Visual indication of board status and fan activity
-- Same fan pinout as Rev 3.0 — requires its own firmware due to different LED configuration
+- Same fan pinout as Rev 3.0 - requires its own firmware due to different LED configuration
 
 ## Factory Firmware Installation
 
@@ -45,7 +45,7 @@ Rev 3.1 builds upon Rev 3.0 with visual feedback improvements:
 
 <details>
 <summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary>
-<p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
+<p>The ESP32-S2 has known USB reliability issues - there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
 <ol>
 <li>Connect the board via USB-C</li>
 <li>Hold BOOT, press RESET to enter boot mode</li>

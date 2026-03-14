@@ -33,7 +33,7 @@ toc_icon: "microchip"
 
 <details>
 <summary>⚠️ USB flashing not working? (ESP32-S2 known issue)</summary>
-<p>The ESP32-S2 has known USB reliability issues — there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
+<p>The ESP32-S2 has known USB reliability issues - there is no permanent fix. If the browser installer fails, use <a href="https://esptool.spacehuhn.com/">ESPWEBTOOL by Spacehuhn</a> as a fallback:</p>
 <ol>
 <li>Connect the board via USB-C</li>
 <li>Hold BOOT, press RESET to enter boot mode</li>
