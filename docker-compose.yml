@@ -1,18 +1,11 @@
 version: '3.8'
 
 services:
-  jekyll:
-    build:
-      context: .
-      dockerfile: Dockerfile.jekyll
-    command: sh -c "bundle install && bundle exec jekyll serve --host 0.0.0.0 --watch --force_polling"
+  astro:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     ports:
-      - "4000:4000"
+      - "4321:4321"
     volumes:
-      - ./static:/srv/jekyll
-      - jekyll_bundle:/usr/local/bundle
-    environment:
-      - JEKYLL_ENV=development
-
-volumes:
-  jekyll_bundle:
+      - ./site:/app

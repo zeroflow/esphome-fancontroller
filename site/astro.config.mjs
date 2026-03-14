@@ -15,6 +15,7 @@ export default defineConfig({
           href: 'https://github.com/zeroflow/wifi-fancontroller',
         },
       ],
+      favicon: '/favicon.ico',
       customCss: ['./src/styles/global.css'],
       sidebar: [
         {

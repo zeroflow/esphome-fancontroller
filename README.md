@@ -4,7 +4,7 @@
 
 A CE-certified, ESP32-based PWM fan controller designed for home server racks, media cabinets, and smart home projects. Control up to 4 fans with temperature-based automation, remote monitoring, and seamless Home Assistant integration.
 
-![WiFi Fan Controller Board](static/board_rev3.3_front.jpg)
+![WiFi Fan Controller Board](https://fancontroller.arthofer.dev/images/board_rev3.3_front.jpg)
 
 ## Why This Fan Controller?
 
@@ -85,12 +85,12 @@ To choose the correct firmware, identify your board revision using the connector
 
 Revision | Left                      | Fan Ports             | Right   | Details | Notes
 ---- | ----------------------------- | --------------------- | ------- | ------- | ------
-1.0  | DC 12V                        | Fans                  | nothing | [Link](https://fancontroller.arthofer.dev/fancontroller-rev1.0) |
-2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev2.0) |
-3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.0) |
-3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.1) |
-3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.2) | Compatible firmware and pinout - hardware-only revisions
-3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/fancontroller-rev3.3) | Compatible firmware and pinout - hardware-only revisions
+1.0  | DC 12V                        | Fans                  | nothing | [Link](https://fancontroller.arthofer.dev/reference/hardware/rev-1-0/) |
+2.0  | DC 12V, Status LED            | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/reference/hardware/rev-2-0/) |
+3.0  | DC 12V, Status LED, QWIIC     | Fans                  | USB-C   | [Link](https://fancontroller.arthofer.dev/reference/hardware/rev-3-0/) |
+3.1  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/reference/hardware/rev-3-x/) |
+3.2  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/reference/hardware/rev-3-x/) | Compatible firmware and pinout - hardware-only revisions
+3.3  | DC 12V, RGB Status LED, QWIIC | Fans, RGB Status LEDs | USB-C   | [Link](https://fancontroller.arthofer.dev/reference/hardware/rev-3-x/) | Compatible firmware and pinout - hardware-only revisions
 
 ---
 
