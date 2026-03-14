@@ -4,7 +4,7 @@
 
 A CE-certified, ESP32-based PWM fan controller designed for home server racks, media cabinets, and smart home projects. Control up to 4 fans with temperature-based automation, remote monitoring, and seamless Home Assistant integration.
 
-![WiFi Fan Controller Board](static/board_rev3.3_front.jpg)
+![WiFi Fan Controller Board](site/public/images/board_rev3.3_front.jpg)
 
 ## Why This Fan Controller?
 
