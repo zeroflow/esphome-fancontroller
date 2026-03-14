@@ -164,7 +164,7 @@ number:
     unit_of_measurement: "%"
     restore_value: true
     min_value: 0
-    max_value: 30
+    max_value: 100
     step: 1
     initial_value: 0
     optimistic: True
