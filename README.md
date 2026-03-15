@@ -205,6 +205,7 @@ Visual feedback module that updates each fan's RGB LED based on its RPM reading.
 **Configuration Variables:**
 - `full_rpm`: Maximum RPM for color scaling (default: 2500). At 0 RPM = red, at full_rpm = green
 - `brightness`: LED brightness 0.0–1.0 (default: 0.5)
+- `update_interval`: LED update frequency (default: 1s)
 - `fan1_led_enabled` … `fan4_led_enabled`: Enable/disable each LED individually (default: true)
 
 **Example:**

@@ -14,6 +14,7 @@
 #           vars:
 #             full_rpm: "2500"        # RPM value considered as 100% speed (green LED)
 #             brightness: "0.3"       # LED brightness 0.0–1.0 (default: 0.5)
+#             update_interval: "5s"   # LED update frequency (default: 1s)
 #             fan3_led_enabled: "false"  # disable LED for unused fan channels
 #
 #
@@ -21,6 +22,7 @@
 #   - full_rpm:          Maximum RPM for color scaling (default: 2500)
 #                        At 0 RPM = red, at full_rpm = green
 #   - brightness:        LED brightness 0.0–1.0 (default: 0.5)
+#   - update_interval:   LED update frequency (default: 1s)
 #   - fan1_led_enabled:  Enable Fan 1 LED (default: true)
 #   - fan2_led_enabled:  Enable Fan 2 LED (default: true)
 #   - fan3_led_enabled:  Enable Fan 3 LED (default: true)
@@ -29,6 +31,7 @@
 substitutions:
   full_rpm: "2500"           # default
   brightness: "0.5"          # default
+  update_interval: "1s"      # default
   fan1_led_enabled: "true"   # default
   fan2_led_enabled: "true"   # default
   fan3_led_enabled: "true"   # default
@@ -36,7 +39,7 @@ substitutions:
 
 interval:
   - id: rpm_status_leds_interval
-    interval: 1s
+    interval: ${update_interval}
     then:
       # Fan 1 LED color based on RPM
       - if:
@@ -53,6 +56,7 @@ interval:
                 float r = (hue < 60.0f) ? 1.0f : (120.0f - hue) / 60.0f;
                 float g = (hue < 60.0f) ? hue / 60.0f : 1.0f;
                 auto led = id(fan1_led).turn_on();
+                led.set_transition_length(0);
                 led.set_rgb(r, g, 0.0);
                 led.set_brightness(${brightness});
                 led.set_effect("none");
@@ -72,6 +76,7 @@ interval:
                 float r = (hue < 60.0f) ? 1.0f : (120.0f - hue) / 60.0f;
                 float g = (hue < 60.0f) ? hue / 60.0f : 1.0f;
                 auto led = id(fan2_led).turn_on();
+                led.set_transition_length(0);
                 led.set_rgb(r, g, 0.0);
                 led.set_brightness(${brightness});
                 led.set_effect("none");
@@ -91,6 +96,7 @@ interval:
                 float r = (hue < 60.0f) ? 1.0f : (120.0f - hue) / 60.0f;
                 float g = (hue < 60.0f) ? hue / 60.0f : 1.0f;
                 auto led = id(fan3_led).turn_on();
+                led.set_transition_length(0);
                 led.set_rgb(r, g, 0.0);
                 led.set_brightness(${brightness});
                 led.set_effect("none");
@@ -110,6 +116,7 @@ interval:
                 float r = (hue < 60.0f) ? 1.0f : (120.0f - hue) / 60.0f;
                 float g = (hue < 60.0f) ? hue / 60.0f : 1.0f;
                 auto led = id(fan4_led).turn_on();
+                led.set_transition_length(0);
                 led.set_rgb(r, g, 0.0);
                 led.set_brightness(${brightness});
                 led.set_effect("none");
