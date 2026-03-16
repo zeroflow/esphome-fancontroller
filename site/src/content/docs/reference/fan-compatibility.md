@@ -3,7 +3,22 @@ title: Fan Compatibility
 description: Community-reported fan behavior at low PWM duty cycles, including which fans spin down to 0 RPM
 ---
 
-The Intel 4-Wire PWM Fan Specification (Chapter 3.3) defines fan behavior at 0% and 100% duty cycle, but leaves behavior below approximately 20% duty cycle undefined. Individual fan manufacturers implement this range differently: some fans have a hard minimum PWM threshold below which they stop responding and continue spinning at their minimum speed, while others can spin all the way down to 0 RPM at sufficiently low PWM values. Some fans in the latter group also exhibit hysteresis - they spin down to 0 RPM but will not restart until PWM rises above a higher threshold than the one that stopped them.
+## Connector Compatibility
+
+The controller uses standard 4-pin PWM fan headers. Fan type determines what is possible before any speed control is considered:
+
+| Fan type | Speed control | RPM sensing |
+|----------|--------------|-------------|
+| 4-pin PWM | Full range | Yes (tachometer wire) |
+| 3-pin DC (with tach) | None — runs at full speed | Yes |
+| 3-pin DC (no tach) | None — runs at full speed | No |
+| 2-pin | None — runs at full speed | No |
+
+3-pin fans are physically compatible with 4-pin headers (the PWM pin simply has no contact), but the controller cannot slow them down. All speed control, temperature curves, and RPM-PI modules require a 4-pin PWM fan.
+
+## PWM Spin-Down Behavior
+
+The Intel 4-Wire PWM Fan Specification (Chapter 3.3) defines fan behavior at 100% duty cycle, but leaves behavior below approximately 20% duty cycle undefined. Individual fan manufacturers implement this range differently: some fans have a hard minimum PWM threshold below which they stop responding and continue spinning at their minimum speed, while others can spin all the way down to 0 RPM at sufficiently low PWM values. Some fans in the latter group also exhibit hysteresis - they spin down to 0 RPM but will not restart until PWM rises above a higher threshold than the one that stopped them.
 
 This matters for any control module that sweeps the full 0-100% output range. If a fan cannot spin down to 0 RPM, it will continue running at its minimum speed even when the controller output is 0%.
 
@@ -11,8 +26,8 @@ This matters for any control module that sweeps the full 0-100% output range. If
 
 This table reflects user-reported observations. PWM behavior can vary between firmware revisions of the same fan model.
 
-| Fan | RPM Range | Spins down to 0 RPM |
-|-----|-----------|---------------------|
+| Fan | RPM Range (per spec) | Spins down to 0 RPM |
+|-----|----------------------|---------------------|
 | [Arctic P12 Max](https://www.arctic.de/en/P12-Max/ACFAN00280A) | 400-3300 RPM | Yes (user reported) |
 | [Noctua NF-A14 Industrial PPC PWM 3000RPM](https://www.noctua.at/en/products/nf-a14-industrialppc-3000-pwm) | 0-3000 RPM | Yes (user reported) |
 | [Noctua NF-A12x25 120mm PWM](https://www.noctua.at/en/products/nf-a12x25-pwm) | 0-2000 RPM | Yes (user reported) |
