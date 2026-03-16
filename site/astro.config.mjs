@@ -53,6 +53,7 @@ export default defineConfig({
                 { label: 'RPM Status LEDs', slug: 'reference/modules/rpm-status-leds' },
               ],
             },
+            { label: 'Fan Compatibility', slug: 'reference/fan-compatibility' },
           ],
         },
       ],

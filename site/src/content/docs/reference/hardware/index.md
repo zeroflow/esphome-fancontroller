@@ -5,7 +5,7 @@ description: Overview and comparison of WiFi Fan Controller hardware revisions
 
 The WiFi Fan Controller is available in several hardware revisions. All revisions share the same core features -- 4 PWM fan headers, an HDC1080 temperature and humidity sensor, and ESPHome-based firmware with Home Assistant integration.
 
-Choose your revision below for detailed specifications, pin assignments, and firmware installation.
+Choose your revision below for detailed specifications, pin assignments, and firmware installation. Note that fan behavior at low PWM duty cycles varies by model -- see the [Fan Compatibility](/reference/fan-compatibility/) page for details on which fans can spin down to 0 RPM.
 
 ## Revision Comparison
 
