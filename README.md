@@ -402,5 +402,10 @@ Found a bug or have a feature request? Open an issue or submit a pull request on
 
 ---
 
-Copyright (C) 2026 Arthofer Engineering e.U.
-Licensed under the GNU General Public License v3.0 - see [LICENSE](LICENSE) for details.
+## License
+
+**ESPHome configuration:** Copyright (C) 2026 Arthofer Engineering e.U.  
+Licensed under the GNU General Public License v3.0 – see [LICENSE](LICENSE) for details.
+
+**Hardware schematics (PDF):** (C) 2026 Arthofer Engineering e.U.  
+All rights reserved. Provided for reference only.
