@@ -25,6 +25,10 @@ site/public/firmware/
 
 # Claude
 CLAUDE.md
+.claude/
 .planning/
 GITHUB-PAT-GUIDE.md
 pat_token
+
+# Worktrees
+.worktrees/

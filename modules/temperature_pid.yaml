@@ -2,6 +2,12 @@
 #
 # Advanced PID (Proportional-Integral-Derivative) temperature control for precise fan speed regulation.
 # Automatically adjusts fan speeds to maintain a target temperature with minimal overshoot.
+# Safety floor integration:
+#   Respects fan{1-4}_safety_floor globals from the hardware package.
+#   When a safety module (e.g. stall_guard) sets a floor, this module
+#   will not command a running fan below that floor value.
+#   Commanding a fan OFF (0%) is always honored — the floor only applies to non-zero speeds.
+#   Safety floor takes precedence over both PID output and pwm_minimum.
 #
 # Credit to https://github.com/patrickcollins12/esphome-fan-controller
 # 
@@ -184,38 +190,50 @@ output:
           write_val = pwm_min;
         }
         if (id(pid_control_fan1).state) {
-          if (write_val == 0.0) {
+          float effective = write_val;
+          float floor1 = id(fan1_safety_floor);  // Safety floor from hardware package
+          if (effective > 0.0f && effective < floor1) effective = floor1;
+          if (effective == 0.0) {
             id(fan1).turn_off().perform();
           } else {
             auto call = id(fan1).turn_on();
-            call.set_speed(write_val);
+            call.set_speed(effective);
             call.perform();
           }
         }
         if (id(pid_control_fan2).state) {
-          if (write_val == 0.0) {
+          float effective = write_val;
+          float floor2 = id(fan2_safety_floor);  // Safety floor from hardware package
+          if (effective > 0.0f && effective < floor2) effective = floor2;
+          if (effective == 0.0) {
             id(fan2).turn_off().perform();
           } else {
             auto call = id(fan2).turn_on();
-            call.set_speed(write_val);
+            call.set_speed(effective);
             call.perform();
           }
         }
         if (id(pid_control_fan3).state) {
-          if (write_val == 0.0) {
+          float effective = write_val;
+          float floor3 = id(fan3_safety_floor);  // Safety floor from hardware package
+          if (effective > 0.0f && effective < floor3) effective = floor3;
+          if (effective == 0.0) {
             id(fan3).turn_off().perform();
           } else {
             auto call = id(fan3).turn_on();
-            call.set_speed(write_val);
+            call.set_speed(effective);
             call.perform();
           }
         }
         if (id(pid_control_fan4).state) {
-          if (write_val == 0.0) {
+          float effective = write_val;
+          float floor4 = id(fan4_safety_floor);  // Safety floor from hardware package
+          if (effective > 0.0f && effective < floor4) effective = floor4;
+          if (effective == 0.0) {
             id(fan4).turn_off().perform();
           } else {
             auto call = id(fan4).turn_on();
-            call.set_speed(write_val);
+            call.set_speed(effective);
             call.perform();
           }
         }

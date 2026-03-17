@@ -40,6 +40,7 @@ Modules define their configuration through `vars:` -- substitution variables tha
 | [Temperature Curve](/reference/modules/temperature-curve/) | Medium | Custom multi-point fan profiles | 16 (numbers, sensor, switches, binary sensor) | All |
 | [RPM PI Control](/reference/modules/rpm-pi-control/) | Advanced | Exact RPM targeting per fan | 31 (numbers, sensors, switches, button) | All |
 | [RPM Status LEDs](/reference/modules/rpm-status-leds/) | Simple | Visual RPM feedback via board LEDs | 0 (writes to existing LED entities) | Rev 3.1+ |
+| [Stall Guard](/reference/modules/stall-guard/) | Simple | Fan stall detection and automatic recovery | 9 (binary sensors, text sensors, button) | All |
 
 ## Compatibility
 
@@ -49,17 +50,22 @@ Modules define their configuration through `vars:` -- substitution variables tha
 You can only use **one** temperature control module at a time. These modules define overlapping internal component IDs -- PID and Linear both define `proxy_output`, while Linear and Curve both define `auto_control_fan1`--`auto_control_fan4` switches. Even where IDs don't conflict, running two temperature controllers simultaneously would cause unpredictable fan behavior.
 :::
 
-### RPM modules combine freely
+:::caution
+**Stall Guard** and **RPM PI Control** cannot be used together. RPM PI Control writes directly to PWM outputs, bypassing the fan entity that Stall Guard uses for recovery. RPM PI Control's feedback loop already handles stall-like scenarios through its closed-loop regulation.
+:::
 
-The RPM modules (PI Control and Status LEDs) use separate internal components and can be combined with any single temperature module:
+### Compatibility matrix
 
-| | Temperature PID | Temperature Linear | Temperature Curve | RPM PI Control | RPM Status LEDs |
-|---|:---:|:---:|:---:|:---:|:---:|
-| **Temperature PID** | -- | No | No | Yes | Yes |
-| **Temperature Linear** | No | -- | No | Yes | Yes |
-| **Temperature Curve** | No | No | -- | Yes | Yes |
-| **RPM PI Control** | Yes | Yes | Yes | -- | Yes |
-| **RPM Status LEDs** | Yes | Yes | Yes | Yes | -- |
+Most modules can be combined freely. The two exceptions are: temperature modules are mutually exclusive (see above), and Stall Guard conflicts with RPM PI Control (both write to PWM outputs). The full compatibility matrix:
+
+| | Temp PID | Temp Linear | Temp Curve | RPM PI Control | RPM Status LEDs | Stall Guard |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Temperature PID** | -- | No | No | Yes | Yes | Yes |
+| **Temperature Linear** | No | -- | No | Yes | Yes | Yes |
+| **Temperature Curve** | No | No | -- | Yes | Yes | Yes |
+| **RPM PI Control** | Yes | Yes | Yes | -- | Yes | No |
+| **RPM Status LEDs** | Yes | Yes | Yes | Yes | -- | Yes |
+| **Stall Guard** | Yes | Yes | Yes | No | Yes | -- |
 
 ## Module List
 
@@ -76,3 +82,7 @@ The RPM modules (PI Control and Status LEDs) use separate internal components an
 - **[RPM PI Control](/reference/modules/rpm-pi-control/)** -- Closed-loop RPM regulation that maintains exact fan speeds regardless of load changes. Useful when you need consistent, precise airflow.
 
 - **[RPM Status LEDs](/reference/modules/rpm-status-leds/)** -- Colors the per-fan RGB LEDs based on RPM (red at 0, green at full speed). Requires Rev 3.1+ hardware with per-fan RGB LEDs.
+
+### Fan Safety
+
+- **[Stall Guard](/reference/modules/stall-guard/)** -- Detects fan stalls (0 RPM when commanded on) and automatically raises fan speed to attempt recovery. Works cooperatively with temperature modules via a safety floor mechanism. Flags persistent warnings in Home Assistant so you know to investigate.

@@ -1,0 +1,480 @@
+# Stall Guard Module
+#
+# Detects when a fan is commanded to run but reports RPM below a threshold (a stall condition).
+# When a stall is detected, the module:
+#   1. Flags the stall via a binary sensor and a human-readable text sensor
+#   2. Actively steps up the fan's commanded speed every interval to recover
+#   3. Sets a safety floor so temperature modules won't reduce speed below recovery value
+#   4. Keeps the warning active until explicitly cleared via a Home Assistant button
+#      OR until the fan is commanded OFF (auto-clears stall state and floor)
+#
+# Works cooperatively with temperature control modules (temperature_linear,
+# temperature_curve, temperature_pid). During stall recovery, this module sets
+# the fan{1-4}_safety_floor globals defined in the hardware package. Temperature
+# modules respect these floors and will not command a fan speed below the floor.
+# Commanding a fan OFF (0%) is always honored — the floor only applies to non-zero speeds.
+#
+# IMPORTANT: Do NOT use this module together with rpm_pi_control.
+# rpm_pi_control writes directly to pwm_fanX outputs and will conflict.
+#
+# Usage:
+#   packages:
+#     stall_guard:
+#       url: https://github.com/zeroflow/wifi-fancontroller
+#       ref: main
+#       files:
+#         - path: modules/stall_guard.yaml
+#           vars:
+#             friendly_name: "My Fan Controller"
+#             stall_guard_interval: "5s"
+#             # Tuning parameters (min RPM, step %, grace ticks) and
+#             # per-fan enable/disable are adjustable at runtime via
+#             # Home Assistant number and switch entities.
+#
+substitutions:
+  friendly_name: "Fancontroller"
+  stall_guard_interval: "5s"
+  stall_guard_grace_ticks: "2"
+  stall_guard_step_pct: "1"
+  stall_guard_min_rpm: "1"
+
+globals:
+  # Fan 1
+  - id: stall_guard_fan1_active
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: stall_guard_fan1_grace_count
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: stall_guard_fan1_raised_pct
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  # Fan 2
+  - id: stall_guard_fan2_active
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: stall_guard_fan2_grace_count
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: stall_guard_fan2_raised_pct
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  # Fan 3
+  - id: stall_guard_fan3_active
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: stall_guard_fan3_grace_count
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: stall_guard_fan3_raised_pct
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  # Fan 4
+  - id: stall_guard_fan4_active
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: stall_guard_fan4_grace_count
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: stall_guard_fan4_raised_pct
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+
+binary_sensor:
+  - platform: template
+    name: "${friendly_name} Fan 1 Stall"
+    id: fan1_stall_sensor
+    device_class: problem
+    entity_category: diagnostic
+    icon: mdi:fan-alert
+  - platform: template
+    name: "${friendly_name} Fan 2 Stall"
+    id: fan2_stall_sensor
+    device_class: problem
+    entity_category: diagnostic
+    icon: mdi:fan-alert
+  - platform: template
+    name: "${friendly_name} Fan 3 Stall"
+    id: fan3_stall_sensor
+    device_class: problem
+    entity_category: diagnostic
+    icon: mdi:fan-alert
+  - platform: template
+    name: "${friendly_name} Fan 4 Stall"
+    id: fan4_stall_sensor
+    device_class: problem
+    entity_category: diagnostic
+    icon: mdi:fan-alert
+
+text_sensor:
+  - platform: template
+    name: "${friendly_name} Fan 1 Stall Message"
+    id: fan1_stall_message
+    entity_category: diagnostic
+    icon: mdi:message-alert
+  - platform: template
+    name: "${friendly_name} Fan 2 Stall Message"
+    id: fan2_stall_message
+    entity_category: diagnostic
+    icon: mdi:message-alert
+  - platform: template
+    name: "${friendly_name} Fan 3 Stall Message"
+    id: fan3_stall_message
+    entity_category: diagnostic
+    icon: mdi:message-alert
+  - platform: template
+    name: "${friendly_name} Fan 4 Stall Message"
+    id: fan4_stall_message
+    entity_category: diagnostic
+    icon: mdi:message-alert
+
+button:
+  - platform: template
+    name: "${friendly_name} Clear Stall Warnings"
+    id: stall_guard_clear_button
+    icon: mdi:alert-remove
+    entity_category: config
+    on_press:
+      - lambda: |-
+          // Clear all fan stall states
+          id(stall_guard_fan1_active) = false;
+          id(stall_guard_fan1_grace_count) = 0;
+          id(stall_guard_fan1_raised_pct) = 0.0f;
+          id(fan1_safety_floor) = 0.0f;
+          id(fan1_stall_sensor).publish_state(false);
+          id(fan1_stall_message).publish_state("OK");
+
+          id(stall_guard_fan2_active) = false;
+          id(stall_guard_fan2_grace_count) = 0;
+          id(stall_guard_fan2_raised_pct) = 0.0f;
+          id(fan2_safety_floor) = 0.0f;
+          id(fan2_stall_sensor).publish_state(false);
+          id(fan2_stall_message).publish_state("OK");
+
+          id(stall_guard_fan3_active) = false;
+          id(stall_guard_fan3_grace_count) = 0;
+          id(stall_guard_fan3_raised_pct) = 0.0f;
+          id(fan3_safety_floor) = 0.0f;
+          id(fan3_stall_sensor).publish_state(false);
+          id(fan3_stall_message).publish_state("OK");
+
+          id(stall_guard_fan4_active) = false;
+          id(stall_guard_fan4_grace_count) = 0;
+          id(stall_guard_fan4_raised_pct) = 0.0f;
+          id(fan4_safety_floor) = 0.0f;
+          id(fan4_stall_sensor).publish_state(false);
+          id(fan4_stall_message).publish_state("OK");
+
+          ESP_LOGI("stall_guard", "All stall warnings and safety floors cleared");
+
+number:
+  - platform: template
+    name: "${friendly_name} Stall Guard Min RPM"
+    id: stall_guard_min_rpm_number
+    icon: mdi:speedometer-slow
+    entity_category: config
+    restore_value: true
+    initial_value: ${stall_guard_min_rpm}
+    min_value: 0
+    max_value: 1000
+    step: 10
+    unit_of_measurement: "RPM"
+    optimistic: true
+    mode: box
+
+  - platform: template
+    name: "${friendly_name} Stall Guard Step %"
+    id: stall_guard_step_pct_number
+    icon: mdi:stairs-up
+    entity_category: config
+    restore_value: true
+    initial_value: ${stall_guard_step_pct}
+    min_value: 1
+    max_value: 20
+    step: 1
+    unit_of_measurement: "%"
+    optimistic: true
+    mode: box
+
+  - platform: template
+    name: "${friendly_name} Stall Guard Grace Ticks"
+    id: stall_guard_grace_ticks_number
+    icon: mdi:timer-sand
+    entity_category: config
+    restore_value: true
+    initial_value: ${stall_guard_grace_ticks}
+    min_value: 1
+    max_value: 20
+    step: 1
+    optimistic: true
+    mode: box
+
+switch:
+  - platform: template
+    name: "${friendly_name} Fan 1 Stall Guard"
+    id: stall_guard_fan1_enabled
+    icon: mdi:shield-check
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: ""
+    turn_off_action:
+      - lambda: ""
+
+  - platform: template
+    name: "${friendly_name} Fan 2 Stall Guard"
+    id: stall_guard_fan2_enabled
+    icon: mdi:shield-check
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: ""
+    turn_off_action:
+      - lambda: ""
+
+  - platform: template
+    name: "${friendly_name} Fan 3 Stall Guard"
+    id: stall_guard_fan3_enabled
+    icon: mdi:shield-check
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: ""
+    turn_off_action:
+      - lambda: ""
+
+  - platform: template
+    name: "${friendly_name} Fan 4 Stall Guard"
+    id: stall_guard_fan4_enabled
+    icon: mdi:shield-check
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: ""
+    turn_off_action:
+      - lambda: ""
+
+esphome:
+  on_boot:
+    then:
+      - lambda: |-
+          // Publish initial states to avoid "Unavailable" in Home Assistant
+          id(fan1_stall_sensor).publish_state(false);
+          id(fan2_stall_sensor).publish_state(false);
+          id(fan3_stall_sensor).publish_state(false);
+          id(fan4_stall_sensor).publish_state(false);
+          id(fan1_stall_message).publish_state("OK");
+          id(fan2_stall_message).publish_state("OK");
+          id(fan3_stall_message).publish_state("OK");
+          id(fan4_stall_message).publish_state("OK");
+          ESP_LOGI("stall_guard", "Stall guard initialized");
+
+interval:
+  - id: stall_guard_interval
+    interval: ${stall_guard_interval}
+    then:
+      # Fan 1 stall detection and recovery
+      - if:
+          condition:
+            lambda: 'return id(stall_guard_fan1_enabled).state;'
+          then:
+            - lambda: |-
+                // Skip if fan is commanded OFF — auto-clear stall state
+                if (!id(fan1).state) {
+                  id(stall_guard_fan1_grace_count) = 0;
+                  if (id(stall_guard_fan1_active)) {
+                    id(stall_guard_fan1_active) = false;
+                    id(stall_guard_fan1_raised_pct) = 0.0f;
+                    id(fan1_safety_floor) = 0.0f;
+                    id(fan1_stall_sensor).publish_state(false);
+                    id(fan1_stall_message).publish_state("OK");
+                    ESP_LOGI("stall_guard", "Fan 1 turned off - stall cleared");
+                  }
+                  return;
+                }
+                // Fan is commanded ON — check RPM
+                float rpm = id(fan1_speed).state;
+                if (isnan(rpm)) rpm = 0;
+                if (rpm > id(stall_guard_min_rpm_number).state) {
+                  // Fan is spinning — reset grace count, leave stall_active unchanged
+                  id(stall_guard_fan1_grace_count) = 0;
+                  return;
+                }
+                // RPM is 0 while fan is commanded ON
+                id(stall_guard_fan1_grace_count)++;
+                if (id(stall_guard_fan1_grace_count) < (int)id(stall_guard_grace_ticks_number).state) {
+                  return;  // Still in grace period
+                }
+                // Grace expired — declare/continue stall
+                // Initialize raised_pct from fan entity speed on first stall tick
+                if (!id(stall_guard_fan1_active)) {
+                  id(stall_guard_fan1_raised_pct) = (float)id(fan1).speed;
+                }
+                id(stall_guard_fan1_active) = true;
+                // Step up speed
+                float new_pct = id(stall_guard_fan1_raised_pct) + id(stall_guard_step_pct_number).state;
+                if (new_pct > 100.0f) new_pct = 100.0f;
+                id(stall_guard_fan1_raised_pct) = new_pct;
+                // Set safety floor so temperature modules respect recovery value
+                id(fan1_safety_floor) = new_pct;
+                // Write through fan entity (not direct PWM)
+                auto call1 = id(fan1).turn_on();
+                call1.set_speed(new_pct);
+                call1.perform();
+                // Publish sensor states
+                id(fan1_stall_sensor).publish_state(true);
+                char msg1[128];
+                snprintf(msg1, sizeof(msg1), "${friendly_name} Fan 1 stall - raised to %.0f%%", new_pct);
+                id(fan1_stall_message).publish_state(msg1);
+                ESP_LOGW("stall_guard", "Fan 1 stall detected - raised to %.0f%%", new_pct);
+      # Fan 2 stall detection and recovery
+      - if:
+          condition:
+            lambda: 'return id(stall_guard_fan2_enabled).state;'
+          then:
+            - lambda: |-
+                // Skip if fan is commanded OFF — auto-clear stall state
+                if (!id(fan2).state) {
+                  id(stall_guard_fan2_grace_count) = 0;
+                  if (id(stall_guard_fan2_active)) {
+                    id(stall_guard_fan2_active) = false;
+                    id(stall_guard_fan2_raised_pct) = 0.0f;
+                    id(fan2_safety_floor) = 0.0f;
+                    id(fan2_stall_sensor).publish_state(false);
+                    id(fan2_stall_message).publish_state("OK");
+                    ESP_LOGI("stall_guard", "Fan 2 turned off - stall cleared");
+                  }
+                  return;
+                }
+                float rpm = id(fan2_speed).state;
+                if (isnan(rpm)) rpm = 0;
+                if (rpm > id(stall_guard_min_rpm_number).state) {
+                  id(stall_guard_fan2_grace_count) = 0;
+                  return;
+                }
+                id(stall_guard_fan2_grace_count)++;
+                if (id(stall_guard_fan2_grace_count) < (int)id(stall_guard_grace_ticks_number).state) {
+                  return;
+                }
+                if (!id(stall_guard_fan2_active)) {
+                  id(stall_guard_fan2_raised_pct) = (float)id(fan2).speed;
+                }
+                id(stall_guard_fan2_active) = true;
+                float new_pct = id(stall_guard_fan2_raised_pct) + id(stall_guard_step_pct_number).state;
+                if (new_pct > 100.0f) new_pct = 100.0f;
+                id(stall_guard_fan2_raised_pct) = new_pct;
+                id(fan2_safety_floor) = new_pct;
+                auto call2 = id(fan2).turn_on();
+                call2.set_speed(new_pct);
+                call2.perform();
+                id(fan2_stall_sensor).publish_state(true);
+                char msg2[128];
+                snprintf(msg2, sizeof(msg2), "${friendly_name} Fan 2 stall - raised to %.0f%%", new_pct);
+                id(fan2_stall_message).publish_state(msg2);
+                ESP_LOGW("stall_guard", "Fan 2 stall detected - raised to %.0f%%", new_pct);
+      # Fan 3 stall detection and recovery
+      - if:
+          condition:
+            lambda: 'return id(stall_guard_fan3_enabled).state;'
+          then:
+            - lambda: |-
+                // Skip if fan is commanded OFF — auto-clear stall state
+                if (!id(fan3).state) {
+                  id(stall_guard_fan3_grace_count) = 0;
+                  if (id(stall_guard_fan3_active)) {
+                    id(stall_guard_fan3_active) = false;
+                    id(stall_guard_fan3_raised_pct) = 0.0f;
+                    id(fan3_safety_floor) = 0.0f;
+                    id(fan3_stall_sensor).publish_state(false);
+                    id(fan3_stall_message).publish_state("OK");
+                    ESP_LOGI("stall_guard", "Fan 3 turned off - stall cleared");
+                  }
+                  return;
+                }
+                float rpm = id(fan3_speed).state;
+                if (isnan(rpm)) rpm = 0;
+                if (rpm > id(stall_guard_min_rpm_number).state) {
+                  id(stall_guard_fan3_grace_count) = 0;
+                  return;
+                }
+                id(stall_guard_fan3_grace_count)++;
+                if (id(stall_guard_fan3_grace_count) < (int)id(stall_guard_grace_ticks_number).state) {
+                  return;
+                }
+                if (!id(stall_guard_fan3_active)) {
+                  id(stall_guard_fan3_raised_pct) = (float)id(fan3).speed;
+                }
+                id(stall_guard_fan3_active) = true;
+                float new_pct = id(stall_guard_fan3_raised_pct) + id(stall_guard_step_pct_number).state;
+                if (new_pct > 100.0f) new_pct = 100.0f;
+                id(stall_guard_fan3_raised_pct) = new_pct;
+                id(fan3_safety_floor) = new_pct;
+                auto call3 = id(fan3).turn_on();
+                call3.set_speed(new_pct);
+                call3.perform();
+                id(fan3_stall_sensor).publish_state(true);
+                char msg3[128];
+                snprintf(msg3, sizeof(msg3), "${friendly_name} Fan 3 stall - raised to %.0f%%", new_pct);
+                id(fan3_stall_message).publish_state(msg3);
+                ESP_LOGW("stall_guard", "Fan 3 stall detected - raised to %.0f%%", new_pct);
+      # Fan 4 stall detection and recovery
+      - if:
+          condition:
+            lambda: 'return id(stall_guard_fan4_enabled).state;'
+          then:
+            - lambda: |-
+                // Skip if fan is commanded OFF — auto-clear stall state
+                if (!id(fan4).state) {
+                  id(stall_guard_fan4_grace_count) = 0;
+                  if (id(stall_guard_fan4_active)) {
+                    id(stall_guard_fan4_active) = false;
+                    id(stall_guard_fan4_raised_pct) = 0.0f;
+                    id(fan4_safety_floor) = 0.0f;
+                    id(fan4_stall_sensor).publish_state(false);
+                    id(fan4_stall_message).publish_state("OK");
+                    ESP_LOGI("stall_guard", "Fan 4 turned off - stall cleared");
+                  }
+                  return;
+                }
+                float rpm = id(fan4_speed).state;
+                if (isnan(rpm)) rpm = 0;
+                if (rpm > id(stall_guard_min_rpm_number).state) {
+                  id(stall_guard_fan4_grace_count) = 0;
+                  return;
+                }
+                id(stall_guard_fan4_grace_count)++;
+                if (id(stall_guard_fan4_grace_count) < (int)id(stall_guard_grace_ticks_number).state) {
+                  return;
+                }
+                if (!id(stall_guard_fan4_active)) {
+                  id(stall_guard_fan4_raised_pct) = (float)id(fan4).speed;
+                }
+                id(stall_guard_fan4_active) = true;
+                float new_pct = id(stall_guard_fan4_raised_pct) + id(stall_guard_step_pct_number).state;
+                if (new_pct > 100.0f) new_pct = 100.0f;
+                id(stall_guard_fan4_raised_pct) = new_pct;
+                id(fan4_safety_floor) = new_pct;
+                auto call4 = id(fan4).turn_on();
+                call4.set_speed(new_pct);
+                call4.perform();
+                id(fan4_stall_sensor).publish_state(true);
+                char msg4[128];
+                snprintf(msg4, sizeof(msg4), "${friendly_name} Fan 4 stall - raised to %.0f%%", new_pct);
+                id(fan4_stall_message).publish_state(msg4);
+                ESP_LOGW("stall_guard", "Fan 4 stall detected - raised to %.0f%%", new_pct);

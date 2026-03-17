@@ -1,0 +1,64 @@
+# Example: Hardware Rev 3.1 with PID Temperature Control + Stall Guard
+#
+# This example shows how temperature_pid and stall_guard work together.
+# The PID controller maintains a target temperature by adjusting fan speed,
+# while stall guard monitors for stalled fans and sets a safety floor.
+#
+# During normal operation, the PID controller has full control.
+# If a fan stalls, stall_guard raises the safety floor to recover the fan.
+# temperature_pid respects the floor and won't reduce speed below it.
+# Press "Clear Stall Warnings" to release the floor after investigating.
+
+packages:
+  hardware:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    ref: main
+    files: [hardware-rev-3.1.yaml]
+  temperature_pid:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    ref: main
+    files:
+      - path: modules/temperature_pid.yaml
+        vars:
+          friendly_name: "My Fan Controller"
+  stall_guard:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    ref: main
+    files:
+      - path: modules/stall_guard.yaml
+        vars:
+          friendly_name: "My Fan Controller"
+          stall_guard_interval: "5s"
+          # Min RPM, step %, grace ticks, and per-fan enable/disable
+          # are adjustable at runtime via Home Assistant entities.
+
+esphome:
+  name: my-fancontroller
+  friendly_name: My Fan Controller
+
+esp32:
+  board: esp32-s2-saola-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+
+# WiFi configuration
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Fancontroller Fallback"
+
+# Enable captive portal for WiFi setup
+captive_portal:

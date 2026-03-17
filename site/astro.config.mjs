@@ -51,6 +51,7 @@ export default defineConfig({
                 { label: 'Temperature Curve', slug: 'reference/modules/temperature-curve' },
                 { label: 'RPM PI Control', slug: 'reference/modules/rpm-pi-control' },
                 { label: 'RPM Status LEDs', slug: 'reference/modules/rpm-status-leds' },
+                { label: 'Stall Guard', slug: 'reference/modules/stall-guard' },
               ],
             },
             { label: 'Fan Compatibility', slug: 'reference/fan-compatibility' },
