@@ -1,0 +1,33 @@
+# WiFi Fan Controller - Revision 4.0 (ESP32-C6) - Factory Configuration
+# This configuration is used for initial device provisioning and flashing.
+#
+# It includes additional features for first-time setup:
+# - Bluetooth LE provisioning (ESP32 only)
+# - Serial provisioning
+# - Dashboard import capabilities
+#
+# After adoption, the device will use the base configuration without these extras.
+
+packages:
+  # Include all of the core configuration
+  core: !include fancontroller-rev4.0-esp32c6.yaml
+
+esphome:
+  # This will allow for project identification, configuration and updates
+  project:
+    name: zeroflow.fancontroller-rev4-0
+    version: "4.0"
+
+# This should point to the public location of the yaml file that will be adopted
+# After adoption, the device uses the core yaml without the factory-specific features
+dashboard_import:
+  package_import_url: github://zeroflow/wifi-fancontroller/fancontroller-rev4.0-esp32c6.yaml@dev
+
+# Sets up Bluetooth LE (Only on ESP32) to allow the user
+# to provision wifi credentials to the device.
+esp32_improv:
+  authorizer: none
+
+# Sets up the improv via serial client for Wi-Fi provisioning.
+# Handy if your device has a usb port for the user to add credentials when they first get it.
+improv_serial:

@@ -1,0 +1,299 @@
+# WiFi Fan Controller Hardware Package - Revision 4.0
+# Hardware: ESP32-C6, esp32-c6-devkitc-1 board
+# This package contains all hardware-specific configuration
+#
+# Usage (local):
+#   packages:
+#     fancontroller: !include hardware-rev-4.0.yaml
+#
+# Usage (GitHub):
+#   packages:
+#     fancontroller: github://zeroflow/wifi-fancontroller/hardware-rev-4.0.yaml@main
+
+# Globals
+globals:
+  - id: init_done
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  # Safety floor: minimum fan speed (%) enforced by safety modules (e.g. stall guard).
+  # Temperature control modules must respect these floors.
+  # Default 0.0 = no floor active.
+  - id: fan1_safety_floor
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan2_safety_floor
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan3_safety_floor
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: fan4_safety_floor
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+
+# Boot sequence: Status LED blue blinking
+esphome:
+  on_boot:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 0.0, 1.0); // blue
+          call.set_brightness(0.5);
+          call.set_effect("pulse");
+          call.perform();
+      - if:
+          condition:
+            lambda: 'return !id(init_done);'
+          then:
+            - lambda: 'id(init_done) = true;'
+
+# WiFi status callbacks
+wifi:
+  on_connect:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 1.0, 0.0); // green
+          call.set_brightness(0.5);
+          call.set_effect("none");
+          call.perform();
+      - delay: 60s
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(0.0, 1.0, 0.0); // green
+          call.set_brightness(0.1);
+          call.set_effect("none");
+          call.perform();
+
+  on_disconnect:
+    then:
+      - lambda: |-
+          auto call = id(status_led).turn_on();
+          call.set_rgb(1.0, 0.0, 0.0); // red
+          call.set_brightness(0.25);
+          call.set_effect("pulse");
+          call.perform();
+
+# I2C Bus
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+  scan: true
+  id: bus_a
+
+# PWM Outputs for fans (internal only)
+output:
+  - platform: ledc
+    pin: GPIO01
+    id: pwm_fan1
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO00
+    id: pwm_fan2
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO07
+    id: pwm_fan3
+    frequency: "25000 Hz"
+  - platform: ledc
+    pin: GPIO06
+    id: pwm_fan4
+    frequency: "25000 Hz"
+
+# Fan entities
+fan:
+  # Fan 1
+  - platform: speed
+    output: pwm_fan1
+    name: "Fan 1"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan1
+    speed_count: 100
+  # Fan 2
+  - platform: speed
+    output: pwm_fan2
+    name: "Fan 2"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan2
+    speed_count: 100
+  # Fan 3
+  - platform: speed
+    output: pwm_fan3
+    name: "Fan 3"
+    restore_mode: "RESTORE_DEFAULT_ON"
+    id: fan3
+    speed_count: 100
+  # Fan 4
+  - platform: speed
+    output: pwm_fan4
+    name: "Fan 4"
+    id: fan4
+    speed_count: 100
+    restore_mode: "RESTORE_DEFAULT_ON"
+
+# Sensors
+sensor:
+  # Temperature & Humidity Sensor
+  - platform: hdc1080
+    temperature:
+      name: "Temperature"
+      id: fancontroller_temperature
+    humidity:
+      name: "Humidity"
+      id: fancontroller_humidity
+    update_interval: 10s
+
+  # Fan 1 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO18
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan1_speed
+    name: Fan 1 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+    update_interval: 1s
+
+  # Fan 2 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO14
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan2_speed
+    name: Fan 2 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+    update_interval: 1s
+
+  # Fan 3 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO20
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan3_speed
+    name: Fan 3 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+    update_interval: 1s
+
+  # Fan 4 Speed
+  - platform: pulse_counter
+    pin:
+      number: GPIO19
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan4_speed
+    name: Fan 4 Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5
+    update_interval: 1s
+
+# Binary sensors (buttons)
+binary_sensor:
+  # USR1 Button
+  - platform: gpio
+    pin:
+      number: GPIO23
+      inverted: True
+    name: "Button USR1"
+    id: btn_usr1
+  # USR2 Button
+  - platform: gpio
+    pin:
+      number: GPIO04
+      inverted: True
+    name: "Button USR2"
+    id: btn_usr2
+  # USR3 Button
+  - platform: gpio
+    pin:
+      number: GPIO08
+      inverted: True
+    name: "Button USR3"
+    id: btn_usr3
+
+# LED strips and status lights
+light:
+  # Status LED Bus (internal, not directly controlled)
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    name: "Status LEDs"
+    chipset: WS2812
+    pin: GPIO03
+    num_leds: 5
+    id: status_leds
+    internal: True
+
+  # Board Status LED
+  - platform: partition
+    name: "Board Status"
+    id: status_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 0
+        to: 0
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:
+
+  # Fan 1 Status LED
+  - platform: partition
+    name: "Fan 1 Status"
+    id: fan1_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 1
+        to: 1
+
+  # Fan 2 Status LED
+  - platform: partition
+    name: "Fan 2 Status"
+    id: fan2_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 2
+        to: 2
+
+  # Fan 3 Status LED
+  - platform: partition
+    name: "Fan 3 Status"
+    id: fan3_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 3
+        to: 3
+
+  # Fan 4 Status LED
+  - platform: partition
+    name: "Fan 4 Status"
+    id: fan4_led
+    internal: True
+    segments:
+      - id: status_leds
+        from: 4
+        to: 4

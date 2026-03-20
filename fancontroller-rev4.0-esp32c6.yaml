@@ -1,0 +1,88 @@
+# WiFi Fan Controller - Revision 4.0 (ESP32-C6)
+# Base configuration file for production use
+#
+# This file contains the core ESPHome configuration and includes
+# the hardware-specific package for revision 4.0
+
+packages:
+  # Include hardware-specific configuration
+  hardware: !include hardware-rev-4.0.yaml
+
+esphome:
+  name: fancontroller-r4-0
+  friendly_name: fancontroller
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+  project:
+    name: zeroflow.fancontroller-rev4-0
+    version: "4.0"
+
+dashboard_import:
+  package_import_url: github://zeroflow/wifi-fancontroller/fancontroller-rev4.0-esp32c6.yaml@dev
+  import_full_config: false
+
+esp32:
+  board: esp32-c6-devkitc-1
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+  id: logger_component
+
+# API is a requirement of the dashboard import
+api:
+  id: api_component
+
+# Required by ota.http_request and update.http_request
+http_request:
+
+# OTA is required for Over-the-Air updating
+ota:
+  - platform: esphome
+    id: ota_esphome
+  - platform: http_request
+    id: ota_http_request
+
+# Firmware update check via HTTP
+update:
+  - platform: http_request
+    id: firmware_update
+    name: "Firmware Update"
+    source: https://fancontroller.arthofer.dev/firmware/fancontroller-r4-0.manifest.json
+
+wifi:
+  id: wifi_component
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device
+captive_portal:
+  id: captive_portal_component
+
+# Sets up the improv via serial client for Wi-Fi provisioning.
+improv_serial:
+
+# Optional: NeoPixel LED strip support
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    chipset: WS2812
+    pin: GPIO02
+    num_leds: 5 # default, increase if needed
+    id: neopixel_light
+    name: "NeoPixel Light"
+    effects:
+      - pulse:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:
