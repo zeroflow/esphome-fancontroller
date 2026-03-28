@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightBlog from 'starlight-blog';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
@@ -7,6 +8,7 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   integrations: [
     starlight({
+      plugins: [starlightBlog()],
       title: 'ESP32 WiFi Fan Controller',
       social: [
         {
