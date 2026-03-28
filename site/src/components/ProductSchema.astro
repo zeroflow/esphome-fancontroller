@@ -1,0 +1,34 @@
+---
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "ESP32 WiFi Fan Controller",
+  "description": "CE-certified ESP32-S2 PWM fan controller for Home Assistant. Controls up to 4 fans independently with temperature automation, RPM monitoring, and ESPHome firmware.",
+  "image": "https://fancontroller.arthofer.dev/images/board_rev3.3_front.jpg",
+  "brand": {
+    "@type": "Brand",
+    "name": "zeroflow"
+  },
+  "sku": "WIFIFC-REV33",
+  "offers": {
+    "@type": "Offer",
+    "url": "https://www.elecrow.com/wifi-fancontroller1.html",
+    "priceCurrency": "USD",
+    "price": "35.99",
+    "availability": "https://schema.org/InStock",
+    "seller": {
+      "@type": "Organization",
+      "name": "Elecrow"
+    }
+  },
+  "additionalProperty": [
+    { "@type": "PropertyValue", "name": "MCU", "value": "ESP32-S2" },
+    { "@type": "PropertyValue", "name": "Fan Channels", "value": "4x PWM" },
+    { "@type": "PropertyValue", "name": "Firmware", "value": "ESPHome" },
+    { "@type": "PropertyValue", "name": "Sensor", "value": "HDC1080 (Temperature & Humidity)" },
+    { "@type": "PropertyValue", "name": "Certification", "value": "CE" }
+  ]
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

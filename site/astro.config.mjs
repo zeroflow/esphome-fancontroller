@@ -7,7 +7,7 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   integrations: [
     starlight({
-      title: 'WiFi Fan Controller',
+      title: 'ESP32 WiFi Fan Controller',
       social: [
         {
           icon: 'github',
