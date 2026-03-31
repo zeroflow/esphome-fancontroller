@@ -17,7 +17,7 @@ services:
         else
           echo 'Firmware files already present, skipping download.' ;
         fi &&
-        npm install &&
+        npm ci &&
         npm run dev -- --host 0.0.0.0
       "
     ports:
