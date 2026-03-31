@@ -186,7 +186,7 @@ output:
           (id(manual_fan_control).state) ?
             id(manual_fan_control).speed : state*100.0;
         float pwm_min = id(pwm_minimum).state;
-        if (write_val > 0.0 && write_val < pwm_min) {
+        if (write_val < pwm_min) {
           write_val = pwm_min;
         }
         if (id(pid_control_fan1).state) {
