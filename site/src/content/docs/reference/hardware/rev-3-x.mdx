@@ -79,7 +79,7 @@ Add this to your ESPHome config to import the hardware package for your board re
 - **Expansion:** QWIIC I2C, I2C port (100mil), NeoPixel port (5V, max 2A), SMD expansion header
 
 <Aside type="note" title="NeoPixel framework requirement">
-The NeoPixel port requires the `arduino` framework, since GPIO42 requires use of the `fastled_clockless` platform, which is not supported on `esp-idf`.
+The NeoPixel port on GPIO42 requires the `arduino` framework. The `esp32_rmt_led_strip` platform used for this pin does not work reliably with `esp-idf` on the ESP32-S2.
 </Aside>
 
 ## Factory Firmware Installation
