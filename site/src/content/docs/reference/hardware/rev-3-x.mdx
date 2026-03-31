@@ -10,6 +10,40 @@ The Rev 3.x series is the latest generation of the WiFi Fan Controller. All 3.1,
 
 Key features over Rev 3.0: RGB status LEDs (SK6805) for board status and per-fan visual feedback.
 
+## Hardware Package Import
+
+Add this to your ESPHome config to import the hardware package for your board revision:
+
+<Tabs>
+  <TabItem label="Rev 3.3">
+    ```yaml
+    packages:
+      hardware:
+        url: https://github.com/zeroflow/wifi-fancontroller
+        ref: main
+        files: [hardware-rev-3.3.yaml]
+    ```
+  </TabItem>
+  <TabItem label="Rev 3.2">
+    ```yaml
+    packages:
+      hardware:
+        url: https://github.com/zeroflow/wifi-fancontroller
+        ref: main
+        files: [hardware-rev-3.2.yaml]
+    ```
+  </TabItem>
+  <TabItem label="Rev 3.1">
+    ```yaml
+    packages:
+      hardware:
+        url: https://github.com/zeroflow/wifi-fancontroller
+        ref: main
+        files: [hardware-rev-3.1.yaml]
+    ```
+  </TabItem>
+</Tabs>
+
 ## Board Photos
 
 ### Rev 3.3

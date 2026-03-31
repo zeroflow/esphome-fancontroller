@@ -8,6 +8,18 @@ import { Aside } from '@astrojs/starlight/components';
 
 Rev 3.0 added Qwiic I2C connectivity, a NeoPixel expansion port, PWM signal buffering for improved fan signal integrity, and a bottom SMD expansion header. Unlike Rev 3.1+, it does not have RGB status LEDs.
 
+## Hardware Package Import
+
+Add this to your ESPHome config to import the hardware package:
+
+```yaml
+packages:
+  hardware:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    ref: main
+    files: [hardware-rev-3.0.yaml]
+```
+
 ### Front
 
 ![ESP32-S2 WiFi Fan Controller Rev 3.0 PCB front - Qwiic port, NeoPixel expansion, PWM buffering](/images/board_rev3.0.jpg)

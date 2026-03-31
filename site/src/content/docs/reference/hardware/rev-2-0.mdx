@@ -8,6 +8,18 @@ import { Aside } from '@astrojs/starlight/components';
 
 Rev 2.0 introduced USB-C flashing by switching from the ESP32 to the ESP32-S2. This eliminates the need for a separate USB-to-serial adapter.
 
+## Hardware Package Import
+
+Add this to your ESPHome config to import the hardware package:
+
+```yaml
+packages:
+  hardware:
+    url: https://github.com/zeroflow/wifi-fancontroller
+    ref: main
+    files: [hardware-rev-2.0.yaml]
+```
+
 ![ESP32-S2 WiFi Fan Controller Rev 2.0 PCB - upgraded to ESP32-S2 with USB-C flashing](/images/board_rev2.0.jpg)
 
 ## Specifications
