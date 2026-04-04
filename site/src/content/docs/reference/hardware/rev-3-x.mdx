@@ -102,8 +102,10 @@ Select your board revision and click the button to flash the factory firmware di
 The ESP32-S2 has known USB reliability issues. If the flash button doesn't detect your board:
 1. Try a different USB cable (data cable, not charge-only)
 2. Hold BOOT button while plugging in USB
-3. Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative web flasher
+3. Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative web flasher (flash binary at address 0x0)
 4. As last resort, use `esptool.py` CLI: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
+
+Download prebuilt binaries: [Rev 3.1](/firmware/fancontroller-r3-1-esp32s2.factory.bin) / [Rev 3.2](/firmware/fancontroller-r3-2-esp32s2.factory.bin) / [Rev 3.3](/firmware/fancontroller-r3-3-esp32s2.factory.bin)
 </Aside>
 
 <Aside type="caution" title="USB-C is for flashing only">

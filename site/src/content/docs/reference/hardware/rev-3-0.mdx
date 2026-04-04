@@ -52,7 +52,7 @@ The NeoPixel port on GPIO42 requires the `arduino` framework. The `esp32_rmt_led
 The ESP32-S2 has known USB reliability issues. If the flash button doesn't detect your board:
 1. Try a different USB cable (data cable, not charge-only)
 2. Hold BOOT button while plugging in USB
-3. Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative web flasher
+3. Use [ESPWEBTOOL](https://esptool.spacehuhn.com/) as an alternative web flasher (flash binary at address 0x0)
 4. As last resort, use `esptool.py` CLI: `esptool.py --chip esp32s2 write_flash 0x0 firmware.bin`
 
 [Download prebuilt binary](/firmware/fancontroller-r3-0-esp32s2.factory.bin)
