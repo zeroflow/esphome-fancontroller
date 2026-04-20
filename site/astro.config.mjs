@@ -8,6 +8,11 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   integrations: [
     starlight({
+      // Starlight v0.38 route middleware registration
+      components: {
+        Head: './src/components/StarlightHead.astro',
+      },
+      routeMiddleware: './src/routeData.ts',
       plugins: [starlightBlog()],
       title: {
         en: 'ESP32 WiFi Fan Controller',

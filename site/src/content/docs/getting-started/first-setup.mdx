@@ -10,7 +10,7 @@ import { Steps, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 Get yours from the [Elecrow store](https://www.elecrow.com/wifi-fancontroller1.html).
 </Aside>
 
-Your board ships with factory firmware already flashed. This guide walks you from unboxing to a working fan controller in Home Assistant — WiFi provisioning, fan wiring, and Home Assistant adoption.
+Your board ships with factory firmware already flashed. This guide walks you from unboxing to a working fan controller in Home Assistant, covering WiFi provisioning, fan wiring, and Home Assistant adoption.
 
 <Aside type="note" title="Already flashed from the factory">
 Every WiFi Fan Controller is flashed with factory firmware before shipping. First-time users can skip straight to WiFi provisioning below. If you ever need to re-flash (corruption, recovery, or a custom ESPHome build), the "Re-flash firmware" section at the bottom of this page covers it.
@@ -19,7 +19,7 @@ Every WiFi Fan Controller is flashed with factory firmware before shipping. Firs
 ## What You'll Need
 
 - WiFi Fan Controller board
-- USB-C data cable (not charge-only) — for serial-based WiFi provisioning
+- USB-C data cable (not charge-only), used for serial-based WiFi provisioning
 - 12V DC power supply (5.5x2.1mm barrel jack)
 - One or more PWM fans (4-pin)
 
@@ -31,7 +31,7 @@ Every WiFi Fan Controller is flashed with factory firmware before shipping. Firs
 
    Connect the board to your computer with a USB-C data cable.
 
-   Open a tool that speaks Improv Serial — for example [improv-wifi.com/serial/](https://www.improv-wifi.com/serial/) in Chrome or Edge — or open a serial console connected to the board.
+   Open a tool that speaks Improv Serial (for example [improv-wifi.com/serial/](https://www.improv-wifi.com/serial/) in Chrome or Edge), or open a serial console connected to the board.
 
    Enter your **2.4 GHz** WiFi network name and password. 5 GHz networks are not supported by any board revision.
 
@@ -72,7 +72,7 @@ You only need this section if:
 - You want to reset to a known-good factory image
 - You are installing a custom ESPHome build you compiled yourself
 
-Most customers never need to re-flash. For routine firmware updates, use OTA through the [ESPHome Dashboard](/getting-started/firmware-updates/) — no cables needed.
+Most customers never need to re-flash. For routine firmware updates, use OTA through the [ESPHome Dashboard](/getting-started/firmware-updates/). No cables needed.
 
 Re-flashing uses the Web Serial API and requires a Chrome or Edge browser plus a USB-C data cable.
 

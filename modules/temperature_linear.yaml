@@ -11,7 +11,7 @@
 #   Respects fan{1-4}_safety_floor globals from the hardware package.
 #   When a safety module (e.g. stall_guard) sets a floor, this module
 #   will not command a running fan below that floor value.
-#   Commanding a fan OFF (0%) is always honored — the floor only applies to non-zero speeds.
+#   Commanding a fan OFF (0%) is always honored - the floor only applies to non-zero speeds.
 #
 # Usage:
 #   packages:

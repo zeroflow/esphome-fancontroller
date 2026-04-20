@@ -75,7 +75,7 @@ script:
           auto off2 = id(fan2_led).turn_off(); off2.set_transition_length(0); off2.perform();
           auto off3 = id(fan3_led).turn_off(); off3.set_transition_length(0); off3.perform();
           auto off4 = id(fan4_led).turn_off(); off4.set_transition_length(0); off4.perform();
-          ESP_LOGI("usr_buttons", "Selection timeout — mode deactivated, fan LEDs cleared");
+          ESP_LOGI("usr_buttons", "Selection timeout - mode deactivated, fan LEDs cleared");
 
   - id: usr_update_leds
     mode: restart

@@ -1,4 +1,6 @@
 ---
+import { reviews } from '../data/reviews';
+
 const schema = {
   "@context": "https://schema.org",
   "@type": "Product",
@@ -12,44 +14,22 @@ const schema = {
   "sku": "WIFIFC-REV33",
   "aggregateRating": {
     "@type": "AggregateRating",
-    "ratingValue": "4.75",
-    "reviewCount": "4",
+    "ratingValue": (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(2),
+    "reviewCount": String(reviews.length),
     "bestRating": "5"
   },
-  "review": [
-    {
-      "@type": "Review",
-      "author": { "@type": "Person", "name": "Lila" },
-      "datePublished": "2026-02-03",
-      "name": "Amazing DIY Product!",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "reviewBody": "Product works amazingly and is even better than expected. Creator is quick to reply to issues and questions. Shipping was timely and was even faster than expected. Would buy again. Love ready-made ESPHOME products like this. Used mine in a DIY air filter."
+  "review": reviews.map((r) => ({
+    "@type": "Review",
+    "author": { "@type": "Person", "name": r.reviewer },
+    "datePublished": r.datePublished,
+    "name": r.title,
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": String(r.rating),
+      "bestRating": "5",
     },
-    {
-      "@type": "Review",
-      "author": { "@type": "Person", "name": "Jodan" },
-      "datePublished": "2025-08-15",
-      "name": "Perfect for any Home Assistant Enthusiast!",
-      "reviewRating": { "@type": "Rating", "ratingValue": "4.5", "bestRating": "5" },
-      "reviewBody": "This controller is installed within my rack, powering a couple of Noctuas. Looks great, configurations and integration with Home Assistant were very easy to set up. Will most likely buy a couple more of these down the line. Would recommend."
-    },
-    {
-      "@type": "Review",
-      "author": { "@type": "Person", "name": "Scott" },
-      "datePublished": "2025-07-13",
-      "name": "Exactly what I needed - very good product!",
-      "reviewRating": { "@type": "Rating", "ratingValue": "4.5", "bestRating": "5" },
-      "reviewBody": "Used the fan controller to control fans within my server rack which badly needed some cooling and this works perfectly. Very well put together, would recommend."
-    },
-    {
-      "@type": "Review",
-      "author": { "@type": "Person", "name": "Marius" },
-      "datePublished": "2025-03-01",
-      "name": "Perfect",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "reviewBody": "I use it in a grow tent as fan controller, works perfect. Documentation is available on git."
-    }
-  ],
+    "reviewBody": r.body,
+  })),
   "offers": [
     {
       "@type": "Offer",

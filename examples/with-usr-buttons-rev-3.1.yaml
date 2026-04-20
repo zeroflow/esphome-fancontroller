@@ -2,7 +2,7 @@
 #
 # This example shows how to use the USR buttons for manual fan speed control
 # combined with the RGB status LEDs module for visual fan speed feedback.
-# The two modules coordinate automatically — button selection mode temporarily
+# The two modules coordinate automatically - button selection mode temporarily
 # takes over the LEDs, then returns control to rpm_status_leds on timeout.
 
 packages:

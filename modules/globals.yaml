@@ -1,5 +1,5 @@
 # Shared cross-module globals
-# Included by hardware packages — do not include directly in user configs.
+# Included by hardware packages - do not include directly in user configs.
 
 globals:
   # Safety floors: set by stall_guard, respected by temperature modules.
